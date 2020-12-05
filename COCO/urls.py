@@ -14,12 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from rest_framework.authtoken import views
+from django.urls import path, include
+from Apps.ManageUsers import urls as user_urls
 
 coco_api_base = 'coco/api/v1.0/'
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(coco_api_base + 'token-auth/', views.obtain_auth_token)
+
+    # User app apis
+    path(coco_api_base, include(user_urls)),
+
 
 ]

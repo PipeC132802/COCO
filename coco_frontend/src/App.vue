@@ -1,60 +1,49 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
+    <v-card color="primary" height="100%">
+    <LeftAside />
+<v-main>
+      <v-container class="content" fluid>
+        
+      </v-container>
     </v-main>
+    
+  </v-card>
+      
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import LeftAside from '@/components/LeftAside';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    LeftAside,
   },
 
   data: () => ({
-    //
+    
   }),
 };
 </script>
+
+<style scoped>
+  .main{
+    background: white;
+    width: 100%;
+    height: 100%;
+  }
+  .content{
+    background: white;
+    padding: 20px;
+    min-height: 100vh;
+    width: 100%;
+  }
+  .collapsible-aside{
+    border: none;
+    padding: 0px;
+    background: orange;
+  }
+</style>
