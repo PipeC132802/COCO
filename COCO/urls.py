@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
 from Apps.ManageUsers import urls as user_urls
@@ -20,9 +21,9 @@ from Apps.ManageUsers import urls as user_urls
 coco_api_base = 'coco/api/v1.0/'
 urlpatterns = [
     path('admin/', admin.site.urls),
-
+    path('api/login/', include('rest_social_auth.urls_session')),
+    url(r'^api/login/', include('rest_social_auth.urls_token')),
     # User app apis
     path(coco_api_base, include(user_urls)),
-
 
 ]
