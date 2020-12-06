@@ -10,3 +10,4 @@ python-memcached
 Pillow
 psycopg2-binary
 django-cors-headers
+dj_rest_auth
