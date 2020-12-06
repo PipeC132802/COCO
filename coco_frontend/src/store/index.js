@@ -20,8 +20,8 @@ export default new Vuex.Store({
     setUser(state,user){
       state.user = user;
     },
-    updateAuthInfo(state, tokenObj){
-      state.authentication = tokenObj;
+    updateAuthInfo(state, authObj){
+      state.authentication = authObj;
     },
     updateFormsInfo(state, formDialogs){
       state.forms = formDialogs;

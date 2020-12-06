@@ -1,7 +1,6 @@
 <template>
 
     <div v-if="!authentication.userIsAuthenticated">
-        {{authentication}}
         <h1>Welcome</h1>
     </div>
 </template>

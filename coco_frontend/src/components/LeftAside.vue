@@ -37,7 +37,7 @@
           class="item"
           :title="item.title"
           active-class="white primary--text"
-          :to="{ name: item.link }"
+          :to="{ path: `${item.link}` }"
           exact
           v-for="item in items"
           :key="item.title"
@@ -59,7 +59,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list-item @click="closeSession()" class="logout error" link>
+      <v-list-item @click="closeSession()" class="logout error darken-1" link>
         <v-list-item-icon>
           <v-icon>mdi-logout-variant</v-icon>
         </v-list-item-icon>
@@ -83,27 +83,39 @@ export default {
       username: "",
     },
     apiDir: "user-status/",
+    logOutApi: "user-auth/logout/",
     drawer: true,
     items: [
-      { title: "Inicio", icon: "mdi-home", link: "Home", value: "" },
-      { title: "Explorar", icon: "mdi-magnify", link: "Explore", value: "" },
+      { title: "Inicio", icon: "mdi-home", link: "/home", value: "" },
+      { title: "Explorar", icon: "mdi-magnify", link: "/explore", value: "" },
       {
         title: "Notificaciones",
         icon: "mdi-bell",
-        link: "Notifications",
+        link: "/notifications",
         value: "",
       },
-      { title: "Mensajes", icon: "mdi-message-text", link: "Inbox", value: "" },
-      { title: "Perfil", icon: "mdi-account", link: "Profile", value: "" },
-      { title: "Ajustes ", icon: "mdi-cogs", link: "Settings", value: "" },
+      {
+        title: "Mensajes",
+        icon: "mdi-message-text",
+        link: "/inbox",
+        value: "",
+      },
+      { title: "Perfil", icon: "mdi-account", link: "/profile", value: "" },
+      { title: "Ajustes ", icon: "mdi-cogs", link: "/settings", value: "" },
     ],
     mini: true,
   }),
   computed: {
-    ...mapState(["baseUrl","authentication"]),
+    ...mapState(["baseUrl", "authentication"]),
   },
   created() {
-    fetch(this.baseUrl + this.apiDir, {
+    this.getUserInfo();
+    
+  },
+  methods: {
+    ...mapMutations(["setUser", "updateAuthInfo"]),
+    getUserInfo(){
+      fetch(this.baseUrl + this.apiDir, {
       method: "GET",
       headers: {
         Authorization: `Token ${this.authentication.accessToken}`,
@@ -116,17 +128,17 @@ export default {
         this.user = respose;
         this.items[2].value = respose.unread_notifications;
         this.items[3].value = respose.unread_messages;
+        this.items[4].link = `/${respose.username}`;
         this.setUser(respose);
       });
-  },
-  methods: {
-    ...mapMutations(["setUser", "updateAuthInfo"]),
-    closeSession(){
-      let authObj ={
+    },
+    closeSession() {
+      let authObj = {
         accessToken: null,
         userIsAuthenticated: false,
-      }
-      this.removeCookie('token');
+      };
+      this.deleteToken();
+      this.removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
     },
@@ -140,6 +152,14 @@ export default {
     },
     removeCookie(cname) {
       this.setCookie(cname, "", -1);
+    },
+    deleteToken() {
+      fetch(this.baseUrl + this.logOutApi, {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      });
     },
   },
 };

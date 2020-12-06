@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-snackbar v-model="snackbar">
+    <v-snackbar v-model="snackbar">
       {{ message }}
       <template v-slot:action="{ attrs }">
         <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
@@ -18,7 +18,7 @@
                 <v-text-field
                   class="mb-1"
                   v-model="username"
-                  label="Usuario"
+                  label="Usuario o correo"
                   :rules="[rules.required]"
                 ></v-text-field>
                 <v-text-field
@@ -47,7 +47,6 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    
   </div>
 </template>
 
@@ -59,7 +58,7 @@ export default {
   data: () => ({
     username: "",
     password: "",
-    apiDir: "token-auth/",
+    apiDir: "user-auth/login/",
     loading: false,
     incorrectAuth: false,
     snackbar: false,
@@ -87,10 +86,21 @@ export default {
     ...mapMutations(["updateFormsInfo", "updateAuthInfo"]),
     loginSubmit() {
       this.loading = true;
-      let form_data = {
-        username: this.username,
-        password: this.password,
-      };
+      let form_data = {}
+      if (this.username.indexOf("@") > -1) {
+        form_data = {
+          username: "",
+          email: this.username,
+          password: this.password,
+        };
+      } else {
+        form_data = {
+          username: this.username,
+          email: "",
+          password: this.password,
+        };
+      }
+
       fetch(this.baseUrl + this.apiDir, {
         method: "POST",
         credentials: "same-origin",
@@ -108,16 +118,16 @@ export default {
 
         .then((response) => {
           let responseObj = {
-            accessToken: response.token,
-            userIsAuthenticated: !!response.token,
+            accessToken: response.key,
+            userIsAuthenticated: !!response.key,
           };
-          this.setCookie("token", response.token, 60);
+          this.setCookie("token", response.key, 60);
 
           this.updateAuthInfo(responseObj);
           this.$router.push({ name: "Home" });
         })
         .catch((error) => {
-            this.password = '';
+          this.password = "";
           this.snackbar = true;
           this.message = "Credenciales inválidas!";
         });
