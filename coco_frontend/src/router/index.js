@@ -1,14 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
+    name: 'Welcome',
+    component: () => import('../views/Welcome.vue')
+  },
+  {
+    path: '/home',
     name: 'Home',
-    component: Home
+    component: () => import('../views/Home.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/explore',
@@ -16,7 +23,8 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Explore.vue')
+    component: () => import('../views/Explore.vue'),
+    
   },
   {
     path: '/notifications',
@@ -24,7 +32,10 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Notifications.vue')
+    component: () => import('../views/Notifications.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/inbox',
@@ -32,7 +43,10 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Inbox.vue')
+    component: () => import('../views/Inbox.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/profile',
@@ -40,7 +54,10 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Profile.vue')
+    component: () => import('../views/Profile.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/settings',
@@ -48,7 +65,10 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Settings.vue')
+    component: () => import('../views/Settings.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
 ]
 

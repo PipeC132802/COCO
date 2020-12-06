@@ -32,3 +32,4 @@ class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
             'unread_notifications': unread_notifications,
             'unread_messages': unread_messages,
         })
+

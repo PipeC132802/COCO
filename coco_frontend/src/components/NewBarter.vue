@@ -33,13 +33,13 @@
           <v-icon left>mdi-teach</v-icon>
           Voy a enseñar
         </v-btn>
-        <v-btn @click="dialog = true" class="ml-auto" color="primary darken-1">
+        <v-btn @click="dialog = true" class="ml-auto" color="primary darken-2">
           Publicar
         </v-btn>
       </v-card-actions>
     </v-card>
 
-    <v-dialog v-model="dialog" persistent max-width="600px">
+    <v-dialog v-if="dialog" v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-card-title class="p b-0">
           <h3 class="ml-2 headline">Nuevo Trueque</h3>
@@ -89,7 +89,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="dialog = false" text> Cancelar </v-btn>
-          <v-btn color="success" @click="dialog = false"> Publicar </v-btn>
+          <v-btn color="primary darken-2" @click="dialog = false"> Publicar </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -106,6 +106,13 @@ export default {
   computed: {
     ...mapState(["user"]),
   },
+  created(){
+      let formdata = {
+          username: 'pipe',
+          password: 'Coco_F132802'
+      }
+     
+  }
 };
 </script>
 
