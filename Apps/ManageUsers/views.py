@@ -6,14 +6,11 @@ from rest_framework.permissions import IsAuthenticated
 from Apps.ManageUsers.models import UserOnline, UserProfilePhoto
 
 
-class UserInfo(generics.RetrieveAPIView):  # , LoginRequiredMixin):
+class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, **kwargs):
         user = request.user
-        user_online = UserOnline.objects.get(user_id=user.pk)
-        user_online.is_online = True
-        user_online.save()
 
         try:
             profile_picture = UserProfilePhoto.objects.get(
@@ -26,8 +23,12 @@ class UserInfo(generics.RetrieveAPIView):  # , LoginRequiredMixin):
             read=False
         ).count()
         unread_notifications = 3"""
+        unread_notifications = 5
+        unread_messages = 3
         return JsonResponse({
             'username': user.username,
             'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,
+            'unread_notifications': unread_notifications,
+            'unread_messages': unread_messages,
         })
