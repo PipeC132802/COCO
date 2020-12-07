@@ -1,15 +1,9 @@
 <template>
   <div>
-    <v-dialog v-model="signUpDialog" max-width="600">
+    <v-dialog v-model="signUpDialog" dense max-width="600">
       <v-card id="v-dialog">
         <v-card-title> Regístrate con </v-card-title>
-        <v-card-actions class="ml-2">
-          <v-row class="pa-3" justify="space-between">
-            <v-btn> Google </v-btn>
-            <v-btn> Google </v-btn>
-            <v-btn> Google </v-btn>
-          </v-row>
-        </v-card-actions>
+        
         <v-card-text>
           <v-container>
             <form style="width: 100%" @submit.prevent="signUpSubmit">

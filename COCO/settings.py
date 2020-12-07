@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+'dj_rest_auth',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-    'dj_rest_auth',
+
 
 ]
 MIDDLEWARE = [
@@ -57,11 +58,10 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'COCO.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [str(BASE_DIR) + '/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,3 +130,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+PASSWORD_RESET_TIMEOUT_DAYS = 1
+
+# Mail interface
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = "app.cocoplatform@gmail.com" # Cambiar por correo del semillero
+EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj" # Contraseña de aplicación

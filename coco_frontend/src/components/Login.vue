@@ -1,15 +1,9 @@
 <template>
   <div>
-    <v-dialog v-model="loginDialog" max-width="600">
-      <v-card id="v-dialog">
+    <v-dialog  v-model="loginDialog" max-width="600">
+      <v-card  id="v-dialog">
         <v-card-title> Inicia sesión con </v-card-title>
-        <v-card-actions class="ml-2">
-          <v-row justify="space-around">
-            <v-btn> Google </v-btn>
-            <v-btn> Google </v-btn>
-            <v-btn> Google </v-btn>
-          </v-row>
-        </v-card-actions>
+        
         <v-card-text class="pb-0 mb-0">
           <v-container fluid>
             <v-row>

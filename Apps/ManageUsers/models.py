@@ -115,7 +115,9 @@ class UserSettings(models.Model):
 
 class VerifyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=30)
+    token = models.CharField(max_length=50)
 
     def __str__(self):
-        return 'token de: ' + self.user
+        return 'token de: @' + self.user.username
+
+

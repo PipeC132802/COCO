@@ -8,5 +8,5 @@ admin.site.register(UserPasswordChanged)
 admin.site.register(UserPlace)
 admin.site.register(UserSkill)
 admin.site.register(UserInterest)
+admin.site.register(VerifyUser)
 admin.site.register(UserRelationship)
-

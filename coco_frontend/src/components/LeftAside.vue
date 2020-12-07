@@ -138,7 +138,7 @@ export default {
         accessToken: null,
         userIsAuthenticated: false,
       };
-      this.deleteToken();
+      //this.deleteToken(); This unauthenticate all users
       removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
