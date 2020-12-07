@@ -9,32 +9,33 @@ export default new Vuex.Store({
       accessToken: null,
       userIsAuthenticated: false,
     },
-    forms:{
+    forms: {
       loginDialog: false,
       signUpDialog: false,
     },
-    user:'',
+    user: '',
     baseUrl: 'http://127.0.0.1:8000/coco/api/v1.0/',
   },
   mutations: {
-    setUser(state,user){
+    setUser(state, user) {
       state.user = user;
     },
-    updateAuthInfo(state, authObj){
+    updateAuthInfo(state, authObj) {
       state.authentication = authObj;
     },
-    updateFormsInfo(state, formDialogs){
+    updateFormsInfo(state, formDialogs) {
       state.forms = formDialogs;
-    }
+    },
+    
   },
   actions: {
-    
-  
+
+
   },
   modules: {
   },
-  getters:{
-    loggedIn(state){
+  getters: {
+    loggedIn(state) {
       return state.authentication.accessToken != null
     }
   }

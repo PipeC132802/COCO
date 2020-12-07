@@ -74,6 +74,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import {removeCookie} from "@/js/cookiesfunctions.js";
 export default {
   name: "LeftAside",
   data: () => ({
@@ -138,20 +139,9 @@ export default {
         userIsAuthenticated: false,
       };
       this.deleteToken();
-      this.removeCookie("token");
+      removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
-    },
-    setCookie(cname, cvalue, exdays) {
-      var d = new Date();
-
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-      var expires = "expires=" + d.toUTCString();
-
-      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    },
-    removeCookie(cname) {
-      this.setCookie(cname, "", -1);
     },
     deleteToken() {
       fetch(this.baseUrl + this.logOutApi, {

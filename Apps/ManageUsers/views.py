@@ -4,6 +4,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.generics import DestroyAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 from Apps.ManageUsers.models import UserProfilePhoto
 
@@ -36,26 +37,25 @@ class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
         })
 
 
-class LogoutApi(DestroyAPIView):
-    """
-    Delete the Token object
-    assigned to the current User object.
-    Accepts/Returns nothing.
-    """
-    permission_classes = (IsAuthenticated,)
+class CreateUserApi(generics.CreateAPIView):
+    def post(self, request, *args, **kwargs):
+        first_name = request.data['first_name']
+        last_name = request.data['last_name']
+        username = request.data['username']
+        email = request.data['email']
+        password = request.data['password']
 
-    def delete(self, request, *args, **kwargs):
-        response = self.logout(request)
-        return JsonResponse(response)
-
-    def logout(self, request):
-        response = {}
         try:
-            token = request.META['HTTP_AUTHORIZATION'].split(' ')[1]
-            #Token.objects.filter(key=token, user=request.user).delete()
-            response['logout'] =True
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+            token = Token.objects.create(user=user)
+            return JsonResponse({
+                                'created': True,
+                                'key': token.key
+            })
+
         except:
-            response['logout'] = False
-        return response
-
-
+            return Response({'status': 'Ya existe una cuenta asociada a este correo o nombre de usuario'}, status=409)

@@ -17,6 +17,7 @@
 
 <script>
 import { mapMutations, mapState } from "vuex";
+import { readCookie } from "@/js/cookiesfunctions.js";
 import LeftAside from "@/components/LeftAside";
 import NavBar from "@/components/NavBar";
 
@@ -32,7 +33,7 @@ export default {
   beforeUpdate() {},
   beforeMount() {
     let aside = document.getElementById("leftAside");
-    let token = this.readCookie("token");
+    let token = readCookie("token");
     if (token) {
       let responseObj = {
         accessToken: token,
@@ -47,25 +48,12 @@ export default {
     
   },
   methods: {
-    ...mapMutations(["updateAuthInfo"]),
+    ...mapMutations(["updateAuthInfo","readCookie"]),
     changeContainerSizes(size) {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
-    readCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(";");
-
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) {
-          return decodeURIComponent(c.substring(nameEQ.length, c.length));
-        }
-      }
-
-      return null;
-    },
+    
   },
 };
 </script>
