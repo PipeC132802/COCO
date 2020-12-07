@@ -67,8 +67,8 @@ class CreateUserApi(generics.CreateAPIView):
 
 class ResetUserPasswordApi(APIView):
     def get(self, request, *args, **kwargs):
-        token = request.GET['token']
-        print(token)
+        #token = request.GET['token']
+        #print(token)
         return Response({'Get': True})
 
     def post(self, request, *args, **kwargs):
@@ -96,7 +96,7 @@ class ResetUserPasswordApi(APIView):
         description = []
         if aim == 'CHANGE':
             description.append(
-                'Solicitaste cambiar tu contraseña y para ello es necesario que confirmes tu correo electrónico'
+                'Solicitaste cambiar tu contraseña y para ello es necesario que confirmes tu correo electrónico.'
             )
         else:
             description.append(
@@ -104,7 +104,7 @@ class ResetUserPasswordApi(APIView):
             )
         description.append('Para continuar pulsa el botón que está a continuación:')
         token = instance.token
-        link = 'http://localhost:8080/verify-email'
+        link = 'http://localhost:8080/'
         context = {
             'name': name,
             'subject': subject,
