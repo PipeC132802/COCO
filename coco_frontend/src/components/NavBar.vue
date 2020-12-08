@@ -8,6 +8,7 @@
           exact
           class="mt-2 mb-2 pl-3"
           one-line
+          :to="{path:'/'}"
         >
           <v-list-item-avatar>
             <v-img src="@/assets/logo.png" max-height="35" max-width="35">
@@ -77,6 +78,7 @@ export default {
     searchPubs() {
       console.log("searching..");
     },
+    
     updateFormsDialog(login,signup){
       let formDialog = {
         loginDialog: login,

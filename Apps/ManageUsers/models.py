@@ -46,15 +46,13 @@ class Place(models.Model):
         return self.city + ", " + self.state + ", " + self.country
 
 
-class UserPlace(models.Model):
+class UserContact(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-
     )
-    contact = models.OneToOneField(Place,
-                                   on_delete=models.CASCADE,
-                                   primary_key=True, )
+    cellphone = models.CharField(max_length=15)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.user.username + 'vive en ' + self.contact.__str__()

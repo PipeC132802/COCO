@@ -14,6 +14,15 @@ export default {
     },
     computed:{
         ...mapState(["authentication"])
-    }
+    },
+    created(){
+        if(this.authentication.userIsAuthenticated){
+             this.$router.push({ name: "Home" });
+        }
+    },
+      mounted(){
+    let navBar = document.getElementById("logo-btn");
+    navBar.classList.remove('v-list-item--active');
+  },
 }
 </script>
