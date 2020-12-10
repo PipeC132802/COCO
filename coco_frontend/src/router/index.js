@@ -12,7 +12,10 @@ const routes = [
   {
     path: '/user/complete-info',
     name: 'MoreInfo',
-    component: () => import('../views/MoreUserInfo.vue')
+    component: () => import('../views/MoreUserInfo.vue'),
+    meta : {
+      requiresLogin : true
+    }
   },
   {
     path: '/home',
@@ -54,17 +57,6 @@ const routes = [
     }
   },
   {
-    path: '/:username',
-    name: 'Profile',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import('../views/Profile.vue'),
-    meta : {
-      requiresLogin : true
-    }
-  },
-  {
     path: '/settings',
     name: 'Settings',
     // route level code-splitting
@@ -75,6 +67,18 @@ const routes = [
       requiresLogin : true
     }
   },
+  {
+    path: '/:username',
+    name: 'Profile',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('../views/Profile.vue'),
+    meta : {
+      requiresLogin : true
+    }
+  },
+  
 ]
 
 const router = new VueRouter({

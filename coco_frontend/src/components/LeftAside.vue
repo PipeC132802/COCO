@@ -59,7 +59,12 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list-item @click="closeSession()" class="logout error darken-1" link>
+      <v-list-item
+        dense
+        @click="closeSession()"
+        class="logout error darken-1"
+        link
+      >
         <v-list-item-icon>
           <v-icon>mdi-logout-variant</v-icon>
         </v-list-item-icon>
@@ -74,7 +79,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import {removeCookie} from "@/js/cookiesfunctions.js";
+import { removeCookie } from "@/js/cookiesfunctions.js";
 export default {
   name: "LeftAside",
   data: () => ({
@@ -111,27 +116,26 @@ export default {
   },
   created() {
     this.getUserInfo();
-    
   },
   methods: {
     ...mapMutations(["setUser", "updateAuthInfo"]),
-    getUserInfo(){
+    getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${this.authentication.accessToken}`,
-      },
-    })
-      .then((respose) => {
-        return respose.json();
+        method: "GET",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
       })
-      .then((respose) => {
-        this.user = respose;
-        this.items[2].value = respose.unread_notifications;
-        this.items[3].value = respose.unread_messages;
-        this.items[4].link = `/${respose.username}`;
-        this.setUser(respose);
-      });
+        .then((respose) => {
+          return respose.json();
+        })
+        .then((respose) => {
+          this.user = respose;
+          this.items[2].value = respose.unread_notifications;
+          this.items[3].value = respose.unread_messages;
+          this.items[4].link = `/${respose.username}`;
+          this.setUser(respose);
+        });
     },
     closeSession() {
       let authObj = {

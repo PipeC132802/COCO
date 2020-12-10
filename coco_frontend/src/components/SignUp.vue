@@ -194,7 +194,6 @@ export default {
       }
     },
     createUser(FormData) {
-      console.log();
       fetch(this.baseUrl + this.apiDir, {
         method: "POST",
         credentials: "same-origin",
@@ -217,15 +216,17 @@ export default {
           };
           setCookie("token", response.key, 60);
           this.updateAuthInfo(responseObj);
-          this.loading = false;
-          this.$router.push({ name: "Home" });
+          
         })
         .catch((e) => {
-          this.loading = false;
           this.snackbar = true;
           this.message =
             "Ya existe una cuenta con este nombre de usuario o correo";
-        });
+        })
+        .finally(()=>{
+          this.loading = false;
+          this.$router.push({ name: "MoreInfo" });
+        })
     },
     updateFormsDialog(login, signup) {
       let formDialog = {

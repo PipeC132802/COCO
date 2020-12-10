@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-'dj_rest_auth',
+    'dj_rest_auth',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-
 
 ]
 MIDDLEWARE = [
@@ -131,7 +130,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 # Mail interface
@@ -139,5 +137,5 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "app.cocoplatform@gmail.com" # Cambiar por correo del semillero
-EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj" # Contraseña de aplicación
+EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
+EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación

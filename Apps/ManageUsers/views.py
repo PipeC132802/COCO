@@ -9,7 +9,9 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 
-from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser
+from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
+    UserInterest
+from Apps.ManageUsers.serializer import AreaSerializer
 from COCO.mailing import sendMail
 
 
@@ -65,11 +67,17 @@ class CreateUserApi(generics.CreateAPIView):
             return Response({'status': 'Ya existe una cuenta asociada a este correo o nombre de usuario'}, status=409)
 
 
-class ResetUserPasswordApi(APIView):
+class UserVerificationApi(APIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
-        #token = request.GET['token']
-        #print(token)
-        return Response({'Get': True})
+        token = request.GET['token']
+        print(request.user)
+        try:
+            VerifyUser.objects.get(user=request.user, token=token)
+            return Response({'user_verified': True}, status=200)
+        except:
+            return Response({'user_verified': False}, status=400)
 
     def post(self, request, *args, **kwargs):
         email = request.data["email"]
@@ -119,3 +127,75 @@ class ResetUserPasswordApi(APIView):
         }
 
         sendMail(configs, context)
+
+
+class AreaListApi(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = AreaSerializer
+    model = Area
+
+    def get_queryset(self):
+        return Area.objects.filter(area__icontains=self.request.GET["area"])
+
+
+class UserContactApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        country = request.data["country"]
+        city = request.data["city"]
+        phone_number = request.data["phone_number"]
+        place = self.search_place(country, city)
+        try:
+            UserContact.objects.create(user=request.user, cellphone=phone_number, place=place)
+            return JsonResponse({'contact_created': True})
+        except:
+            user_contact = UserContact.objects.get(user=request.user)
+            user_contact.cellphone = phone_number
+            user_contact.place = place
+            user_contact.save()
+            return JsonResponse({'contact_updated': True})
+
+    def search_place(self, country, city):
+        try:
+            place = Place.objects.get(country=country, city=city)
+        except:
+            place = Place.objects.create(country=country, city=city)
+        return place
+
+
+class UserAboutAndAreasApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        gender = request.data["gender"]
+        birthday = request.data["birthday"]
+        bio = request.data["bio"]
+        skills = request.data["skills"]
+        learn = request.data["learn"]
+
+        self.save_areas(skills, request.user, UserSkill)
+        self.save_areas(learn, request.user, UserInterest)
+        try:
+            UserAbout.objects.create(user=request.user, bio=bio, birthday=birthday, gender=gender)
+            return JsonResponse({'contact_created': True})
+        except:
+            user_about = UserAbout.objects.get(user=request.user)
+            user_about.bio = bio
+            user_about.birthday = birthday
+            user_about.gender = gender
+            return JsonResponse({'contact_edited': True})
+
+    def save_areas(self, areas, user, obj_param):
+        for area in areas:
+            if len(area) > 1:
+                try:
+                    area_in_db = Area.objects.get(area__icontains=area)
+                except:
+                    area_in_db = Area.objects.create(area=area.capitalize())
+
+                try:
+                    obj_param.objects.create(user=user, area=area_in_db)
+                except:
+                    # Logging error
+                    pass

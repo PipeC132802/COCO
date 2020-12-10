@@ -15,6 +15,16 @@ class UserOnline(models.Model):
         return message
 
 
+class UserAbout(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+    birthday = models.DateField()
+    gender = models.CharField(max_length=10)
+
+    def __str__(self):
+        return 'About ' + self.user.username
+
+
 class UserProfilePhoto(models.Model):
     def user_directory_path(instance, filename):
         filename = 'user_{0}'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S%f"))
@@ -39,11 +49,10 @@ class UserPasswordChanged(models.Model):
 
 class Place(models.Model):
     country = models.CharField(verbose_name="País", max_length=15)
-    state = models.CharField(verbose_name="Departamento", max_length=15)
     city = models.CharField(verbose_name="Ciudad", max_length=15)
 
     def __str__(self):
-        return self.city + ", " + self.state + ", " + self.country
+        return self.city + ", " + self.country
 
 
 class UserContact(models.Model):
@@ -51,11 +60,11 @@ class UserContact(models.Model):
         User,
         on_delete=models.CASCADE,
     )
-    cellphone = models.CharField(max_length=15)
+    cellphone = models.CharField(max_length=20)
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.username + 'vive en ' + self.contact.__str__()
+        return self.user.username + ' vive en ' + self.place.__str__()
 
 
 class Area(models.Model):
@@ -70,7 +79,7 @@ class UserSkill(models.Model):
     area = models.ForeignKey(Area, related_name='Area_to_skill', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.area
+        return '@' + self.user.username + ': ' + self.area.area
 
 
 class UserInterest(models.Model):
@@ -78,7 +87,7 @@ class UserInterest(models.Model):
     area = models.ForeignKey(Area, related_name='Area_to_Interest', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.area
+        return '@' + self.user.username + ': ' + self.area.area
 
 
 class UserRelationship(models.Model):
@@ -117,5 +126,3 @@ class VerifyUser(models.Model):
 
     def __str__(self):
         return 'token de: @' + self.user.username
-
-

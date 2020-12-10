@@ -140,7 +140,6 @@ export default {
             accessToken: response.key,
             userIsAuthenticated: !!response.key,
           };
-          console.log(response);
           setCookie("token", response.key, 60);
 
           this.updateAuthInfo(responseObj);
@@ -150,9 +149,12 @@ export default {
           this.password = "";
           this.snackbar = true;
           this.message = "Credenciales inválidas!";
-        });
+        })
+        .finally(()=>{
+           this.loading = false;
+        })
 
-      this.loading = false;
+     
     },
     updateFormsDialog(login, signup) {
       let formDialog = {
