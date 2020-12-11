@@ -22,5 +22,8 @@ export default {
   components: {
     NewBarter,
   },
+  created(){
+    document.title = "Inicio / COCO"
+  }
 };
 </script>

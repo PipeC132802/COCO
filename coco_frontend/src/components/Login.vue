@@ -143,6 +143,7 @@ export default {
           setCookie("token", response.key, 60);
 
           this.updateAuthInfo(responseObj);
+          this.updateFormsDialog(false,false);
           this.$router.push({ name: "Home" });
         })
         .catch((error) => {
@@ -152,6 +153,8 @@ export default {
         })
         .finally(()=>{
            this.loading = false;
+           this.loginDialog = false;
+           
         })
 
      

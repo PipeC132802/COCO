@@ -34,7 +34,7 @@
       ></v-text-field>
 
       <v-spacer></v-spacer>
-      <div v-if="!authentication.userIsAuthenticated">
+      <div v-if="!authentication.userIsAuthenticated && userRequireMoreInfo">
         <v-btn
           @click="updateFormsDialog(true,false)"
           class="mr-2"
@@ -90,7 +90,7 @@ export default {
 
   },
   computed: {
-    ...mapState(["authentication", "forms"]),
+    ...mapState(["authentication", "forms","userRequireMoreInfo"]),
   },
 };
 </script>

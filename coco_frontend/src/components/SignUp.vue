@@ -224,7 +224,9 @@ export default {
             "Ya existe una cuenta con este nombre de usuario o correo";
         })
         .finally(()=>{
+          this.signUpDialog = false;
           this.loading = false;
+          
           this.$router.push({ name: "MoreInfo" });
         })
     },

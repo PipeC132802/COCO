@@ -1,18 +1,18 @@
+from PIL import Image
+from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import RetrieveModelMixin, CreateModelMixin
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 from rest_framework.views import APIView
 
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest
 from Apps.ManageUsers.serializer import AreaSerializer
 from COCO.mailing import sendMail
+from COCO.settings import DOMAIN, BASE_DIR
 
 
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
@@ -20,9 +20,8 @@ class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
 
     def get(self, request, **kwargs):
         user = request.user
-
         try:
-            profile_picture = UserProfilePhoto.objects.get(
+            profile_picture = DOMAIN + UserProfilePhoto.objects.get(
                 user_id=user.pk).profile_picture.url
         except:
             profile_picture = ''
@@ -199,3 +198,37 @@ class UserAboutAndAreasApi(generics.CreateAPIView):
                 except:
                     # Logging error
                     pass
+
+
+class ProfilePictureApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        profile_picture = request.FILES.get("profile_picture")
+        try:
+            profile_picture_obj = UserProfilePhoto.objects.create(user=request.user, profile_picture=profile_picture)
+            self.resize_img(profile_picture_obj)
+            return JsonResponse({'profile_picture_created': True})
+        except:
+            return Response({'profile_picture_created': False}, status=500)
+
+    def resize_img(self, profile_picture):
+        import cv2 as cv
+        path = str(BASE_DIR) + '/Files/' + str(profile_picture.profile_picture)
+        img = cv.imread(path)
+        height, width = img.shape[:2]
+
+        # if ratio eidth/heigth is greater than 0.1, crop image (square format)
+        if abs(height / width - 1) > 0.1:
+            if height < width:
+                image = img[0: height, int(width / 2) - int(height / 2): int(width / 2) + int(height / 2)]
+
+            else:
+                image = img[int(height / 2) - int(width / 2): int(height / 2) + int(width / 2), 0: width]
+
+            # save current profile_picture in its path
+            # encode_param = [int(cv.IMWRITE_JPEG_QUALITY), 90]
+            # result, encimg = cv.imencode('.jpg', image, encode_param)
+            cv.imwrite(path, image)
+            im = Image.open(path)
+            im.save(path, format="JPEG", quality=50)

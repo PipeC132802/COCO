@@ -9,5 +9,6 @@ urlpatterns = [
     path('confirm-user/', UserVerificationApi.as_view(), name='confirm_user'),
     path('contact-user/', UserContactApi.as_view(), name='contact_user'),
     path('about-user/', UserAboutAndAreasApi.as_view(), name='about_user'),
+    path('profile-picture-user/', ProfilePictureApi.as_view(), name='profile_picture'),
     path('area-list/', AreaListApi.as_view(), name='areas')
 ]

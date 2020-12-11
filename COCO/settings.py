@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,7 +129,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-
+MEDIA_ROOT = os.path.join(str(BASE_DIR), 'Files')
+MEDIA_URL = '/coco-files/'
 PASSWORD_RESET_TIMEOUT_DAYS = 1
 
 # Mail interface
@@ -139,3 +140,4 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
 EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
+DOMAIN = "http://127.0.0.1:8000"

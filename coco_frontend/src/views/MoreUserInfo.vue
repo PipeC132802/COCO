@@ -88,7 +88,10 @@
                     <form @submit.prevent="signUpSubmit">
                       <v-row class="pa-0">
                         <v-col class="ma-0" xs="12" md="12">
-                          <ProfilePicture subject="skills" />
+                          <ProfilePicture
+                            v-on:profilePicture="profilePictureInfo"
+                            subject="skills"
+                          />
                         </v-col>
                       </v-row>
                     </form>
@@ -100,9 +103,11 @@
                         color="primary darken-2"
                         @click="goHome"
                       >
-                        Saltar
+                        Omitir
                       </v-btn>
-                      <v-btn color="primary" @click="e1 = 1"> Continue </v-btn>
+                      <v-btn color="primary" @click="submitProfilePicture">
+                        Guardar
+                      </v-btn>
                     </v-card-actions>
                   </v-col>
                 </v-row>
@@ -129,7 +134,7 @@ import Contact from "@/components/subcomponents/Contact.vue";
 import Areas from "@/components/subcomponents/Areas.vue";
 import Personal from "@/components/subcomponents/Personal.vue";
 import ProfilePicture from "@/components/subcomponents/ProfilePicture.vue";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   components: {
     Contact,
@@ -161,8 +166,10 @@ export default {
       apiDirs: {
         contact: "contact-user/",
         about: "about-user/",
+        profilePicture: "profile-picture-user/",
       },
       e1: 1,
+      error: false,
       rules: {
         required: (value) => !!value || "Obligatorio",
         valid: (value) =>
@@ -178,8 +185,15 @@ export default {
   computed: {
     ...mapState(["authentication", "baseUrl"]),
   },
-  created() {},
+  created() {
+    document.title = "Completa tu información / COCO"
+    let authObj = this.authentication;
+    authObj.userIsAuthenticated = false;
+    this.updateAuthInfo(authObj);
+    this.updateUserRequireMoreInfo(false);
+  },
   methods: {
+    ...mapMutations(["updateAuthInfo", "updateUserRequireMoreInfo"]),
     contactInfo(contactObj) {
       this.contact = contactObj;
     },
@@ -192,6 +206,9 @@ export default {
     },
     learnInfo(learn) {
       this.areas.learn = learn;
+    },
+    profilePictureInfo(profilePicture) {
+      this.profilePicture = profilePicture;
     },
     goHome() {
       this.$router.push({ name: "Home" });
@@ -209,15 +226,18 @@ export default {
           city: this.contact.city.trim(),
           phone_number: this.contact.phone.trim(),
         };
-        this.api(this.apiDirs.contact, body);
-        
+        let headers = {
+          Authorization: `Token ${this.authentication.accessToken}`,
+          "Content-Type": "application/json",
+        };
+        this.api(this.apiDirs.contact, headers, JSON.stringify(body));
       } else {
         this.snackbar = true;
         this.message = "Completa los campos";
         this.loadingBtn = false;
       }
     },
-    submitAbout(){
+    submitAbout() {
       this.loadingBtn = true;
       if (
         this.about.bio.trim().length &&
@@ -231,42 +251,70 @@ export default {
           skills: this.areas.skills,
           learn: this.areas.learn,
         };
-        
-        this.api(this.apiDirs.about, body);
-        
-      } else {
-        this.snackbar = true;
-        this.message = "Completa los campos";
-      }
-
-    },
-    api(url, body) {
-      let headers = {
+        let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
           "Content-Type": "application/json",
         };
+        this.api(this.apiDirs.about, headers, JSON.stringify(body));
+      } else {
+        this.snackbar = true;
+        this.message = "Completa los campos";
+        this.loadingBtn = false;
+      }
+    },
+    submitProfilePicture() {
+      this.loadingBtn = true;
+      if (this.profilePicture) {
+        const formdata = new FormData();
+        formdata.append("profile_picture", this.profilePicture);
+
+        let headers = {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        };
+        this.api(this.apiDirs.profilePicture, headers, formdata);
+      } else {
+        this.snackbar = true;
+        this.message = "Completa los campos";
+        this.loadingBtn = false;
+      }
+    },
+    api(url, headers, body) {
+      if (url == this.apiDirs.profilePicture) {
+        delete headers["Content-Type"];
+      }
       fetch(this.baseUrl + url, {
         method: "POST",
         credentials: "same-origin",
         headers: headers,
-        body: JSON.stringify(body),
+        body: body,
       })
-        .then((response) => response.json())
         .then((response) => {
-          console.log(response);
+          if (response.status != 200) {
+            throw new Error();
+          }
+          return response.json();
+        })
+        .then((response) => {
+          this.error = false;
         })
         .catch((err) => {
-          console.log(err);
+          this.snackbar = true;
+          this.message = "Ha sucedido un error inesperado";
+          this.error = true;
         })
         .finally(() => {
-          this.loadingBtn = false
-          if(this.e1<3){
+          this.loadingBtn = false;
+          if (this.e1 < 3 && !this.error) {
             this.e1 += 1;
-          } else{
+          } else if (!this.error) {
+            this.updateUserRequireMoreInfo(true);
+            let authObj = this.authentication;
+            authObj.userIsAuthenticated = true;
+            this.updateAuthInfo(authObj);
+            this.updateUserRequireMoreInfo(false);
             this.goHome();
           }
-        }
-        );
+        });
     },
   },
 };

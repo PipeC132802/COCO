@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from Apps.ManageUsers import urls as user_urls
+from django.conf.urls.static import static
+from django.conf import settings
 
 coco_api_base = 'coco/api/v1.0/'
 urlpatterns = [
@@ -23,6 +25,4 @@ urlpatterns = [
 
     # User app apis
     path(coco_api_base, include(user_urls)),
-
-
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

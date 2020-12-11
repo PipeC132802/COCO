@@ -25,6 +25,9 @@ export default {
     file: null,
     avatar: "",
   }),
+  beforeUpdate(){
+    this.$emit("profilePicture", this.file);
+  },
   methods: {
     profilePicture() {
       if (this.file) {

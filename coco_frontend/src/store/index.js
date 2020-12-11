@@ -15,6 +15,7 @@ export default new Vuex.Store({
     },
     user: '',
     baseUrl: 'http://127.0.0.1:8000/coco/api/v1.0/',
+    userRequireMoreInfo: true,
   },
   mutations: {
     setUser(state, user) {
@@ -26,6 +27,10 @@ export default new Vuex.Store({
     updateFormsInfo(state, formDialogs) {
       state.forms = formDialogs;
     },
+    updateUserRequireMoreInfo(state, require){
+      state.userRequireMoreInfo = require;
+    }
+   
     
   },
   actions: {
