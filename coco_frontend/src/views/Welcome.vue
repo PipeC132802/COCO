@@ -10,10 +10,13 @@ export default {
   name: "Welcome",
   created() {},
   computed: {
-    ...mapState(["authentication"]),
+    ...mapState(["authentication","userRequireMoreInfo"]),
   },
   created() {
-    if (this.authentication.userIsAuthenticated) {
+    if(!this.userRequireMoreInfo){
+      this.$router.push({name: 'MoreInfo'})
+    }
+    if(this.authentication.userIsAuthenticated ) {
       this.$router.push({ name: "Home" });
     }
   },

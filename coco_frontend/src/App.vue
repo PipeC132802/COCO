@@ -34,12 +34,13 @@ export default {
   beforeMount() {
     let aside = document.getElementById("leftAside");
     let token = readCookie("token");
-    if (token) {
-      let responseObj = {
+    let responseObj = {
         accessToken: token,
         userIsAuthenticated: true,
       };
       this.updateAuthInfo(responseObj);
+    
+    if(this.authentication.userIsAuthenticated ) {
        this.$router.push({ name: "Home" });
     }
   },
@@ -48,7 +49,7 @@ export default {
     
   },
   methods: {
-    ...mapMutations(["updateAuthInfo","readCookie"]),
+    ...mapMutations(["updateAuthInfo"]),
     changeContainerSizes(size) {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;

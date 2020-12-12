@@ -6,7 +6,6 @@
           <NewBarter />
         </v-col>
         <v-col>
-          <v-btn :to="{name:'MoreInfo'}">sdd</v-btn>
         </v-col>
       </v-row>
     </v-container>

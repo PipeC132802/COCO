@@ -1,5 +1,6 @@
 <template>
   <v-container fluid>
+    
     <v-row justify="center">
       <v-col sm="10">
         <v-stepper v-model="e1">
@@ -135,6 +136,8 @@ import Areas from "@/components/subcomponents/Areas.vue";
 import Personal from "@/components/subcomponents/Personal.vue";
 import ProfilePicture from "@/components/subcomponents/ProfilePicture.vue";
 import { mapState, mapMutations } from "vuex";
+import { readCookie } from "@/js/cookiesfunctions.js";
+
 export default {
   components: {
     Contact,
@@ -170,6 +173,7 @@ export default {
       },
       e1: 1,
       error: false,
+      token : '',
       rules: {
         required: (value) => !!value || "Obligatorio",
         valid: (value) =>
@@ -179,18 +183,23 @@ export default {
       },
     };
   },
+  created() {
+    this.token = readCookie("token");
+  
+      document.title = "Completa tu información / COCO";
+
+      let authObj = this.authentication;
+      authObj.userIsAuthenticated = false;
+      this.updateAuthInfo(authObj);
+      localStorage.setItem('more_info', true)
+      this.updateUserRequireMoreInfo(false);
+    
+  },
   beforeUpdate() {
     if (this.bio.length) this.about.bio = this.bio;
   },
   computed: {
     ...mapState(["authentication", "baseUrl"]),
-  },
-  created() {
-    document.title = "Completa tu información / COCO"
-    let authObj = this.authentication;
-    authObj.userIsAuthenticated = false;
-    this.updateAuthInfo(authObj);
-    this.updateUserRequireMoreInfo(false);
   },
   methods: {
     ...mapMutations(["updateAuthInfo", "updateUserRequireMoreInfo"]),
@@ -307,11 +316,11 @@ export default {
           if (this.e1 < 3 && !this.error) {
             this.e1 += 1;
           } else if (!this.error) {
-            this.updateUserRequireMoreInfo(true);
             let authObj = this.authentication;
             authObj.userIsAuthenticated = true;
             this.updateAuthInfo(authObj);
-            this.updateUserRequireMoreInfo(false);
+            this.updateUserRequireMoreInfo(true);
+            localStorage.removeItem('more_info');
             this.goHome();
           }
         });
