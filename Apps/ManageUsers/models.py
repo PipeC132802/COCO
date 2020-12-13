@@ -37,6 +37,18 @@ class UserProfilePhoto(models.Model):
         return "@" + self.user.username + "'s profile picture"
 
 
+class UserCoverPhoto(models.Model):
+    def user_directory_path(instance, filename):
+        filename = 'user_{0}'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S%f"))
+        return 'cover_photos/{0}'.format(filename + ".jpg")
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cover_photo = models.ImageField(upload_to=user_directory_path, blank=True)
+
+    def __str__(self):
+        return "@" + self.user.username + "'s cover photo"
+
+
 class UserPasswordChanged(models.Model):
     modified = models.DateField(auto_now_add=True)
     user = models.OneToOneField(User,

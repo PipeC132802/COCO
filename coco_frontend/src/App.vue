@@ -35,18 +35,13 @@ export default {
     let aside = document.getElementById("leftAside");
     let token = readCookie("token");
     let responseObj = {
-        accessToken: token,
-        userIsAuthenticated: true,
-      };
-      this.updateAuthInfo(responseObj);
-    
-    if(this.authentication.userIsAuthenticated ) {
-       this.$router.push({ name: "Home" });
-    }
+      accessToken: token,
+      userIsAuthenticated: true,
+    };
+    this.updateAuthInfo(responseObj);
   },
   computed: {
     ...mapState(["authentication"]),
-    
   },
   methods: {
     ...mapMutations(["updateAuthInfo"]),
@@ -54,7 +49,6 @@ export default {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
-    
   },
 };
 </script>

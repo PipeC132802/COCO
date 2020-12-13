@@ -1,4 +1,10 @@
+import asyncio
+import random
+from signal import Signals
+
+import requests
 from PIL import Image
+from django import dispatch
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse
@@ -12,7 +18,7 @@ from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, U
     UserInterest
 from Apps.ManageUsers.serializer import AreaSerializer
 from COCO.mailing import sendMail
-from COCO.settings import DOMAIN, BASE_DIR
+from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
 
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
@@ -71,7 +77,6 @@ class UserVerificationApi(APIView):
 
     def get(self, request, *args, **kwargs):
         token = request.GET['token']
-        print(request.user)
         try:
             VerifyUser.objects.get(user=request.user, token=token)
             return Response({'user_verified': True}, status=200)
@@ -175,14 +180,16 @@ class UserAboutAndAreasApi(generics.CreateAPIView):
 
         self.save_areas(skills, request.user, UserSkill)
         self.save_areas(learn, request.user, UserInterest)
+
         try:
             UserAbout.objects.create(user=request.user, bio=bio, birthday=birthday, gender=gender)
-            return JsonResponse({'contact_created': True})
+
+            return JsonResponse({'contact_created': True, 'key': PIXABAY_API_KEY})
         except:
-            user_about = UserAbout.objects.get(user=request.user)
+            """user_about = UserAbout.objects.get(user=request.user)
             user_about.bio = bio
             user_about.birthday = birthday
-            user_about.gender = gender
+            user_about.gender = gender"""
             return JsonResponse({'contact_edited': True})
 
     def save_areas(self, areas, user, obj_param):
@@ -192,12 +199,10 @@ class UserAboutAndAreasApi(generics.CreateAPIView):
                     area_in_db = Area.objects.get(area__icontains=area)
                 except:
                     area_in_db = Area.objects.create(area=area.capitalize())
-
                 try:
-                    obj_param.objects.create(user=user, area=area_in_db)
+                    obj_param.objects.get(user=user, area=area_in_db)
                 except:
-                    # Logging error
-                    pass
+                    obj_param.objects.create(user=user, area=area_in_db)
 
 
 class ProfilePictureApi(generics.CreateAPIView):
@@ -232,3 +237,28 @@ class ProfilePictureApi(generics.CreateAPIView):
             cv.imwrite(path, image)
             im = Image.open(path)
             im.save(path, format="JPEG", quality=50)
+
+
+class UserAccountInfoApi(generics.RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        username = request.GET["username"]
+        try:
+
+            user_profile = UserProfilePhoto.objects.get(user__username=username)
+            user_json = {
+                'name': "{0} {1}".format(user_profile.user.first_name, user_profile.user.last_name),
+                'profile_picture': DOMAIN + user_profile.profile_picture.url,
+                'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)]
+            }
+        except:
+            try:
+                user = User.objects.get(username=username)
+                user_json = {
+                    'name': "{0} {1}".format(user.first_name, user.last_name),
+                    'profile_picture': '',
+                    'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)]
+                }
+            except User.DoesNotExist:
+                return Response("User not found", status=404)
+
+        return JsonResponse(user_json)

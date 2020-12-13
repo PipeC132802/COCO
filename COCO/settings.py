@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Self apps
-    'Apps.ManageUsers',
+    'Apps.ManageUsers.apps.UsersConfig',
 
     # Third Party apps
     'rest_framework',
@@ -141,3 +141,5 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
 EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
 DOMAIN = "http://127.0.0.1:8000"
+
+PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'

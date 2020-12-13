@@ -1,6 +1,5 @@
 <template>
   <v-container fluid>
-    
     <v-row justify="center">
       <v-col sm="10">
         <v-stepper v-model="e1">
@@ -173,7 +172,7 @@ export default {
       },
       e1: 1,
       error: false,
-      token : '',
+      token: "",
       rules: {
         required: (value) => !!value || "Obligatorio",
         valid: (value) =>
@@ -185,15 +184,14 @@ export default {
   },
   created() {
     this.token = readCookie("token");
-  
-      document.title = "Completa tu información / COCO";
 
-      let authObj = this.authentication;
-      authObj.userIsAuthenticated = false;
-      this.updateAuthInfo(authObj);
-      localStorage.setItem('more_info', true)
-      this.updateUserRequireMoreInfo(false);
-    
+    document.title = "Completa tu información / COCO";
+
+    let authObj = this.authentication;
+    authObj.userIsAuthenticated = false;
+    this.updateAuthInfo(authObj);
+    localStorage.setItem("more_info", true);
+    this.updateUserRequireMoreInfo(false);
   },
   beforeUpdate() {
     if (this.bio.length) this.about.bio = this.bio;
@@ -287,6 +285,7 @@ export default {
         this.loadingBtn = false;
       }
     },
+
     api(url, headers, body) {
       if (url == this.apiDirs.profilePicture) {
         delete headers["Content-Type"];
@@ -320,7 +319,7 @@ export default {
             authObj.userIsAuthenticated = true;
             this.updateAuthInfo(authObj);
             this.updateUserRequireMoreInfo(true);
-            localStorage.removeItem('more_info');
+            localStorage.removeItem("more_info");
             this.goHome();
           }
         });

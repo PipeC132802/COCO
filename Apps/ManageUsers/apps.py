@@ -2,7 +2,7 @@ from django.apps import AppConfig
 
 
 class UsersConfig(AppConfig):
-    name = 'ManageUsers'
+    name = 'Apps.ManageUsers'
 
     def ready(self):
         import Apps.ManageUsers.signals
