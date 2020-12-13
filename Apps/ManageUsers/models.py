@@ -6,7 +6,7 @@ from django.db import models
 
 class UserOnline(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    is_online = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=True)
     updated = models.DateField(auto_now=True)
 
     def __str__(self):
@@ -64,7 +64,7 @@ class UserPasswordChanged(models.Model):
                                 )
 
     def __str__(self):
-        return self.user.username + 'cambió su contraseña el ' + self.modified
+        return self.user.username + ' cambió su contraseña el ' + str(self.modified)
 
 
 class Place(models.Model):
@@ -133,6 +133,8 @@ class UserRelationship(models.Model):
     class Meta:
         ordering = ('-created',)
 
+    def __str__(self):
+        return '{0} to {1}: {2}'.format(self.user_from.username, self.user_to.username, self.status)
 
 class UserSettings(models.Model):
     notifications = models.BooleanField(default=True)

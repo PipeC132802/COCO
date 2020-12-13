@@ -1,18 +1,19 @@
 <template>
   <div class="pa-2">
-    <v-row v-if="userAbout.birthday"  class="ml-1 mb-2">
-      <v-icon color="info" left> mdi-cake-variant </v-icon>
-      <span class="pt-1" :title="userAbout.birthday">{{ userAbout.birthday }}</span>
-    </v-row>
-    <v-row v-if="userAbout.gender" class="ml-1 mb-2">
-      <v-icon color="info" left> {{userAbout.gender=="Masculino"?'mdi-face':'mdi-face-woman'}} </v-icon>
-      <span :title="userAbout.gender" class="pt-1">{{ userAbout.gender }}</span>
-    </v-row>
     <blockquote v-if="userAbout.bio" class="blockquote">
       <p class="mb-0 mt-5 ml-0">
         {{ userAbout.bio }}
       </p>
     </blockquote>
+    <v-row v-if="userAbout.birthday"  class="ml-1 mt-3 mb-2">
+      <v-icon color="info" left> mdi-cake-variant </v-icon>
+      <span class="pt-1" :title="userAbout.birthday">{{ userAbout.birthday }}</span>
+    </v-row>
+    <v-row v-if="userAbout.gender" class="ml-1">
+      <v-icon color="info" left> {{userAbout.gender=="Masculino"?'mdi-face':'mdi-face-woman'}} </v-icon>
+      <span :title="userAbout.gender" class="pt-1">{{ userAbout.gender }}</span>
+    </v-row>
+    
   </div>
 </template>
 
@@ -37,9 +38,7 @@ export default {
     getUserAboutInfo() {
       let username = this.$route.params.username;
       fetch(this.baseUrl + this.apiDir + "?username=" + username,{
-          headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        }
+       
       })
         .then((response) => {
           return response.json();
@@ -79,7 +78,7 @@ export default {
   max-width: 3.75rem;
   position: absolute;
   text-align: inherit;
-  top: 0.2rem;
+  top: 0.1rem;
   width: 100%;
 }
 .blockquote:after {

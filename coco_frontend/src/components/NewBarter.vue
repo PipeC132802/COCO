@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="4" width="100%">
+    <v-card elevation="3" width="100%">
       <v-card-title>
         <v-row dense>
           <v-avatar class="mt-1" color="secondary">

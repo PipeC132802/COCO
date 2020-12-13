@@ -18,40 +18,65 @@
 
     <v-card-title class="pb-0">
       <v-avatar
-        :color="user.profilePicture ? 'white' : 'secondary'"
+        :color="userP.profilePicture ? 'white' : 'secondary'"
         size="150"
         class="profile-picture"
       >
-        <img v-if="user.profilePicture" :src="user.profilePicture" />
-        <span v-else>{{ user.name.slice(0, 1) }}</span>
+        <img v-if="userP.profilePicture" :src="userP.profilePicture" />
+        <span v-else>{{ userP.name.slice(0, 1) }}</span>
       </v-avatar>
-      <h2 class="mb-2" :title="user.name">
-        {{ user.name }}
-        <span :title="'@' + user.username" class="text"
-          >(@{{ user.username }})</span
+      
+      <h2 class="mb-2" :title="userP.name">
+        {{ userP.name }}
+        <span :title="'@' + userP.username" class="text"
+          >(@{{ userP.username }})</span
         >
       </h2>
     </v-card-title>
     <v-card-text>
       <v-row justify="center">
         <span class="skills">
-          <v-icon class="pb-1" left color="info">
-            mdi-calendar
-          </v-icon>
-          {{ user.dateJoined }}
+          <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
+          {{ userP.dateJoined }}
         </span>
       </v-row>
       <v-row class="mt-2" justify="center">
-          <v-btn class="mr-3" color="secondary" text>
-              <strong class="mr-2">{{user.followers}}</strong>Seguidores 
-          </v-btn>
-          <v-btn color="secondary" class="ml-3" text >
-               <strong class="mr-2">{{user.following}}</strong>Seguidos 
-          </v-btn>
-        
+        <v-btn class="mr-3" color="secondary" text>
+          <strong class="mr-2">{{ userP.followers }}</strong
+          >Seguidores
+        </v-btn>
+        <v-btn color="secondary" class="ml-3" text>
+          <strong class="mr-2">{{ userP.following }}</strong
+          >Seguidos
+        </v-btn>
       </v-row>
+      <v-card-actions v-if="userP.username != user.username" class="actions">
+        <v-chip
+          class="mr-5"
+          v-if="userP.followYou"
+          color="accent"
+          text-color="white"
+        >
+          <v-avatar left>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-avatar>
+          Te sigue
+        </v-chip>
+        <v-btn
+          @click="followUser"
+          :outlined="!userP.followThisUser"
+          color="success"
+          :title="userP.followThisUser ? 'Seguido' : 'Seguir'"
+          class="mr-3"
+        >
+          <v-icon left> mdi-account-plus </v-icon>
+          <span>{{userP.followThisUser ? 'Siguiendo' : 'Seguir'}}</span>
+        </v-btn>
+        <v-btn fab color="info"  title="Escribir">
+          <v-icon> mdi-send </v-icon>
+        </v-btn>
+      </v-card-actions>
     </v-card-text>
-
   </v-card>
 </template>
 
@@ -62,7 +87,7 @@ export default {
   data: () => ({
     apiDir: "account/",
     cover: "",
-    user: {
+    userP: {
       name: "",
       profilePicture: "",
       username: "",
@@ -70,34 +95,41 @@ export default {
       dateJoined: "",
       followers: "",
       following: "",
+      followYou: false,
+      followThisUser: false,
     },
   }),
   computed: {
-    ...mapState(["baseUrl", "pixaKey", "authentication"]),
+    ...mapState(["baseUrl", "pixaKey", "authentication", "user"]),
   },
   created() {
-    this.user.username = this.$route.params.username;
+    this.userP.username = this.$route.params.username;
     this.getUserCoverInfo();
   },
   methods: {
     getUserCoverInfo() {
-      fetch(this.baseUrl + this.apiDir + "?username=" + this.user.username, {
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      })
+      fetch(
+        this.baseUrl +
+          this.apiDir +
+          "?username=" +
+          this.userP.username +
+          `&username_request=${this.user.username}`,
+        {}
+      )
         .then((response) => {
           return response.json();
         })
         .then((response) => {
-          this.user.name = response.name;
-          this.user.profilePicture = response.profile_picture;
-          this.user.skills = response.skills.join(", ");
-          this.user.dateJoined = response.date_joined;
-          this.user.followers = response.followers;
-          this.user.following = response.following;
+          this.userP.name = response.name;
+          this.userP.profilePicture = response.profile_picture;
+          this.userP.skills = response.skills.join(", ");
+          this.userP.dateJoined = response.date_joined;
+          this.userP.followers = response.followers;
+          this.userP.following = response.following;
+          this.userP.followThisUser = response.follow_this_user;
+          this.userP.followYou = response.follow_you;
           document.title =
-            this.user.name + `   (@${this.user.username}) / COCO`;
+            this.userP.name + `   (@${this.userP.username}) / COCO`;
           this.searchCover();
         })
         .catch((err) => {
@@ -106,7 +138,7 @@ export default {
     },
     searchCover() {
       let key = "key=" + this.pixaKey;
-      let list = this.user.skills.split(",");
+      let list = this.userP.skills.split(",");
       let q = "q=" + list[Math.floor(Math.random() * list.length)];
       let image_type = "image_type=photo";
       let orientation = "orientation=horizontal";
@@ -124,6 +156,33 @@ export default {
           let img_slected = hits[Math.floor(Math.random() * hits.length)];
           this.cover = img_slected.largeImageURL;
         });
+    },
+    followUser() {
+      if (this.user.username) {
+        let formData = {
+          username_to: this.userP.username,
+          username_from: this.user.username,
+        };
+        fetch(this.baseUrl + "follow-user/", {
+          method: "POST",
+          headers: {
+            Authorization: `Token ${this.authentication.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((response) => {
+            this.userP.followers = response.followers;
+            this.userP.following = response.following;
+            this.userP.followThisUser = response.follow_this_user;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      }
     },
   },
 };
@@ -150,5 +209,10 @@ h2 {
 }
 .skills {
   font-size: 14pt;
+}
+.actions {
+  position: absolute;
+  right: 20px;
+  bottom: 15%;
 }
 </style>

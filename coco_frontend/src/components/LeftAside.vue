@@ -161,7 +161,6 @@ export default {
 <style scoped>
 .navigation {
   color: white;
-  border-radius: 0 10px 0px 0;
 }
 .item {
   border-radius: 15px;

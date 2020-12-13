@@ -36,7 +36,7 @@ export default {
     let token = readCookie("token");
     let responseObj = {
       accessToken: token,
-      userIsAuthenticated: true,
+      userIsAuthenticated: !!token,
     };
     this.updateAuthInfo(responseObj);
   },

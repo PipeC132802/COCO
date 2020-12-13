@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-2">
+  <div class="pl-2">
     <v-row class="ml-1 mb-2">
       <span class="skills">
         <v-icon class="pb-1" left color="info"> mdi-earth </v-icon>
@@ -42,9 +42,7 @@ export default {
     getUserContactInfo() {
       let username = this.$route.params.username;
       fetch(this.baseUrl + this.apiDir + "?username=" + username, {
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
+     
       })
         .then((response) => {
           return response.json();

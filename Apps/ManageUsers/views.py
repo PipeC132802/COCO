@@ -15,7 +15,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
-    UserInterest
+    UserInterest, UserRelationship
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
@@ -240,20 +240,27 @@ class ProfilePictureApi(generics.CreateAPIView):
 
 
 class UserAccountInfoApi(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         username = request.GET["username"]
-        try:
+        username_request = request.GET["username_request"]
+        user_json = {}
 
+        try:
             user_profile = UserProfilePhoto.objects.get(user__username=username)
             user_json = {
                 'name': "{0} {1}".format(user_profile.user.first_name, user_profile.user.last_name),
                 'profile_picture': DOMAIN + user_profile.profile_picture.url,
-                'date_joined': user_profile.user.date_joined.strftime("Miembro desde %B de %Y"),
-                'followers': 10,
-                'following': 2,
+                'date_joined': user_profile.user.date_joined.strftime("Se unió en %B de %Y"),
+                'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
+                'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
                 'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)],
+                'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
+                                                                    user_to__username=username,
+                                                                    status=1).exists(),
+                'follow_you': UserRelationship.objects.filter(user_from__username=username,
+                                                              user_to__username=username_request,
+                                                              status=1).exists()
             }
         except:
             try:
@@ -263,9 +270,15 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
                     'profile_picture': '',
                     'skills': [user_skill.area.area for user_skill in
                                UserSkill.objects.filter(user__username=username)],
-                    'date_joined': user_profile.user.date_joined.strftime("Miembro desde %B de %Y"),
-                    'followers': 10,
-                    'following': 2,
+                    'date_joined': user_profile.user.date_joined.strftime("Se unión en %B de %Y"),
+                    'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
+                    'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
+                    'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
+                                                                        user_to__username=username,
+                                                                        status=1).exists(),
+                    'follow_you': UserRelationship.objects.filter(user_from__username=username,
+                                                                  user_to__username=username_request,
+                                                                  status=1).exists()
                 }
             except User.DoesNotExist:
                 return Response("User not found", status=404)
@@ -274,7 +287,6 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
 
 
 class UserAboutApi(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = UserAboutSerializer
     model = UserAbout
 
@@ -288,7 +300,6 @@ class UserAboutApi(generics.RetrieveAPIView):
 
 
 class UserContactAndAreasApi(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
     serializer_class = UserAboutSerializer
 
     def get(self, request, *args, **kwargs):
@@ -304,3 +315,49 @@ class UserContactAndAreasApi(generics.RetrieveAPIView):
         except:
             # Loggin error
             return Response('User info not found', status=404)
+
+
+class FollowUserApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        username_from = request.data["username_from"]
+        username_to = request.data["username_to"]
+        try:
+            follow_status = UserRelationship.objects.get(user_from__username=username_from,
+                                                         user_to__username=username_to)
+            if follow_status.status != 2:
+                if follow_status.status == 1:
+                    follow_status.status = 0
+                else:
+                    follow_status.status = 1
+
+                follow_status.save()
+        except:
+            user_from = User.objects.get(username=username_from)
+            user_to = User.objects.get(username=username_to)
+            follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
+        following = UserRelationship.objects.filter(user_from__username=username_to, status=1).count()
+        follwers = UserRelationship.objects.filter(user_to__username=username_to, status=1).count()
+
+        return Response({
+            'following': following,
+            'followers': follwers,
+            'follow_this_user': follow_status.status
+        })
+
+
+class SuggestUserApi(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        id_users_following = UserRelationship.objects.filter(user_from=user).values_list('user_to')
+        print(id_users_following)
+        user_interests = [user_interest.area.area for user_interest in
+                          UserInterest.objects.filter(user__username=user.username)]
+        print(user_interests)
+        users_skills = UserSkill.objects.filter(area__in=user_interests).exclude(
+            user__in=id_users_following).distinct()[:5]
+        print(users_skills)
+        return request

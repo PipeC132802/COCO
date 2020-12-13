@@ -6,13 +6,17 @@
       <v-row>
         <v-col tyle="background: red;" tile sm="12" md="8">
           <v-tabs v-model="tab" class="mt-1">
-            <v-tab> <v-icon left>mdi-comment</v-icon> Publicaciones </v-tab>
+            <v-tab> <v-icon left>mdi-comment</v-icon> Trueques </v-tab>
             <v-tab><v-icon left>mdi-star</v-icon> Reseñas</v-tab>
             <v-tab><v-icon left>mdi-heart</v-icon> Me gusta</v-tab>
           </v-tabs>
           <v-tabs-items v-model="tab">
             <v-tab-item>
-              <NewBarter v-if="username == user.username" />
+              <div class="pa-1" v-if="tab==0">
+
+              <NewBarter class="mt-5" v-if="username == user.username" />
+              <div style="background: orange; height: 1000px;">Pub list</div>
+              </div>
             </v-tab-item>
             <v-tab-item>
                 Rese;a
@@ -25,6 +29,8 @@
         <v-col tile>
           <UserAbout />
           <UserContact />
+          <User2FollowSuggestion class="ma-2" />
+          
         </v-col>
       </v-row>
     </v-container>
@@ -34,6 +40,7 @@
 <script>
 import UserCover from "@/components/UserCover.vue";
 import NewBarter from "@/components/NewBarter.vue";
+import User2FollowSuggestion from "@/components/User2FollowSuggestion.vue";
 import UserAbout from "@/components/subcomponents/UserAbout.vue";
 import UserContact from "@/components/subcomponents/UserContact.vue";
 import { mapState } from "vuex";
@@ -43,6 +50,7 @@ export default {
     NewBarter,
     UserAbout,
     UserContact,
+    User2FollowSuggestion
   },
   data: () => ({
     username: "",
