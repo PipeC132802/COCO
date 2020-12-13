@@ -24,6 +24,14 @@ class UserAbout(models.Model):
     def __str__(self):
         return 'About ' + self.user.username
 
+    def serializer(self):
+        return {
+            'user': self.user.username,
+            'bio': self.bio,
+            'birthday': self.birthday.strftime("%d de %b. de %Y"),
+            'gender': self.gender
+        }
+
 
 class UserProfilePhoto(models.Model):
     def user_directory_path(instance, filename):
@@ -78,6 +86,11 @@ class UserContact(models.Model):
     def __str__(self):
         return self.user.username + ' vive en ' + self.place.__str__()
 
+    def serializer(self):
+        return {
+            'user': self.user.username,
+            'place': self.place.__str__()
+        }
 
 class Area(models.Model):
     area = models.CharField(max_length=50, unique=True)

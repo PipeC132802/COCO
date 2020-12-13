@@ -35,21 +35,23 @@
     <v-card-text>
       <v-row justify="center">
         <span class="skills">
-          <v-icon class="pb-1" left color="warning">
-            mdi-head-lightbulb
+          <v-icon class="pb-1" left color="info">
+            mdi-calendar
           </v-icon>
-          {{ user.skills }}
+          {{ user.dateJoined }}
         </span>
       </v-row>
+      <v-row class="mt-2" justify="center">
+          <v-btn class="mr-3" color="secondary" text>
+              <strong class="mr-2">{{user.followers}}</strong>Seguidores 
+          </v-btn>
+          <v-btn color="secondary" class="ml-3" text >
+               <strong class="mr-2">{{user.following}}</strong>Seguidos 
+          </v-btn>
+        
+      </v-row>
     </v-card-text>
-    <v-divider>
-     
-    </v-divider>
-       <v-card-actions>
-            <v-btn>
-                asd
-            </v-btn>
-        </v-card-actions>
+
   </v-card>
 </template>
 
@@ -65,10 +67,13 @@ export default {
       profilePicture: "",
       username: "",
       skills: "",
+      dateJoined: "",
+      followers: "",
+      following: "",
     },
   }),
   computed: {
-    ...mapState(["baseUrl", "pixaKey"]),
+    ...mapState(["baseUrl", "pixaKey", "authentication"]),
   },
   created() {
     this.user.username = this.$route.params.username;
@@ -76,7 +81,11 @@ export default {
   },
   methods: {
     getUserCoverInfo() {
-      fetch(this.baseUrl + this.apiDir + "?username=" + this.user.username)
+      fetch(this.baseUrl + this.apiDir + "?username=" + this.user.username, {
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
         .then((response) => {
           return response.json();
         })
@@ -84,7 +93,11 @@ export default {
           this.user.name = response.name;
           this.user.profilePicture = response.profile_picture;
           this.user.skills = response.skills.join(", ");
-          document.title = this.user.name + `   (@${this.user.username}) / COCO`;
+          this.user.dateJoined = response.date_joined;
+          this.user.followers = response.followers;
+          this.user.following = response.following;
+          document.title =
+            this.user.name + `   (@${this.user.username}) / COCO`;
           this.searchCover();
         })
         .catch((err) => {
@@ -94,8 +107,7 @@ export default {
     searchCover() {
       let key = "key=" + this.pixaKey;
       let list = this.user.skills.split(",");
-      let q =
-        "q=" + list[Math.floor(Math.random() * list.length)];
+      let q = "q=" + list[Math.floor(Math.random() * list.length)];
       let image_type = "image_type=photo";
       let orientation = "orientation=horizontal";
       let min_width = "min_width=1080";
@@ -109,7 +121,7 @@ export default {
         .then((response) => {
           let hits = response.hits;
           let total = hits.length;
-          let img_slected = hits[Math.floor(Math.random() * hits.length)    ];
+          let img_slected = hits[Math.floor(Math.random() * hits.length)];
           this.cover = img_slected.largeImageURL;
         });
     },

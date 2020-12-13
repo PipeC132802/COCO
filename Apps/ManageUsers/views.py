@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest
-from Apps.ManageUsers.serializer import AreaSerializer
+from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
@@ -240,6 +240,8 @@ class ProfilePictureApi(generics.CreateAPIView):
 
 
 class UserAccountInfoApi(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+
     def get(self, request, *args, **kwargs):
         username = request.GET["username"]
         try:
@@ -248,7 +250,10 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
             user_json = {
                 'name': "{0} {1}".format(user_profile.user.first_name, user_profile.user.last_name),
                 'profile_picture': DOMAIN + user_profile.profile_picture.url,
-                'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)]
+                'date_joined': user_profile.user.date_joined.strftime("Miembro desde %B de %Y"),
+                'followers': 10,
+                'following': 2,
+                'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)],
             }
         except:
             try:
@@ -256,9 +261,46 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
                 user_json = {
                     'name': "{0} {1}".format(user.first_name, user.last_name),
                     'profile_picture': '',
-                    'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)]
+                    'skills': [user_skill.area.area for user_skill in
+                               UserSkill.objects.filter(user__username=username)],
+                    'date_joined': user_profile.user.date_joined.strftime("Miembro desde %B de %Y"),
+                    'followers': 10,
+                    'following': 2,
                 }
             except User.DoesNotExist:
                 return Response("User not found", status=404)
 
         return JsonResponse(user_json)
+
+
+class UserAboutApi(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserAboutSerializer
+    model = UserAbout
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_about = UserAbout.objects.get(user__username=self.request.GET["username"])
+            return Response(user_about.serializer(), status=200)
+        except:
+            # Loggin error
+            return Response('User info not found', status=404)
+
+
+class UserContactAndAreasApi(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserAboutSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            username = self.request.GET["username"]
+            user_contact = UserContact.objects.get(user__username=username)
+            user_json = user_contact.serializer()
+            user_json["interests"] = ", ".join(
+                [user_interest.area.area for user_interest in UserInterest.objects.filter(user__username=username)])
+            user_json["skills"] = ", ".join(
+                [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)])
+            return Response(user_json, status=200)
+        except:
+            # Loggin error
+            return Response('User info not found', status=404)

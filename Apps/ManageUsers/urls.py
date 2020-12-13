@@ -11,5 +11,7 @@ urlpatterns = [
     path('about-user/', UserAboutAndAreasApi.as_view(), name='about_user'),
     path('profile-picture-user/', ProfilePictureApi.as_view(), name='profile_picture'),
     path('area-list/', AreaListApi.as_view(), name='areas'),
-    path('account/', UserAccountInfoApi.as_view(), name='account_info')
+    path('account/', UserAccountInfoApi.as_view(), name='account_info'),
+    path('user-about/', UserAboutApi.as_view(), name='user_about'),
+    path('user-contact/', UserContactAndAreasApi.as_view(), name='user_contact')
 ]
