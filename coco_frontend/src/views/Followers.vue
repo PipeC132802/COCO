@@ -15,38 +15,38 @@
     <v-card-text>
       <v-list-item
         class="user-suggest"
-        v-for="(user, i) in users"
+        v-for="(follower, i) in followers"
         :key="i"
         two-line
       >
         <v-list-item-avatar>
           <v-img
-            v-if="user.profile_picture"
-            :src="user.profile_picture"
+            v-if="follower.profile_picture"
+            :src="follower.profile_picture"
           ></v-img>
-          <span v-else>{{ user.name.slice(0, 1) }}</span>
+          <span v-else>{{ follower.name.slice(0, 1) }}</span>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title
-            :title="user.name"
+            :title="follower.name"
             class="link"
-            @click="toProfile(user.username)"
-            >{{ user.name }}</v-list-item-title
+            @click="toProfile(follower.username)"
+            >{{ follower.name }}</v-list-item-title
           >
-          <v-list-item-subtitle :title="'@' + user.username"
-            >@{{ user.username }}</v-list-item-subtitle
+          <v-list-item-subtitle :title="'@' + follower.username"
+            >@{{ follower.username }}</v-list-item-subtitle
           >
         </v-list-item-content>
-        <v-list-item-action>
+        <v-list-item-action v-if="user.username && follower.username != user.username ">
           <v-btn
-            @click="followUser(user)"
-            :outlined="!followThisUser"
+            @click="followUser(follower)"
+            :outlined="!follower.follow"
             color="success"
-            :title="followThisUser ? 'Seguido' : 'Seguir'"
+            :title="follower.follow ? 'Seguido' : 'Seguir'"
             class="mr-3"
           >
             <v-icon left> mdi-account-plus </v-icon>
-            <span>{{ followThisUser ? "Siguiendo" : "Seguir" }}</span>
+            <span>{{ follower.follow ? "Siguiendo" : "Seguir" }}</span>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -55,7 +55,36 @@
 </template>
 
 <script>
-export default {};
+import { mapState } from "vuex";
+export default {
+  data: () => ({
+    followers: "",
+    apiDir: "follow-list/",
+    username: "",
+  }),
+  created() {
+    this.username = this.$route.params.username;
+    this.getFollowers();
+  },
+  computed: {
+    ...mapState(["baseUrl", "user"]),
+  },
+  methods: {
+    getFollowers() {
+      fetch(
+        this.baseUrl +
+          this.apiDir +
+          `?username_target=${this.username}&username_request=${this.user.username}&field=followers`
+      )
+        .then((response) => response.json())
+        .then((response) => (this.followers = response))
+        .catch((err) => console.log(err));
+    },
+    toProfile(username) {
+      this.$router.push({ name: "Profile", params: { username: username } });
+    },
+  },
+};
 </script>
 
 <style>

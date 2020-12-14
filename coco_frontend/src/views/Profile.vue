@@ -62,7 +62,7 @@ export default {
   watch: {
     $route(to, from) {
       this.currentUsernamePath = to.params.username;
-      this.pathName = to.name;
+      this.pathName = this.$route.name;
     },
   },
   beforeUpdate() {
@@ -72,6 +72,7 @@ export default {
   },
   created() {
     this.username = this.$route.params.username;
+    this.pathName = this.$route.name;
     this.currentUsernamePath = this.$route.params.username;
   },
 

@@ -376,3 +376,47 @@ class SuggestUserApi(generics.ListAPIView):
             json_response.append(dic)
 
         return Response(json_response, status=200)
+
+
+class FollowApi(generics.ListAPIView):
+
+    def get(self, request, *args, **kwargs):
+        username_target = request.GET["username_target"]
+        username_request = request.GET["username_request"]
+        field = request.GET["field"]
+        if field == 'followers':
+            follow_list = UserRelationship.objects.filter(user_to__username=username_target)
+        elif field == 'following':
+            follow_list = UserRelationship.objects.filter(user_from__username=username_target)
+        response = self.get_context(follow_list, field, username_request)
+        return Response(response)
+
+    def get_context(self, follow_list, field, username_request):
+        json_obj = []
+        for follow_item in follow_list:
+            if field == 'followers':
+                try:
+                    profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=follow_item.user_from).profile_picture.url
+                except:
+                    profile_picture = ''
+                dic = {
+                    'name': '{0} {1}'.format(follow_item.user_from.first_name, follow_item.user_from.last_name),
+                    'username': follow_item.user_from.username,
+                    'profile_picture': profile_picture,
+                    'follow': UserRelationship.objects.filter(user_from__username=username_request, user_to=follow_item.user_from).exists()
+                }
+
+            elif field == 'following':
+                try:
+                    profile_picture = DOMAIN + UserProfilePhoto.objects.get(
+                        username=follow_item.user_to.username).profile_picture.url
+                except:
+                    profile_picture = ''
+                dic = {
+                    'name': '{0} {1}'.format(follow_item.user_to.first_name, follow_item.user_to.last_name),
+                    'username': follow_item.user_from.username,
+                    'profile_picture': profile_picture,
+                    'follow': UserRelationship.objects.filter(user_from__username=username_request, user_to=follow_item.user_to).exists()
+                }
+            json_obj.append(dic)
+        return json_obj
