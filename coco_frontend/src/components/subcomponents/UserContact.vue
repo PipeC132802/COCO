@@ -49,7 +49,6 @@ export default {
         })
         .then((response) => {
           this.userContact = response;
-          console.log(response);
         })
         .catch((err) => {
           console.error(err);

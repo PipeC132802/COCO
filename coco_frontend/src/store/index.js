@@ -17,6 +17,11 @@ export default new Vuex.Store({
     baseUrl: 'http://127.0.0.1:8000/coco/api/v1.0/',
     userRequireMoreInfo: true,
     pixaKey: '19499640-f691e6b92721afc93a5b52556',
+    profileFollowStatus: {
+      followers: '',
+      following: '',
+      followThisUser: '',
+    },
   },
   mutations: {
     setUser(state, user) {
@@ -28,11 +33,14 @@ export default new Vuex.Store({
     updateFormsInfo(state, formDialogs) {
       state.forms = formDialogs;
     },
-    updateUserRequireMoreInfo(state, require){
+    updateUserRequireMoreInfo(state, require) {
       state.userRequireMoreInfo = require;
+    },
+    updateProfileFollowStatus(state, profileFollowStatus) {
+      state.profileFollowStatus = profileFollowStatus;
     }
-   
-    
+
+
   },
   actions: {
 

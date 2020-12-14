@@ -41,11 +41,11 @@
         </span>
       </v-row>
       <v-row class="mt-2" justify="center">
-        <v-btn class="mr-3" color="secondary" text>
+        <v-btn class="mr-3"  active-class="primary"  text :to="{name: 'Followers', params:{username: userP.username,}}">
           <strong class="mr-2">{{ userP.followers }}</strong
           >Seguidores
         </v-btn>
-        <v-btn color="secondary" class="ml-3" text>
+        <v-btn class="ml-3" active-class="primary"  text :to="{name: 'Following', params:{username: userP.username,}}" >
           <strong class="mr-2">{{ userP.following }}</strong
           >Seguidos
         </v-btn>
@@ -84,6 +84,7 @@
 import { mapState } from "vuex";
 export default {
   name: "UserCover",
+  props: ["user2Follow"],
   data: () => ({
     apiDir: "account/",
     cover: "",
@@ -100,7 +101,16 @@ export default {
     },
   }),
   computed: {
-    ...mapState(["baseUrl", "pixaKey", "authentication", "user"]),
+    ...mapState(["baseUrl", "pixaKey", "authentication", "user","profileFollowStatus"]),
+    
+  },
+  watch:{
+    profileFollowStatus: function(){
+      this.userP.followers = this.profileFollowStatus.followers;
+      this.userP.following = this.profileFollowStatus.following;
+    }
+  },
+  beforeUpdate(){
   },
   created() {
     this.userP.username = this.$route.params.username;

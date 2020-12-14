@@ -1,36 +1,36 @@
 <template>
-  <div class="pl-8 pr-8 pt-6">
-    <UserCover />
+  <div v-if="username == currentUsernamePath" class="pl-8 pr-8 pt-6">
+    <UserCover :user2Follow="user2Follow" />
 
     <v-container fluid class="pa-0 mt-0">
-      <v-row>
+      <v-row wrap>
         <v-col tyle="background: red;" tile sm="12" md="8">
-          <v-tabs v-model="tab" class="mt-1">
-            <v-tab> <v-icon left>mdi-comment</v-icon> Trueques </v-tab>
-            <v-tab><v-icon left>mdi-star</v-icon> Reseñas</v-tab>
-            <v-tab><v-icon left>mdi-heart</v-icon> Me gusta</v-tab>
-          </v-tabs>
-          <v-tabs-items v-model="tab">
-            <v-tab-item>
-              <div class="pa-1" v-if="tab==0">
-
-              <NewBarter class="mt-5" v-if="username == user.username" />
-              <div style="background: orange; height: 1000px;">Pub list</div>
-              </div>
-            </v-tab-item>
-            <v-tab-item>
-                Rese;a
-            </v-tab-item>
-            <v-tab-item>
-                Me gusta
-            </v-tab-item>
-          </v-tabs-items>
+          <router-view class="mt-2" />
+          <div v-if="pathName == 'Profile'">
+            <v-tabs v-model="tab" class="mt-1">
+              <v-tab> <v-icon left>mdi-comment</v-icon> Trueques </v-tab>
+              <v-tab><v-icon left>mdi-star</v-icon> Reseñas</v-tab>
+              <v-tab><v-icon left>mdi-heart</v-icon> Me gusta</v-tab>
+            </v-tabs>
+            <v-tabs-items v-model="tab">
+              <v-tab-item>
+                <div class="pa-1" v-if="tab == 0">
+                  <NewBarter class="mt-5" v-if="username == user.username" />
+                  <div style="background: orange; height: 1000px">Pub list</div>
+                </div>
+              </v-tab-item>
+              <v-tab-item> Rese;a </v-tab-item>
+              <v-tab-item> Me gusta </v-tab-item>
+            </v-tabs-items>
+          </div>
         </v-col>
-        <v-col tile>
-          <UserAbout />
+        <v-col cols="4" tile>
+          <UserAbout  />
           <UserContact />
-          <User2FollowSuggestion class="ma-2" />
-          
+          <User2FollowSuggestion
+            v-on:followUser="followUser"
+            class="ma-2 mt-3"
+          />
         </v-col>
       </v-row>
     </v-container>
@@ -50,20 +50,41 @@ export default {
     NewBarter,
     UserAbout,
     UserContact,
-    User2FollowSuggestion
+    User2FollowSuggestion,
   },
   data: () => ({
     username: "",
     tab: null,
-    items: ["web", "shopping", "videos", "images", "news"],
-    text:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    currentUsernamePath: "",
+    user2Follow: null,
+    pathName: ''
   }),
+  watch: {
+    $route(to, from) {
+      this.currentUsernamePath = to.params.username;
+      this.pathName = to.name;
+    },
+  },
+  beforeUpdate() {
+    this.sleep(5).then(() => {
+      this.username = this.$route.params.username;
+    });
+  },
   created() {
     this.username = this.$route.params.username;
+    this.currentUsernamePath = this.$route.params.username;
   },
+
   computed: {
     ...mapState(["user"]),
+  },
+  methods: {
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    followUser(followUserObj) {
+      this.user2Follow = followUserObj;
+    },
   },
 };
 </script>

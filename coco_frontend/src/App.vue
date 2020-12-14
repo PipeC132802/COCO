@@ -30,6 +30,9 @@ export default {
   },
 
   data: () => ({}),
+  watch: {
+
+  },
   beforeUpdate() {},
   beforeMount() {
     let aside = document.getElementById("leftAside");

@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest, UserRelationship
-from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer
+from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
@@ -337,27 +337,42 @@ class FollowUserApi(generics.CreateAPIView):
             user_from = User.objects.get(username=username_from)
             user_to = User.objects.get(username=username_to)
             follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
-        following = UserRelationship.objects.filter(user_from__username=username_to, status=1).count()
-        follwers = UserRelationship.objects.filter(user_to__username=username_to, status=1).count()
+
+        following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
+        followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()
 
         return Response({
             'following': following,
-            'followers': follwers,
+            'followers': followers,
             'follow_this_user': follow_status.status
         })
 
 
 class SuggestUserApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
+    serializer_class = UserSerializer
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        id_users_following = UserRelationship.objects.filter(user_from=user).values_list('user_to')
-        print(id_users_following)
+        user_except = request.GET["user_except"]
+        id_users_following = [user_relationship.user_to.pk for user_relationship in
+                              UserRelationship.objects.filter(user_from=user, status=1)]
+        id_users_following.append(User.objects.get(username=user_except).pk)
         user_interests = [user_interest.area.area for user_interest in
                           UserInterest.objects.filter(user__username=user.username)]
-        print(user_interests)
-        users_skills = UserSkill.objects.filter(area__in=user_interests).exclude(
-            user__in=id_users_following).distinct()[:5]
-        print(users_skills)
-        return request
+        users = [user_skill.user for user_skill in UserSkill.objects.filter(area__area__in=user_interests).exclude(
+            user__in=id_users_following).distinct()[:5]]
+        json_response = []
+        for user in users:
+            try:
+                profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=user).profile_picture.url
+            except:
+                profile_picture = ''
+            dic = {
+                'name': '{0} {1}'.format(user.first_name, user.last_name),
+                'username': user.username,
+                'profile_picture': profile_picture,
+            }
+            json_response.append(dic)
+
+        return Response(json_response, status=200)
