@@ -20,7 +20,7 @@ export default new Vuex.Store({
     profileFollowStatus: {
       followers: '',
       following: '',
-      followThisUser: '',
+      followThisUser: false,
     },
   },
   mutations: {

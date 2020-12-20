@@ -117,6 +117,7 @@ class UserInterest(models.Model):
 
 class UserRelationship(models.Model):
     relationship_statuses = (
+        (0, 'None'),
         (1, 'Following'),
         (2, 'Blocked'),
     )

@@ -12,11 +12,16 @@
       Seguidores
     </v-card-title>
     <v-divider></v-divider>
-    <v-card-text>
-      <v-list-item
+    <v-card-text class="pb-0" v-if="!followers.length">
+      <p v-if="$route.params.usernme == user.username">Nadie te sigue 😞</p>
+      <p v-else>@{{$route.params.username}} aún no tiene seguidores 😞</p>
+    </v-card-text>
+    <v-card-text v-else>
+      <v-lazy v-for="(follower, i) in followers" :key="i" transition="fade-transition">
+        <v-list-item
         class="user-suggest"
-        v-for="(follower, i) in followers"
-        :key="i"
+        
+        
         two-line
       >
         <v-list-item-avatar>
@@ -38,25 +43,23 @@
           >
         </v-list-item-content>
         <v-list-item-action v-if="user.username && follower.username != user.username ">
-          <v-btn
-            @click="followUser(follower)"
-            :outlined="!follower.follow"
-            color="success"
-            :title="follower.follow ? 'Seguido' : 'Seguir'"
-            class="mr-3"
-          >
-            <v-icon left> mdi-account-plus </v-icon>
-            <span>{{ follower.follow ? "Siguiendo" : "Seguir" }}</span>
-          </v-btn>
+          <FollowButton :followThisUser="false" :from="user.username" :to="follower.username" 
+              :target="$route.params.username == user.username?'self':'other'"  />
         </v-list-item-action>
       </v-list-item>
+      </v-lazy>
+      
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import FollowButton from "@/components/FollowButton.vue"
 export default {
+  components:{
+    FollowButton,
+  },
   data: () => ({
     followers: "",
     apiDir: "follow-list/",
@@ -88,4 +91,7 @@ export default {
 </script>
 
 <style>
+p{
+  font-size: 16pt;
+}
 </style>

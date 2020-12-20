@@ -317,12 +317,26 @@ class UserContactAndAreasApi(generics.RetrieveAPIView):
             return Response('User info not found', status=404)
 
 
-class FollowUserApi(generics.CreateAPIView):
+class FollowUserApi(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        username_from = request.GET["username_from"]
+        username_to = request.GET["username_to"]
+        try:
+            follow_status = UserRelationship.objects.get(user_from__username=username_from,
+                                                         user_to__username=username_to, status=1)
+            follow_status = follow_status.status
+        except:
+            follow_status = 0
+        return Response({
+            'follow_this_user': follow_status
+        })
 
     def post(self, request, *args, **kwargs):
         username_from = request.data["username_from"]
         username_to = request.data["username_to"]
+        target = request.data["target"]
         try:
             follow_status = UserRelationship.objects.get(user_from__username=username_from,
                                                          user_to__username=username_to)
@@ -337,9 +351,12 @@ class FollowUserApi(generics.CreateAPIView):
             user_from = User.objects.get(username=username_from)
             user_to = User.objects.get(username=username_to)
             follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
-
-        following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
-        followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()
+        if target == 'self':
+            following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
+            followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()
+        else:
+            following = UserRelationship.objects.filter(user_from__username=username_to, status=1).count()
+            followers = UserRelationship.objects.filter(user_to__username=username_to, status=1).count()
 
         return Response({
             'following': following,
@@ -385,9 +402,9 @@ class FollowApi(generics.ListAPIView):
         username_request = request.GET["username_request"]
         field = request.GET["field"]
         if field == 'followers':
-            follow_list = UserRelationship.objects.filter(user_to__username=username_target)
+            follow_list = UserRelationship.objects.filter(user_to__username=username_target, status=1)
         elif field == 'following':
-            follow_list = UserRelationship.objects.filter(user_from__username=username_target)
+            follow_list = UserRelationship.objects.filter(user_from__username=username_target, status=1)
         response = self.get_context(follow_list, field, username_request)
         return Response(response)
 
@@ -396,27 +413,30 @@ class FollowApi(generics.ListAPIView):
         for follow_item in follow_list:
             if field == 'followers':
                 try:
-                    profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=follow_item.user_from).profile_picture.url
+                    profile_picture = DOMAIN + UserProfilePhoto.objects.get(
+                        user=follow_item.user_from).profile_picture.url
                 except:
                     profile_picture = ''
                 dic = {
                     'name': '{0} {1}'.format(follow_item.user_from.first_name, follow_item.user_from.last_name),
                     'username': follow_item.user_from.username,
                     'profile_picture': profile_picture,
-                    'follow': UserRelationship.objects.filter(user_from__username=username_request, user_to=follow_item.user_from).exists()
+                    'follow': UserRelationship.objects.filter(user_from__username=username_request,
+                                                              user_to=follow_item.user_from).exists()
                 }
 
             elif field == 'following':
                 try:
                     profile_picture = DOMAIN + UserProfilePhoto.objects.get(
-                        username=follow_item.user_to.username).profile_picture.url
+                        user=follow_item.user_to).profile_picture.url
                 except:
                     profile_picture = ''
                 dic = {
                     'name': '{0} {1}'.format(follow_item.user_to.first_name, follow_item.user_to.last_name),
-                    'username': follow_item.user_from.username,
+                    'username': follow_item.user_to.username,
                     'profile_picture': profile_picture,
-                    'follow': UserRelationship.objects.filter(user_from__username=username_request, user_to=follow_item.user_to).exists()
+                    'follow': UserRelationship.objects.filter(user_from__username=username_request,
+                                                              user_to=follow_item.user_to).exists()
                 }
             json_obj.append(dic)
         return json_obj
