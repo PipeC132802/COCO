@@ -27,7 +27,6 @@
         <v-col cols="4" tile>
           <UserAbout  />
           <UserContact />
-          
           <User2FollowSuggestion
           v-if="$route.params.username != user.username"
             v-on:followUser="followUser"
@@ -88,9 +87,11 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
+    
   },
 };
 </script>
 
 <style>
+
 </style>

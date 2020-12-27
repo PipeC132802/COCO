@@ -77,6 +77,7 @@ const routes = [
     children: [
       { path: 'followers', name: 'Followers', component: () => import('../views/Followers.vue') },
       { path: 'following', name: 'Following', component: () => import('../views/Following.vue') },
+      { path: 'edit', name: 'Edit', component: () => import('../views/EditProfile.vue') },
   ]
     
   },

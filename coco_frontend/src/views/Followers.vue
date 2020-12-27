@@ -14,50 +14,56 @@
     <v-divider></v-divider>
     <v-card-text class="pb-0" v-if="!followers.length">
       <p v-if="$route.params.usernme == user.username">Nadie te sigue 😞</p>
-      <p v-else>@{{$route.params.username}} aún no tiene seguidores 😞</p>
+      <p v-else>@{{ $route.params.username }} aún no tiene seguidores 😞</p>
     </v-card-text>
     <v-card-text v-else>
-      <v-lazy v-for="(follower, i) in followers" :key="i" transition="fade-transition">
-        <v-list-item
-        class="user-suggest"
-        
-        
-        two-line
+      <v-lazy
+        v-for="(follower, i) in followers"
+        :key="i"
+        transition="fade-transition"
       >
-        <v-list-item-avatar>
-          <v-img
-            v-if="follower.profile_picture"
-            :src="follower.profile_picture"
-          ></v-img>
-          <span v-else>{{ follower.name.slice(0, 1) }}</span>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title
-            :title="follower.name"
-            class="link"
-            @click="toProfile(follower.username)"
-            >{{ follower.name }}</v-list-item-title
+        <v-list-item class="user-suggest" two-line>
+          <v-list-item-avatar>
+            <v-img
+              v-if="follower.profile_picture"
+              :src="follower.profile_picture"
+            ></v-img>
+            <span v-else>{{ follower.name.slice(0, 1) }}</span>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title
+              :title="follower.name"
+              class="link"
+              @click="toProfile(follower.username)"
+              >{{ follower.name }}</v-list-item-title
+            >
+            <v-list-item-subtitle :title="'@' + follower.username"
+              >@{{ follower.username }}</v-list-item-subtitle
+            >
+          </v-list-item-content>
+          <v-list-item-action
+            v-if="user.username && follower.username != user.username"
           >
-          <v-list-item-subtitle :title="'@' + follower.username"
-            >@{{ follower.username }}</v-list-item-subtitle
-          >
-        </v-list-item-content>
-        <v-list-item-action v-if="user.username && follower.username != user.username ">
-          <FollowButton :followThisUser="false" :from="user.username" :to="follower.username" 
-              :target="$route.params.username == user.username?'self':'other'"  />
-        </v-list-item-action>
-      </v-list-item>
+            <FollowButton
+              :followThisUser="false"
+              :from="user.username"
+              :to="follower.username"
+              :target="
+                $route.params.username == user.username ? 'self' : 'other'
+              "
+            />
+          </v-list-item-action>
+        </v-list-item>
       </v-lazy>
-      
     </v-card-text>
   </v-card>
 </template>
 
 <script>
 import { mapState } from "vuex";
-import FollowButton from "@/components/FollowButton.vue"
+import FollowButton from "@/components/FollowButton.vue";
 export default {
-  components:{
+  components: {
     FollowButton,
   },
   data: () => ({
@@ -91,7 +97,7 @@ export default {
 </script>
 
 <style>
-p{
+p {
   font-size: 16pt;
 }
 </style>

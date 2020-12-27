@@ -14,6 +14,7 @@
           return-object
           :rules="[rules.required]"
           required
+          class="pa-0"
         >
           <template v-slot:item="data">
             <template v-if="typeof data.item !== 'object'">
@@ -50,7 +51,8 @@
       </v-col>
       <v-col>
         <v-text-field
-          class="mb-1"
+
+          class="pa-0"
           v-model="city"
           label="Ciudad"
           :rules="[rules.required]"
@@ -62,7 +64,7 @@
     <v-row>
       <v-col sm="2">
         <v-text-field
-          class="mb-1"
+          class="mb-1 pa-0"
           v-model="countryCode"
           label="Prefijo"
           :rules="[rules.valid]"
@@ -70,7 +72,7 @@
       </v-col>
       <v-col sm="10">
         <v-text-field
-          class="mb-1"
+          class="mb-1 pa-0"
           v-model="phone"
           label="Número de teléfono"
           :rules="[rules.cellValid]"

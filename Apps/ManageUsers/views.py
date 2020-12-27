@@ -168,7 +168,7 @@ class UserContactApi(generics.CreateAPIView):
         return place
 
 
-class UserAboutAndAreasApi(generics.CreateAPIView):
+class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -190,7 +190,7 @@ class UserAboutAndAreasApi(generics.CreateAPIView):
             user_about.bio = bio
             user_about.birthday = birthday
             user_about.gender = gender"""
-            return JsonResponse({'contact_edited': True})
+            return JsonResponse({'Error': "There's invalid data."})
 
     def save_areas(self, areas, user, obj_param):
         for area in areas:
@@ -251,7 +251,7 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
             user_json = {
                 'name': "{0} {1}".format(user_profile.user.first_name, user_profile.user.last_name),
                 'profile_picture': DOMAIN + user_profile.profile_picture.url,
-                'date_joined': user_profile.user.date_joined.strftime("Se unió en %B de %Y"),
+                'date_joined': user_profile.user.date_joined,
                 'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
                 'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
                 'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)],
@@ -440,3 +440,27 @@ class FollowApi(generics.ListAPIView):
                 }
             json_obj.append(dic)
         return json_obj
+
+
+class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, *args, **kwargs):
+        first_name = request.data["first_name"]
+        last_name = request.data["last_name"]
+        country = request.data["country"]
+        city = request.data["city"]
+        cellphone = request.data["cellphone"]
+        bio = request.data["bio"]
+        skills = request.data["skills"]
+        learn = request.data["learn"]
+        user_about = UserAbout.objects.get(user=request.user)
+        user_about.bio = bio
+        user_about.save()
+        user_about_obj =UserAboutAndAreasApi()
+        user_about_obj.save_areas(skills, request.user, UserSkill)
+        user_about_obj.save_areas(learn, request.user, UserInterest)
+        return Response({'Detail': 'User info edited successfully'}, status=200)
+
+    def get(self, request, *args, **kwargs):
+        return request

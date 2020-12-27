@@ -15,7 +15,6 @@
         </v-row>
       </template>
     </v-img>
-
     <v-card-title class="pb-0">
       <v-avatar
         :color="userP.profilePicture ? 'white' : 'secondary'"
@@ -30,13 +29,16 @@
         <span :title="'@' + userP.username" class="text"
           >(@{{ userP.username }})</span
         >
+        <span v-if="userP.username == user.username" @click="go2Edit" class="route ml-3" title="Editar información de la cuenta">Editar</span>
       </h2>
+      
     </v-card-title>
     <v-card-text>
       <v-row justify="center">
         <span class="skills">
           <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
-          {{ userP.dateJoined }}
+          Se unió en
+          {{ dateJoined | capitalize }}
         </span>
       </v-row>
       <v-row class="mt-2" justify="center">
@@ -71,6 +73,8 @@
 
 <script>
 import { mapState } from "vuex";
+import moment from "moment";
+
 import FollowButton from "@/components/FollowButton.vue"
 export default {
   name: "UserCover",
@@ -95,7 +99,9 @@ export default {
   }),
   computed: {
     ...mapState(["baseUrl", "pixaKey", "authentication", "user","profileFollowStatus"]),
-    
+    dateJoined: function (){
+      return moment(this.userP.dateJoined).locale('es').format('MMMM D, YYYY')
+    }
   },
   watch:{
     profileFollowStatus: function(){
@@ -164,9 +170,19 @@ export default {
       this.userP.followers = followObj.followers;
       this.userP.following = followObj.following;
       this.userP.followThisUser = followObj.follow_this_user;
+    },
+    go2Edit(){
+      this.$router.push({name: 'Edit', params:{username: this.userP.username,}})
     }
     
   },
+  filters: {
+  capitalize: function (value) {
+    if (!value) return ''
+    value = value.toString()
+    return value.charAt(0).toUpperCase() + value.slice(1)
+  }
+}
 };
 </script>
 
@@ -196,5 +212,13 @@ h2 {
   position: absolute;
   right: 20px;
   bottom: 15%;
+}
+.route{
+  color: #478CCC;
+  font-size: 12pt;
+  font-weight: 200;
+}.route:hover{
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>
