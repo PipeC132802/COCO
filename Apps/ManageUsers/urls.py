@@ -17,4 +17,5 @@ urlpatterns = [
     path('follow-user/', FollowUserApi.as_view(), name='follow_user'),
     path('suggest-users/', SuggestUserApi.as_view(), name='suggest_users'),
     path('follow-list/', FollowApi.as_view(), name='follow_list'),
+    path('user-info-update/', UpdateUserAccountInfoApi.as_view(), name='update_info'),
 ]

@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-autocomplete
-          v-model="country"
+          v-model="contactObj.country"
           :items="items"
           :loading="isLoading"
           hide-no-data
@@ -51,9 +51,8 @@
       </v-col>
       <v-col>
         <v-text-field
-
           class="pa-0"
-          v-model="city"
+          v-model="contactObj.city"
           label="Ciudad"
           :rules="[rules.required]"
           required
@@ -65,7 +64,7 @@
       <v-col sm="2">
         <v-text-field
           class="mb-1 pa-0"
-          v-model="countryCode"
+          v-model="contactObj.prefix"
           label="Prefijo"
           :rules="[rules.valid]"
         ></v-text-field>
@@ -73,7 +72,7 @@
       <v-col sm="10">
         <v-text-field
           class="mb-1 pa-0"
-          v-model="phone"
+          v-model="contactObj.cellphone"
           label="Número de teléfono"
           :rules="[rules.cellValid]"
         ></v-text-field>
@@ -87,15 +86,13 @@
 import countries from "@/json/countriescodes.json";
 export default {
   name: "Contact",
+  props:['contactObj'],
   data() {
     return {
       descriptionLimit: 60,
       entries: [],
       isLoading: false,
-      country: null,
-      city: "",
       search: null,
-      countryCode: null,
       phone: "",
       rules: {
         required: (value) => !!value || "Obligatorio",
@@ -106,13 +103,21 @@ export default {
       },
     };
   },
+  computed:{
+    country: function(){
+      if (this.contactObj.country){
+        console.log('asdf')
+        return this.contactObj.country
+      }
+    }
+  },
   beforeUpdate() {
-    if (this.country !== null) {
-      this.countryCode = "+" + this.country.phone_code;
+    if (this.contactObj !== null) {
+      this.contactObj.prefix = this.contactObj.country.phone_code != undefined ?'+' + this.contactObj.country.phone_code:this.contactObj.prefix;
       let contactObj = {
-        country: this.country.nombre,
-        city: this.city,
-        phone: this.countryCode + this.phone,
+        country: this.contactObj.country.nombre != undefined?this.contactObj.country.nombre:this.contactObj.country,
+        city: this.contactObj.city,
+        phone: this.contactObj.prefix + ' ' + this.contactObj.cellphone,
       };
      
       this.$emit("contact", contactObj);

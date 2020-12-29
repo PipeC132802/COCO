@@ -26,7 +26,7 @@
       <v-text-field
         dense
         class="pt-7"
-        label="Solo"
+        outlined
         @click:append="searchPubs"
         placeholder="¿Trueque o miedo?"
         solo

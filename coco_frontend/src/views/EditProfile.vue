@@ -12,7 +12,7 @@
         >
         Editar información de tu cuenta
       </v-card-title>
-    </v-card >
+    </v-card>
     <v-card elevation="12" class="mt-3">
       <v-card-title class="mb-0">
         Información del perfil
@@ -23,7 +23,7 @@
           <v-row class="ma-0 pa-0">
             <v-col xs="12" md="6" class="pl-0">
               <v-text-field
-                class="mb-1"  
+                class="mb-1"
                 v-model="firstName"
                 label="Nombres"
                 required
@@ -38,7 +38,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <Contact v-on:contact="contactInfo" />
+          <Contact :contactObj.sync="contactObj" v-on:contact="contactInfo" />
           <v-textarea
             v-model="bio"
             placeholder="Soy una persona amante de los libros..."
@@ -46,10 +46,21 @@
             class="mt-0 pt-0"
             label="Bio"
           ></v-textarea>
-          <Areas v-on:skills="skillsInfo" subject="skills" />
-          <Areas v-on:learn="learnInfo" subject="learn" />
+          <Areas
+            v-on:skills="skillsInfo"
+            :areas.sync="skills"
+            subject="skills"
+          />
+          <Areas
+            v-on:learn="learnInfo"
+            :areas.sync="interests"
+            subject="learn"
+          />
+          <small>
+            * Las Habilidades y los intereses están ocultos. Si deseas verlos, ubícate en dichos campos y presiona la tecla espacio.
+          </small>
           <v-card-actions class="pr-0">
-            <v-btn color="primary darken-3" class="ml-auto" @click="validate">
+            <v-btn color="primary darken-3" class="ml-auto" type="submit">
               Guardar
             </v-btn>
           </v-card-actions>
@@ -62,10 +73,62 @@
 <script>
 import Contact from "@/components/subcomponents/Contact.vue";
 import Areas from "@/components/subcomponents/Areas.vue";
+import { mapMutations, mapState } from "vuex";
 export default {
   components: {
     Contact,
-    Areas
+    Areas,
+  },
+  data: () => ({
+    apiDir: "user-info-update/",
+    valid: false,
+    firstName: "",
+    lastName: "",
+    bio: "",
+    contactObj: {
+      country: "",
+      city: "",
+      cellphone: "",
+      prefix: "",
+    },
+    skills: [],
+    interests: [],
+  }),
+  computed: {
+    ...mapState(["baseUrl", "user", "authentication"]),
+  },
+  beforeUpdate() {},
+  created() {
+    this.retrieveUserInfo();
+  },
+  methods: {
+    retrieveUserInfo() {
+      fetch(this.baseUrl + this.apiDir, {
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((response) => {
+          this.firstName = response.first_name;
+          this.lastName = response.last_name;
+          this.bio = response.bio;
+          this.contactObj.country = response.country;
+          this.contactObj.city = response.city;
+          this.contactObj.prefix = response.prefix;
+          this.contactObj.cellphone = response.cellphone;
+          this.skills = response.skills;
+          this.interests = response.interests;
+          console.log();
+        });
+    },
+    contactInfo(contactObj) {
+      console.log(contactObj, "[");
+    },
+    skillsInfo() {},
+    learnInfo() {},
   },
 };
 </script>

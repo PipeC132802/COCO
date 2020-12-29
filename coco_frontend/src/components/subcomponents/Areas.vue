@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div> 
     <v-autocomplete
       v-model="areas"
       :items="items"
@@ -22,7 +22,7 @@
           close
           @click="data.select"
           @click:close="remove(data.item)"
-          :color="subject == 'skills' ? 'primary darken-1' : 'accent accent-1'"
+          :color="subject == 'skills' ? 'primary darken-1' : 'accent darken-1'"
         >
           {{ data.item.area }}
         </v-chip>
@@ -45,11 +45,10 @@
 import { mapState } from "vuex";
 export default {
   name: "Areas",
-  props: ["subject"],
+  props: ["areas","subject"],
   data() {
     return {
       autoUpdate: true,
-      areas: [],
       isLoading: false,
       entries: [],
       rules: {
@@ -80,7 +79,7 @@ export default {
 
       this.isLoading = true;
 
-      fetch(this.baseUrl + this.apiDir + `?area=`, {
+      fetch(this.baseUrl + this.apiDir + `?area=${val.trim()}`, {
         method: "GET",
         headers: {
           Authorization: `Token ${this.authentication.accessToken}  `,

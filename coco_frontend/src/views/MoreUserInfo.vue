@@ -28,7 +28,7 @@
                       <form @submit.prevent="signUpSubmit">
                         <v-row class="pa-0">
                           <v-col class="ma-0" xs="12" md="12">
-                            <Contact v-on:contact="contactInfo" />
+                            <Contact :contactObj="contact" v-on:contact="contactInfo" />
                             <Personal v-on:about="aboutInfo" />
                           </v-col>
                         </v-row>
@@ -55,8 +55,8 @@
                     <form @submit.prevent="signUpSubmit">
                       <v-row class="pa-0">
                         <v-col class="ma-0" xs="12" md="12">
-                          <Areas v-on:skills="skillsInfo" subject="skills" />
-                          <Areas v-on:learn="learnInfo" subject="learn" />
+                          <Areas :areas="[]" v-on:skills="skillsInfo" subject="skills" />
+                          <Areas :areas="[]" v-on:learn="learnInfo" subject="learn" />
                           <v-textarea
                             v-model="bio"
                             placeholder="Soy una persona amante de los libros..."
@@ -149,7 +149,8 @@ export default {
       contact: {
         country: "",
         city: "",
-        phone: "",
+        cellphone: "",
+        prefix:'',
       },
       about: {
         birthday: "",
@@ -231,7 +232,7 @@ export default {
         let body = {
           country: this.contact.country.trim(),
           city: this.contact.city.trim(),
-          phone_number: this.contact.phone.trim(),
+          phone_number: this.contact.cellphone.trim(),
         };
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,

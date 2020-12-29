@@ -463,4 +463,25 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
         return Response({'Detail': 'User info edited successfully'}, status=200)
 
     def get(self, request, *args, **kwargs):
-        return request
+        user = request.user
+        user_contact = UserContact.objects.get(user=user)
+        user_about = UserAbout.objects.get(user=user)
+        user_skills = UserSkill.objects.filter(user=user)
+        user_interests = UserInterest.objects.filter(user=user)
+        try:
+            cellphone = user_contact.cellphone.split(' ')[1]
+            prefix = user_contact.cellphone.split(' ')[0]
+        except:
+            cellphone, prefix = '', ''
+        response = {
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'country': user_contact.place.country,
+            'city': user_contact.place.city,
+            'cellphone': cellphone,
+            'prefix': prefix,
+            'bio': user_about.bio,
+            'skills': [user_skill.area.area for user_skill in user_skills],
+            'interests': [user_interest.area.area for user_interest in user_interests]
+        }
+        return Response(response, status=200)
