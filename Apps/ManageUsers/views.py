@@ -1,10 +1,4 @@
-import asyncio
-import random
-from signal import Signals
-
-import requests
 from PIL import Image
-from django import dispatch
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.http import JsonResponse
@@ -17,22 +11,9 @@ from rest_framework.views import APIView
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest, UserRelationship
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
+from COCO.functions import save_areas
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
-
-
-def save_areas(areas, user, obj_param):
-    obj_param.objects.filter(user=user).delete()
-    for area in areas:
-        if len(area):
-            try:
-                area_in_db = Area.objects.get(area__icontains=area)
-            except:
-                area_in_db = Area.objects.create(area=area.capitalize())
-            try:
-                obj_param.objects.get(user=user, area=area_in_db)
-            except:
-                obj_param.objects.create(user=user, area=area_in_db)
 
 
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
