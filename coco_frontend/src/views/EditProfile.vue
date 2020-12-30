@@ -51,28 +51,33 @@
             class="mt-0 pt-0"
             label="Bio"
           ></v-textarea>
-          <Areas
-            v-on:skills="skillsInfo"
-            :areas="skills"
-            subject="skills"
-          />
-          <Areas
-            v-on:learn="learnInfo"
-            :areas="interests"
-            subject="learn"
-          />
+          <Areas v-on:skills="skillsInfo" :areas="skills" subject="skills" />
+          <Areas v-on:learn="learnInfo" :areas="interests" subject="learn" />
           <small>
             * Las Habilidades y los intereses están ocultos. Si deseas verlos,
             ubícate en dichos campos y presiona la tecla espacio.
           </small>
           <v-card-actions class="pr-0">
-            <v-btn color="primary darken-3" class="ml-auto" type="submit">
+            <v-btn
+              :loading="loading"
+              color="primary darken-3"
+              class="ml-auto"
+              type="submit"
+            >
               Guardar
             </v-btn>
           </v-card-actions>
         </v-form>
       </v-card-text>
     </v-card>
+    <v-snackbar v-model="snackbar">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -99,11 +104,19 @@ export default {
     },
     skills: [],
     interests: [],
+    formData: {},
+    loading: false,
+    snackbar: false,
+    message: "",
   }),
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
   },
-  beforeUpdate() {},
+  beforeUpdate() {
+    this.formData.first_name = this.firstName;
+    this.formData.last_name = this.lastName;
+    this.formData.bio = this.bio;
+  },
   created() {
     this.retrieveUserInfo();
   },
@@ -127,41 +140,60 @@ export default {
           this.contactObj.cellphone = response.cellphone;
           this.skills = response.skills;
           this.interests = response.interests;
+          this.formData.skills = response.skills;
+          this.formData.interests = response.interests;
         });
     },
-    contactInfo(contactObj) {
-      this.contactObj = contactObj;
-    },
-    skillsInfo(skillsObj) {
-      this.skills = skillsObj;
-    },
-    learnInfo(interestsObj) {
-      this.interests = interestsObj;
-    },
-    updateUserInfo(){
-      let formData = {
-        first_name: this.firstName,
-        last_name: this.lastName,
-        country: this.contactObj.country,
-        city: this.contactObj.city,
-        cellphone: this.contactObj.phone,
-        bio: this.bio,
-        skills: this.skills,
-        interests: this.interests
+    updateUserInfo() {
+      this.loading = true;
+      if (!this.formData.skills.length) {
+        this.snackbar = true;
+        this.message = "Debes agregar habilidades!";
+        this.loading = false;
+      } else if (!this.formData.interests.length) {
+        this.snackbar = true;
+        this.message = "Debes agregar intereses!";
+        this.loading = false;
+      } else {
+        fetch(this.baseUrl + this.apiDir, {
+          method: "PUT",
+          headers: {
+            Authorization: `Token ${this.authentication.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(this.formData),
+        })
+          .then((response) => {
+            if (response.status == 200) {
+              this.snackbar = true;
+              this.message = "Información actualizada exitosamente!";
+            } else {
+              throw new Error();
+            }
+          })
+          .then((response) => {
+            location.reload();
+          })
+          .catch((err) => {
+            this.snackbar = true;
+            this.message = "Ha sucedido un error. Intenta de nuevo más tarde.";
+          })
+          .finally(() => {
+            this.loading = false;
+          });
       }
-      fetch(this.baseUrl+this.apiDir,{
-        method: 'PUT',
-        headers:{
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-        body: JSON.stringify(formData)
-      })
-      .then((response)=>{return response.json()})
-      .then((response)=>{
-        console.log(response)
-      })
-      .catch((err)=>{console.error(err)})
-    }
+    },
+    contactInfo(contactObj) {
+      this.formData.country = contactObj.country;
+      this.formData.city = contactObj.city;
+      this.formData.cellphone = contactObj.phone;
+    },
+    learnInfo(interests) {
+      this.formData.interests = interests;
+    },
+    skillsInfo(skills) {
+      this.formData.skills = skills;
+    },
   },
 };
 </script>

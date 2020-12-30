@@ -21,6 +21,20 @@ from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
 
+def save_areas(areas, user, obj_param):
+    obj_param.objects.filter(user=user).delete()
+    for area in areas:
+        if len(area):
+            try:
+                area_in_db = Area.objects.get(area__icontains=area)
+            except:
+                area_in_db = Area.objects.create(area=area.capitalize())
+            try:
+                obj_param.objects.get(user=user, area=area_in_db)
+            except:
+                obj_param.objects.create(user=user, area=area_in_db)
+
+
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
     permission_classes = (IsAuthenticated,)
 
@@ -178,8 +192,8 @@ class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, gener
         skills = request.data["skills"]
         learn = request.data["learn"]
 
-        self.save_areas(skills, request.user, UserSkill)
-        self.save_areas(learn, request.user, UserInterest)
+        save_areas(skills, request.user, UserSkill)
+        save_areas(learn, request.user, UserInterest)
 
         try:
             UserAbout.objects.create(user=request.user, bio=bio, birthday=birthday, gender=gender)
@@ -191,18 +205,6 @@ class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, gener
             user_about.birthday = birthday
             user_about.gender = gender"""
             return JsonResponse({'Error': "There's invalid data."})
-
-    def save_areas(self, areas, user, obj_param):
-        for area in areas:
-            if len(area) > 1:
-                try:
-                    area_in_db = Area.objects.get(area__icontains=area)
-                except:
-                    area_in_db = Area.objects.create(area=area.capitalize())
-                try:
-                    obj_param.objects.get(user=user, area=area_in_db)
-                except:
-                    obj_param.objects.create(user=user, area=area_in_db)
 
 
 class ProfilePictureApi(generics.CreateAPIView):
@@ -448,15 +450,14 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
     def put(self, request, *args, **kwargs):
 
         skills = request.data["skills"]
-        learn = request.data["learn"]
+        learn = request.data["interests"]
 
         self.save_personal_info(request)
         self.save_user_about(request)
         self.save_user_contact(request)
 
-        user_about_obj = UserAboutAndAreasApi()
-        user_about_obj.save_areas(skills, request.user, UserSkill)
-        user_about_obj.save_areas(learn, request.user, UserInterest)
+        save_areas(skills, request.user, UserSkill)
+        save_areas(learn, request.user, UserInterest)
         return Response({'Detail': 'User info edited successfully'}, status=200)
 
     def save_personal_info(self, request):

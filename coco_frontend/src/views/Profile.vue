@@ -52,13 +52,14 @@ export default {
     UserAbout,
     UserContact,
     User2FollowSuggestion,
+    
   },
   data: () => ({
     username: "",
     tab: null,
     currentUsernamePath: "",
     user2Follow: null,
-    pathName: ''
+    pathName: '',
   }),
   watch: {
     $route(to, from) {
@@ -87,6 +88,7 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
+   
     
   },
 };
