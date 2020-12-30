@@ -446,21 +446,46 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
     permission_classes = (IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
-        first_name = request.data["first_name"]
-        last_name = request.data["last_name"]
-        country = request.data["country"]
-        city = request.data["city"]
-        cellphone = request.data["cellphone"]
-        bio = request.data["bio"]
+
         skills = request.data["skills"]
         learn = request.data["learn"]
-        user_about = UserAbout.objects.get(user=request.user)
-        user_about.bio = bio
-        user_about.save()
-        user_about_obj =UserAboutAndAreasApi()
+
+        self.save_personal_info(request)
+        self.save_user_about(request)
+        self.save_user_contact(request)
+
+        user_about_obj = UserAboutAndAreasApi()
         user_about_obj.save_areas(skills, request.user, UserSkill)
         user_about_obj.save_areas(learn, request.user, UserInterest)
         return Response({'Detail': 'User info edited successfully'}, status=200)
+
+    def save_personal_info(self, request):
+        first_name = request.data["first_name"]
+        last_name = request.data["last_name"]
+        user = request.user
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+
+    def save_user_about(self, request):
+        bio = request.data["bio"]
+        user_about = UserAbout.objects.get(user=request.user)
+        user_about.bio = bio
+        user_about.save()
+
+    def save_user_contact(self, request):
+        country = request.data["country"]
+        city = request.data["city"]
+        place = Place.objects.filter(country__icontains=country, city__icontains=city)
+        if place.exists():
+            place = place[0]
+        else:
+            place = Place.objects.create(country=country, city=city)
+        cellphone = request.data["cellphone"]
+        user_contact = UserContact.objects.get(user=request.user)
+        user_contact.cellphone = cellphone
+        user_contact.place = place
+        user_contact.save()
 
     def get(self, request, *args, **kwargs):
         user = request.user

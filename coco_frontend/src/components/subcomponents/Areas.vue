@@ -1,7 +1,7 @@
 <template>
-  <div> 
+  <div :id="subject"> 
     <v-autocomplete
-      v-model="areas"
+      v-model="areasList"
       :items="items"
       chips
       :label="subject == 'skills' ? 'Habilidades' : 'Quiero aprender'"
@@ -14,6 +14,7 @@
       :search-input.sync="search"
       hide-no-data
       hide-selected
+      @keypress="trimInput"
     >
       <template v-slot:selection="data">
         <v-chip
@@ -65,9 +66,16 @@ export default {
         return entry;
       });
     },
+    areasList: {
+      get: function(){
+        return this.areas
+      },
+      set: function(value){
+        this.$emit(this.subject,  value)
+      }
+    }
   },
   beforeUpdate(){
-    this.$emit(this.subject, this.areas);
   },
   watch: {
     search(val) {
@@ -101,6 +109,11 @@ export default {
       const index = this.areas.indexOf(item.area);
       if (index >= 0) this.areas.splice(index, 1);
     },
+    trimInput(){
+      var parent = document.getElementById(this.subject);
+      var input = parent.getElementsByTagName('input')[0]
+      input.value = input.value.trim();
+    }
   },
 };
 </script>

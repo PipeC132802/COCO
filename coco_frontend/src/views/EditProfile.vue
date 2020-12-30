@@ -19,7 +19,12 @@
         <v-container class="header ma-0 pa-0"></v-container>
       </v-card-title>
       <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
+        <v-form
+          ref="form"
+          v-model="valid"
+          @submit.prevent="updateUserInfo"
+          lazy-validation
+        >
           <v-row class="ma-0 pa-0">
             <v-col xs="12" md="6" class="pl-0">
               <v-text-field
@@ -38,7 +43,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <Contact :contactObj.sync="contactObj" v-on:contact="contactInfo" />
+          <Contact :contactObj="contactObj" v-on:contact="contactInfo" />
           <v-textarea
             v-model="bio"
             placeholder="Soy una persona amante de los libros..."
@@ -48,16 +53,17 @@
           ></v-textarea>
           <Areas
             v-on:skills="skillsInfo"
-            :areas.sync="skills"
+            :areas="skills"
             subject="skills"
           />
           <Areas
             v-on:learn="learnInfo"
-            :areas.sync="interests"
+            :areas="interests"
             subject="learn"
           />
           <small>
-            * Las Habilidades y los intereses están ocultos. Si deseas verlos, ubícate en dichos campos y presiona la tecla espacio.
+            * Las Habilidades y los intereses están ocultos. Si deseas verlos,
+            ubícate en dichos campos y presiona la tecla espacio.
           </small>
           <v-card-actions class="pr-0">
             <v-btn color="primary darken-3" class="ml-auto" type="submit">
@@ -121,14 +127,41 @@ export default {
           this.contactObj.cellphone = response.cellphone;
           this.skills = response.skills;
           this.interests = response.interests;
-          console.log();
         });
     },
     contactInfo(contactObj) {
-      console.log(contactObj, "[");
+      this.contactObj = contactObj;
     },
-    skillsInfo() {},
-    learnInfo() {},
+    skillsInfo(skillsObj) {
+      this.skills = skillsObj;
+    },
+    learnInfo(interestsObj) {
+      this.interests = interestsObj;
+    },
+    updateUserInfo(){
+      let formData = {
+        first_name: this.firstName,
+        last_name: this.lastName,
+        country: this.contactObj.country,
+        city: this.contactObj.city,
+        cellphone: this.contactObj.phone,
+        bio: this.bio,
+        skills: this.skills,
+        interests: this.interests
+      }
+      fetch(this.baseUrl+this.apiDir,{
+        method: 'PUT',
+        headers:{
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+        body: JSON.stringify(formData)
+      })
+      .then((response)=>{return response.json()})
+      .then((response)=>{
+        console.log(response)
+      })
+      .catch((err)=>{console.error(err)})
+    }
   },
 };
 </script>

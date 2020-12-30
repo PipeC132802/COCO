@@ -106,7 +106,6 @@ export default {
   computed:{
     country: function(){
       if (this.contactObj.country){
-        console.log('asdf')
         return this.contactObj.country
       }
     }
