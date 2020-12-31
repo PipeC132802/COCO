@@ -82,7 +82,7 @@
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
             {{ barter.interest }}
           </v-chip>
-          <v-chip :title="barter.about.place" class="ml-3" label>
+          <v-chip :title="'🌎'+barter.about.place" class="ml-3" label>
             <v-icon small left>mdi-map-marker</v-icon>
             {{ barter.about.place }}
           </v-chip>
