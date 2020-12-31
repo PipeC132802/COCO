@@ -29,9 +29,14 @@
         <span :title="'@' + userP.username" class="text"
           >(@{{ userP.username }})</span
         >
-        <span v-if="userP.username == user.username" @click="go2Edit" class="route ml-3" title="Editar información de la cuenta">Editar</span>
+        <span
+          v-if="userP.username == user.username"
+          @click="go2Edit"
+          class="route ml-3"
+          title="Editar información de la cuenta"
+          >Editar</span
+        >
       </h2>
-      
     </v-card-title>
     <v-card-text>
       <v-row justify="center">
@@ -42,11 +47,21 @@
         </span>
       </v-row>
       <v-row class="mt-2" justify="center">
-        <v-btn class="mr-3"  active-class="primary"  text :to="{name: 'Followers', params:{username: userP.username,}}">
+        <v-btn
+          class="mr-3"
+          active-class="primary"
+          text
+          :to="{ name: 'Followers', params: { username: userP.username } }"
+        >
           <strong class="mr-2">{{ userP.followers }}</strong
           >Seguidores
         </v-btn>
-        <v-btn class="ml-3" active-class="primary"  text :to="{name: 'Following', params:{username: userP.username,}}" >
+        <v-btn
+          class="ml-3"
+          active-class="primary"
+          text
+          :to="{ name: 'Following', params: { username: userP.username } }"
+        >
           <strong class="mr-2">{{ userP.following }}</strong
           >Seguidos
         </v-btn>
@@ -64,8 +79,13 @@
           </v-avatar>
           Te sigue
         </v-chip>
-        <FollowButton :followThisUser="userP.followThisUser" :from="user.username" :to="userP.username" v-on:followObj="followInfo"
-        :target="$route.params.username == user.username?'self':'other'" />
+        <FollowButton
+          :followThisUser="userP.followThisUser"
+          :from="user.username"
+          :to="userP.username"
+          v-on:followObj="followInfo"
+          :target="$route.params.username == user.username ? 'self' : 'other'"
+        />
       </v-card-actions>
     </v-card-text>
   </v-card>
@@ -75,11 +95,11 @@
 import { mapState } from "vuex";
 import moment from "moment";
 
-import FollowButton from "@/components/FollowButton.vue"
+import FollowButton from "@/components/FollowButton.vue";
 export default {
   name: "UserCover",
   props: ["user2Follow"],
-  components:{
+  components: {
     FollowButton,
   },
   data: () => ({
@@ -98,19 +118,26 @@ export default {
     },
   }),
   computed: {
-    ...mapState(["baseUrl", "pixaKey", "authentication", "user","profileFollowStatus"]),
-    dateJoined: function (){
-      return moment(this.userP.dateJoined).locale('es').format('MMMM D, YYYY')
-    }
+    ...mapState([
+      "baseUrl",
+      "pixaKey",
+      "authentication",
+      "user",
+      "profileFollowStatus",
+    ]),
+    dateJoined: function () {
+      return moment(this.userP.dateJoined)
+        .locale("es")
+        .format("MMMM D [de] YYYY");
+    },
   },
-  watch:{
-    profileFollowStatus: function(){
+  watch: {
+    profileFollowStatus: function () {
       this.userP.followers = this.profileFollowStatus.followers;
       this.userP.following = this.profileFollowStatus.following;
-    }
+    },
   },
-  beforeUpdate(){
-  },
+  beforeUpdate() {},
   beforeMount() {
     this.userP.username = this.$route.params.username;
     this.getUserCoverInfo();
@@ -137,8 +164,7 @@ export default {
           this.userP.following = response.following;
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
-          document.title =
-            this.userP.name + `(@${this.userP.username}) / COCO`;
+          document.title = this.userP.name + `(@${this.userP.username}) / COCO`;
           this.searchCover();
         })
         .catch((err) => {
@@ -166,23 +192,25 @@ export default {
           this.cover = img_slected.largeImageURL;
         });
     },
-    followInfo(followObj){
+    followInfo(followObj) {
       this.userP.followers = followObj.followers;
       this.userP.following = followObj.following;
       this.userP.followThisUser = followObj.follow_this_user;
     },
-    go2Edit(){
-      this.$router.push({name: 'Edit', params:{username: this.userP.username,}})
-    }
-    
+    go2Edit() {
+      this.$router.push({
+        name: "Edit",
+        params: { username: this.userP.username },
+      });
+    },
   },
   filters: {
-  capitalize: function (value) {
-    if (!value) return ''
-    value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
-  }
-}
+    capitalize: function (value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    },
+  },
 };
 </script>
 
@@ -213,11 +241,12 @@ h2 {
   right: 20px;
   bottom: 15%;
 }
-.route{
-  color: #478CCC;
+.route {
+  color: #478ccc;
   font-size: 12pt;
   font-weight: 200;
-}.route:hover{
+}
+.route:hover {
   text-decoration: underline;
   cursor: pointer;
 }

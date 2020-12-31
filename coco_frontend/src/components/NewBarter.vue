@@ -189,7 +189,6 @@ export default {
         { value: 1, text: "Presencial" },
         { value: 2, text: "Virtual" },
       ],
-      
       rules: {
         required: (value) => !!value || "Obligatorio",
         maxLength: v => v.length <= 255 || 'Max. 255 caracteres'

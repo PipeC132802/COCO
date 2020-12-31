@@ -1,13 +1,15 @@
+from django.contrib.auth.models import User
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest
-from Apps.ManageUsers.models import Area
-from COCO.functions import get_place
+from Apps.ManageUsers.models import Area, UserRelationship
+from COCO.functions import get_place, get_profile_url
 
 
-class BarterApi(generics.CreateAPIView):
+class BarterApi(generics.CreateAPIView, generics.RetrieveAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -15,7 +17,8 @@ class BarterApi(generics.CreateAPIView):
         self.create_barter_about(request, barter)
         self.create_barter_skill(request, barter)
         self.create_barter_interest(request, barter)
-        return Response({'Detail': 'new barter created succesfuly'},status=200)
+        self.create_barter_mode(request, barter)
+        return Response({'Detail': 'new barter created succesfuly'}, status=200)
 
     def create_barter(self, request):
         title = request.data['title']
@@ -47,3 +50,47 @@ class BarterApi(generics.CreateAPIView):
 
     def get_area(self, area):
         return Area.objects.filter(area=area)
+
+
+class BarterListApi(generics.ListAPIView):
+    queryset = Barter.objects.all()[0]
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.get(username=request.GET['username'])
+        field = request.GET['field']
+        if field == 'profile':
+            query = Q(user=user)
+            barters_json = self.get_barter_list(query)
+        else:
+            query = Q(user_id__in=self.get_following_users(user))
+            barters_json = self.get_barter_list(query)
+
+        return Response(barters_json, status=200)
+
+    def get_following_users(self, user):
+        following = list(
+            UserRelationship.objects.filter(user_from=user, status=1).values_list('user_to_id', flat=True).distinct())
+        following.append(user.pk)
+        return following
+
+    def get_barter_list(self, query):
+        barter_list = []
+        barters = Barter.objects.filter(query).order_by('-created')
+        for barter in barters:
+            barter_about = BarterAbout.objects.get(barter=barter)
+            barter_json = {
+                'id': barter.pk,
+                'user': {
+                    'username': barter.user.username,
+                    'name': '{0} {1}'.format(barter.user.first_name, barter.user.last_name),
+                    'profile_picture': get_profile_url(barter.user)
+                },
+                'about': barter_about.serializer(),
+                'mode': BarterMode.objects.get(barter=barter).mode,
+                'skill': BarterSkill.objects.get(barter=barter).area.area,
+                'interest': BarterInterest.objects.get(barter=barter).area.area,
+                'created': barter.created,
+                'title': barter.barter_title
+            }
+            barter_list.append(barter_json)
+        return barter_list

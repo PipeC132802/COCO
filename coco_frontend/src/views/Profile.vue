@@ -16,7 +16,7 @@
               <v-tab-item>
                 <div class="pa-1" v-if="tab == 0">
                   <NewBarter v-on:newBarterPosted="bartersReload" class="mt-5" v-if="username == user.username" />
-                  <div style="background: orange; height: 1000px">Pub list</div>
+                  <BarterList :field="'profile'" />
                 </div>
               </v-tab-item>
               <v-tab-item> Rese;a </v-tab-item>
@@ -44,6 +44,7 @@ import NewBarter from "@/components/NewBarter.vue";
 import User2FollowSuggestion from "@/components/User2FollowSuggestion.vue";
 import UserAbout from "@/components/subcomponents/UserAbout.vue";
 import UserContact from "@/components/subcomponents/UserContact.vue";
+import BarterList from "@/components/BarterList.vue";
 import { mapState } from "vuex";
 export default {
   components: {
@@ -52,7 +53,7 @@ export default {
     UserAbout,
     UserContact,
     User2FollowSuggestion,
-    
+    BarterList
   },
   data: () => ({
     username: "",

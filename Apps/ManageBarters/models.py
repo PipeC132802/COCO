@@ -15,6 +15,9 @@ class Barter(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.barter_title
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.barter_title)
         super(Barter, self).save(*args, **kwargs)
@@ -28,6 +31,11 @@ class BarterAbout(models.Model):
     place = models.ForeignKey(Place, on_delete=models.CASCADE)
     barter = models.OneToOneField(Barter, on_delete=models.CASCADE)
 
+    def serializer(self):
+        return {
+            'description': self.description,
+            'place': self.place.__str__()
+        }
 
 class BarterMode(models.Model):
     mode_statuses = (

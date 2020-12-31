@@ -1,4 +1,5 @@
-from Apps.ManageUsers.models import Area, Place
+from Apps.ManageUsers.models import Area, Place, UserProfilePhoto
+from COCO.settings import DOMAIN
 
 
 def save_areas(areas, user, obj_param):
@@ -17,7 +18,15 @@ def save_areas(areas, user, obj_param):
 
 def get_place(country, city):
     try:
-        place = Place.objects.get(country=country, city=city)
+        place = Place.objects.get(country__icontains=country, city__icontains=city)
     except:
-        place = Place.objects.create(country=country, city=city)
+        place = Place.objects.create(country=country.capitalize(), city=city.capitalize())
     return place
+
+
+def get_profile_url(user):
+    try:
+        profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=user).profile_picture.url
+    except:
+        profile_picture = ''
+    return profile_picture
