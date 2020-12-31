@@ -354,10 +354,12 @@ class SuggestUserApi(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_except = request.GET["user_except"]
         id_users_following = [user_relationship.user_to.pk for user_relationship in
                               UserRelationship.objects.filter(user_from=user, status=1)]
-        id_users_following.append(User.objects.get(username=user_except).pk)
+        try:
+            id_users_following.append(User.objects.get(username=request.GET["user_except"]).pk)
+        except:
+            pass
         user_interests = [user_interest.area.area for user_interest in
                           UserInterest.objects.filter(user__username=user.username)]
         users = [user_skill.user for user_skill in UserSkill.objects.filter(area__area__in=user_interests).exclude(

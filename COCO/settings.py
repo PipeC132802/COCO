@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Self apps
     'Apps.ManageUsers.apps.UsersConfig',
-
+    'Apps.ManageBarters',
     # Third Party apps
     'rest_framework',
     'rest_framework.authtoken',

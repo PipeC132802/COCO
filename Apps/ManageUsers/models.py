@@ -58,7 +58,7 @@ class UserCoverPhoto(models.Model):
 
 
 class UserPasswordChanged(models.Model):
-    modified = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True)
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE
                                 )
