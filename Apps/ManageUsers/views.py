@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from PIL import Image
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -11,7 +13,7 @@ from rest_framework.views import APIView
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest, UserRelationship
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
-from COCO.functions import save_areas
+from COCO.functions import save_areas, get_place
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
@@ -144,7 +146,7 @@ class UserContactApi(generics.CreateAPIView):
         country = request.data["country"]
         city = request.data["city"]
         phone_number = request.data["phone_number"]
-        place = self.search_place(country, city)
+        place = get_place(country, city)
         try:
             UserContact.objects.create(user=request.user, cellphone=phone_number, place=place)
             return JsonResponse({'contact_created': True})
@@ -154,13 +156,6 @@ class UserContactApi(generics.CreateAPIView):
             user_contact.place = place
             user_contact.save()
             return JsonResponse({'contact_updated': True})
-
-    def search_place(self, country, city):
-        try:
-            place = Place.objects.get(country=country, city=city)
-        except:
-            place = Place.objects.create(country=country, city=city)
-        return place
 
 
 class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, generics.RetrieveAPIView):
@@ -227,7 +222,6 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         username = request.GET["username"]
         username_request = request.GET["username_request"]
-        user_json = {}
 
         try:
             user_profile = UserProfilePhoto.objects.get(user__username=username)
@@ -453,7 +447,10 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
 
     def save_user_about(self, request):
         bio = request.data["bio"]
-        user_about = UserAbout.objects.get(user=request.user)
+        try:
+            user_about = UserAbout.objects.get(user=request.user)
+        except:
+            user_about = UserAbout.objects.create(user=request.user)
         user_about.bio = bio
         user_about.save()
 
@@ -466,7 +463,10 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
         else:
             place = Place.objects.create(country=country, city=city)
         cellphone = request.data["cellphone"]
-        user_contact = UserContact.objects.get(user=request.user)
+        try:
+            user_contact = UserContact.objects.get(user=request.user)
+        except:
+            user_contact = UserContact.objects.create(user=request.user, place=place)
         user_contact.cellphone = cellphone
         user_contact.place = place
         user_contact.save()

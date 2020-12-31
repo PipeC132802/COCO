@@ -1,18 +1,18 @@
 <template>
   <div class="pl-2">
-    <v-row class="ml-1 mb-2">
+    <v-row v-if="userContact.place" class="ml-1 mb-2">
       <span class="skills">
         <v-icon class="pb-1" left color="info"> mdi-earth </v-icon>
         Vive en {{ userContact.place }}
       </span>
     </v-row>
-    <v-row class="ml-1 mb-2">
+    <v-row v-if="userContact.skills" class="ml-1 mb-2">
       <span class="skills">
         <v-icon class="pb-1" left color="info"> mdi-teach </v-icon>
         {{ userContact.skills }}
       </span>
     </v-row>
-    <v-row class="ml-1 mb-2">
+    <v-row v-if="userContact.interests" class="ml-1 mb-2">
       <span class="skills">
         <v-icon class="pb-1" left color="info"> mdi-school </v-icon>
         {{ userContact.interests }}

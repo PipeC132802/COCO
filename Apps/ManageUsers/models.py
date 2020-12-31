@@ -18,7 +18,7 @@ class UserOnline(models.Model):
 class UserAbout(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField()
-    birthday = models.DateField()
+    birthday = models.DateField(null=True)
     gender = models.CharField(max_length=10)
 
     def __str__(self):

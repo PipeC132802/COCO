@@ -15,7 +15,7 @@
             <v-tabs-items v-model="tab">
               <v-tab-item>
                 <div class="pa-1" v-if="tab == 0">
-                  <NewBarter class="mt-5" v-if="username == user.username" />
+                  <NewBarter v-on:newBarterPosted="bartersReload" class="mt-5" v-if="username == user.username" />
                   <div style="background: orange; height: 1000px">Pub list</div>
                 </div>
               </v-tab-item>
@@ -88,7 +88,9 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
-   
+    bartersReload(){
+      console.log("Nuevo trueque")
+    }
     
   },
 };

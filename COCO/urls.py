@@ -15,9 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from Apps.ManageUsers import urls as user_urls
 from django.conf.urls.static import static
 from django.conf import settings
+
+from Apps.ManageUsers import urls as user_urls
+from Apps.ManageBarters import urls as barter_urls
+
 
 coco_api_base = 'coco/api/v1.0/'
 urlpatterns = [
@@ -25,4 +28,7 @@ urlpatterns = [
 
     # User app apis
     path(coco_api_base, include(user_urls)),
+
+    # Barter app apis
+    path(coco_api_base, include(barter_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

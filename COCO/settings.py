@@ -13,6 +13,9 @@ import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+from django.db.backends.postgresql.base import DatabaseWrapper
+from django.db.backends.postgresql.operations import DatabaseOperations
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -80,8 +83,12 @@ WSGI_APPLICATION = 'COCO.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'coco_platform',
+        'USER': 'cocoadmin',
+        'PASSWORD': 'pZfMDy%sDpb07DXDVqs$JK@Ql#j6NY',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -143,3 +150,19 @@ EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
 DOMAIN = "http://127.0.0.1:8000"
 
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
+
+
+def lookup_cast(self, lookup_type, internal_type=None):
+    if lookup_type in ('icontains', 'istartswith'):
+        return "UPPER(unaccent(%s::text))"
+    else:
+        return super(DatabaseOperations, self).lookup_cast(lookup_type, internal_type)
+
+
+def patch_unaccent():
+    DatabaseOperations.lookup_cast = lookup_cast
+    DatabaseWrapper.operators['icontains'] = 'LIKE UPPER(unaccent(%s))'
+    DatabaseWrapper.operators['istartswith'] = 'LIKE UPPER(unaccent(%s))'
+
+
+patch_unaccent()
