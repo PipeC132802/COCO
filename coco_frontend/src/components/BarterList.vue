@@ -97,10 +97,8 @@
         :barterId="barter.id"
         class="mx-1 mt-3"
       />
-      <BarterActions
-        :barterId="barter.id"
-        class="mx-1 mt-0 ml-3"
-      />
+      <BarterActions :barterId="barter.id" class="mx-1 mt-0 ml-3" />
+      <Comments class="mx-1 mt-0 ml-3" :barterId="barter.id" />
     </v-card>
   </div>
 </template>
@@ -110,12 +108,14 @@ import { mapState } from "vuex";
 import moment from "moment";
 import Reactions from "../components/Reactions.vue";
 import BarterActions from "../components/BarterActions.vue";
+import Comments from "../components/Comments.vue";
 export default {
   name: "BarterList",
   props: ["field"],
   components: {
     Reactions,
     BarterActions,
+    Comments,
   },
   data: () => ({
     items: [

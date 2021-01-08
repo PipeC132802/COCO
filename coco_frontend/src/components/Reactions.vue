@@ -69,7 +69,7 @@ export default {
     commentsVerbose: function () {
       let string = "";
       if (this.comments > 1 || this.comments == 0) {
-        string = this.reactionsCount + " propuestas";
+        string = this.comments + " propuestas";
       } else {
         string = "Una propuesta";
       }
