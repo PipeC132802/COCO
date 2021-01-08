@@ -10,7 +10,7 @@
         </span>
 
         <span class="mx-1">•</span>
-        <p  class="ma-0 verbose comments">{{ commentsVerbose }}</p>
+        <p class="ma-0 verbose comments">{{ commentsVerbose }}</p>
       </v-row>
     </v-container>
   </div>
@@ -27,6 +27,14 @@ export default {
     comments: 0,
     apiDir: "barter-reactions/",
   }),
+  mounted() {
+    this.$root.$on("reaction", (data) => {
+      if(data.barter === this.barterId){
+       this.getReactions();
+      }
+    });
+  },
+
   computed: {
     ...mapState(["baseUrl"]),
     reactionsEmojis: function () {
@@ -88,8 +96,8 @@ export default {
 </script>
 
 <style>
-.verbose{
-    font-size: 10pt;
+.verbose {
+  font-size: 10pt;
 }
 .comments:hover {
   color: #307abd;

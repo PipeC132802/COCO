@@ -92,8 +92,15 @@
         </v-card-text>
       </v-list>
 
-      <Reactions :barterId="barter.id" class="mx-1 mt-3" />
-      <BarterActions :barterId="barter.id" class="mx-1 mt-0 ml-3" />
+      <Reactions
+        :id="'barter_' + barter.id"
+        :barterId="barter.id"
+        class="mx-1 mt-3"
+      />
+      <BarterActions
+        :barterId="barter.id"
+        class="mx-1 mt-0 ml-3"
+      />
     </v-card>
   </div>
 </template>
@@ -124,7 +131,6 @@ export default {
     ...mapState(["baseUrl", "user"]),
   },
   mounted() {
-      
     this.fetchBarterList();
   },
   methods: {

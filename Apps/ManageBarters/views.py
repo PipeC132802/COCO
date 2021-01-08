@@ -98,6 +98,7 @@ class BarterListApi(generics.ListAPIView):
 
 
 class BarterReactionsApi(generics.RetrieveAPIView):
+
     def get(self, request, *args, **kwargs):
         barter_id = request.GET['barter_id']
 
@@ -108,3 +109,26 @@ class BarterReactionsApi(generics.RetrieveAPIView):
             'comments': BarterComment.objects.filter(barter_id=barter_id).count()
         }
         return Response(reaction_response)
+
+
+class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        barter_id = request.GET['barter_id']
+        reaction = BarterReaction.objects.filter(barter_id=barter_id, user_from=request.user).exclude(reaction=0)
+        if reaction.exists():
+            return Response({'reaction': reaction[0].reaction})
+        else:
+            return Response({'reaction': 0})
+
+    def post(self, request, *args, **kwargs):
+        try:
+            barter_reaction = BarterReaction.objects.get(barter_id=request.data["barter_id"])
+            barter_reaction.reaction = request.data["reaction"]
+            barter_reaction.save()
+        except:
+            barter = Barter.objects.get(id=request.data["barter_id"])
+            barter_reaction = BarterReaction.objects.create(barter=barter, user_from=request.user,
+                                                            reaction=request.data["reaction"])
+        return Response({'Detail': 'barter reaction set succesfuly', 'reaction': barter_reaction.reaction})
