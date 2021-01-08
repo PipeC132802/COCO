@@ -37,6 +37,7 @@ class BarterAbout(models.Model):
             'place': self.place.__str__()
         }
 
+
 class BarterMode(models.Model):
     mode_statuses = (
         (1, 'Virtual'),
@@ -55,6 +56,7 @@ class BarterReaction(models.Model):
     )
     reaction = models.IntegerField(verbose_name="Reaction", choices=reaction_statuses)
     barter = models.ForeignKey(Barter, on_delete=models.CASCADE)
+    user_from = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class BarterComment(models.Model):
@@ -64,7 +66,9 @@ class BarterComment(models.Model):
 
     comment = models.TextField()
     barter = models.ForeignKey(Barter, on_delete=models.CASCADE)
+    user_from = models.ForeignKey(User, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to=comment_directory_path, blank=True, null=True)
+    accepted = models.BooleanField(default=False)
 
 
 class BarterSkill(models.Model):

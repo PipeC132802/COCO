@@ -4,7 +4,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest
+from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest, BarterReaction, \
+    BarterComment
 from Apps.ManageUsers.models import Area, UserRelationship
 from COCO.functions import get_place, get_profile_url
 
@@ -94,3 +95,16 @@ class BarterListApi(generics.ListAPIView):
             }
             barter_list.append(barter_json)
         return barter_list
+
+
+class BarterReactionsApi(generics.RetrieveAPIView):
+    def get(self, request, *args, **kwargs):
+        barter_id = request.GET['barter_id']
+
+        reactions = BarterReaction.objects.filter(barter_id=barter_id).exclude(reaction=0)
+        reaction_response = {
+            'reactions': reactions.count(),
+            'types': reactions.values_list('reaction', flat=True).distinct(),
+            'comments': BarterComment.objects.filter(barter_id=barter_id).count()
+        }
+        return Response(reaction_response)

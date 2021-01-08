@@ -15,8 +15,8 @@
       :key="barter.id"
     >
       <v-divider></v-divider>
-      <v-list subheader three-line>
-        <v-list-item>
+      <v-list class="pb-0 mb-0" subheader one-line>
+        <v-list-item class="pb-0 mb-0">
           <v-list-item-avatar>
             <v-img
               v-if="barter.user.profile_picture"
@@ -35,11 +35,6 @@
                 timeSinceShort(barter.created) | capitalize
               }}</small>
             </v-list-item-title>
-            <v-list-item-subtitle>
-              <v-card-title class="ma-0 pa-0">
-                {{ barter.title }}
-              </v-card-title>
-            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-menu
@@ -69,6 +64,9 @@
             </v-menu>
           </v-list-item-action>
         </v-list-item>
+        <v-card-title class="mt-0 pt-0 mb-1">
+          {{ barter.title }}
+        </v-card-title>
         <v-card-subtitle class="pa-0 pt-0 mx-4">
           <v-chip :title="'Enseñaré ' + barter.skill" color="primary darken-1">
             <v-icon class="pl-1" small pill left> mdi-teach </v-icon>
@@ -82,42 +80,51 @@
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
             {{ barter.interest }}
           </v-chip>
-          <v-chip :title="'🌎'+barter.about.place" class="ml-3" label>
+          <v-chip :title="'🌎' + barter.about.place" class="ml-3" label>
             <v-icon small left>mdi-map-marker</v-icon>
             {{ barter.about.place }}
           </v-chip>
         </v-card-subtitle>
-        <v-card-text class="px-4 mt-3">
-          <p>
+        <v-card-text class="px-4 mt-3 mb-0 pb-0">
+          <p class="mb-0">
             {{ barter.about.description }}
           </p>
         </v-card-text>
       </v-list>
+
+      <Reactions :barterId="barter.id" class="mx-1 mt-3" />
+      <BarterActions :barterId="barter.id" class="mx-1 mt-0 ml-3" />
     </v-card>
   </div>
 </template>
 
-
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
+import Reactions from "../components/Reactions.vue";
+import BarterActions from "../components/BarterActions.vue";
 export default {
   name: "BarterList",
   props: ["field"],
+  components: {
+    Reactions,
+    BarterActions,
+  },
   data: () => ({
     items: [
       { title: "Editar", icon: "mdi-pencil" },
       { title: "Eliminar", icon: "mdi-delete" },
       { title: "Reportar", icon: "mdi-alert" },
     ],
-    apiDir: "barter-list-api/",
+    apiDir: "barter-list/",
     barters: "",
     loaded: false,
   }),
   computed: {
     ...mapState(["baseUrl", "user"]),
   },
-  created() {
+  mounted() {
+      
     this.fetchBarterList();
   },
   methods: {

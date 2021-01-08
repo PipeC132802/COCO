@@ -184,7 +184,7 @@ export default {
       loading: false,
       snackbar: false,
       message: "",
-      apiDir: "barter-api/",
+      apiDir: "barter/",
       items: [
         { value: 1, text: "Presencial" },
         { value: 2, text: "Virtual" },
