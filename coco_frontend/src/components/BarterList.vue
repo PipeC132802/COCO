@@ -15,7 +15,7 @@
       :key="barter.id"
     >
       <v-divider></v-divider>
-      <v-list class="pb-0 mb-0" subheader one-line>
+      <v-list class="pb-0 mb-0" subheader two-line>
         <v-list-item class="pb-0 mb-0">
           <v-list-item-avatar>
             <v-img
@@ -30,11 +30,24 @@
               <span class="grey--text" :title="'@' + barter.user.username"
                 >@{{ barter.user.username }}</span
               >
-              ·
-              <small :title="timeSinceShort(barter.created) | capitalize">{{
-                timeSinceShort(barter.created) | capitalize
-              }}</small>
             </v-list-item-title>
+            <v-list-item-subtitle>
+              <v-icon class="mr-1" small>mdi-clock</v-icon>
+              <small :title="timeSince(barter.created) | capitalize">{{
+                timeSince(barter.created) | capitalize
+              }}</small>
+              <v-chip
+                small
+                color="info darken-4"
+                v-if="barter.edited"
+                class="ml-2"
+                label
+                outlined
+                title="Editado"
+              >
+                Editado
+              </v-chip>
+            </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
             <v-menu
@@ -49,10 +62,22 @@
                   <v-icon color="grey darken-3">mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              <v-list class="pa-0">
+              <v-list v-if="barter.user.username == user.username" class="pa-0">
                 <v-list-item
                   class="item-menu pl-1"
-                  v-for="(item, i) in items"
+                  v-for="(item, i) in items.self"
+                  :key="i"
+                >
+                  <v-list-item-title>
+                    <v-icon class="ml-1" left>{{ item.icon }}</v-icon>
+                    {{ item.title }}</v-list-item-title
+                  >
+                </v-list-item>
+              </v-list>
+              <v-list v-else class="pa-0">
+                <v-list-item
+                  class="item-menu pl-1"
+                  v-for="(item, i) in items.other"
                   :key="i"
                 >
                   <v-list-item-title>
@@ -96,9 +121,19 @@
         :id="'barter_' + barter.id"
         :barterId="barter.id"
         class="mx-1 mt-3"
+        v-on:comments="showComments"
       />
-      <BarterActions :barterId="barter.id" class="mx-1 mt-0 ml-3" />
-      <Comments @commentComponents="showComments" class="mx-1 mt-0 ml-3" :barterId="barter.id" />
+      <BarterActions
+        v-on:comments="showComments"
+        :barterId="barter.id"
+        class="mx-1 mt-0 ml-3"
+      />
+      <Comments
+        v-if="barterComments == barter.id"
+        :author="barter.user.username"
+        class="mx-1 mt-0 ml-2"
+        :barterId="barter.id"
+      />
     </v-card>
   </div>
 </template>
@@ -118,25 +153,28 @@ export default {
     Comments,
   },
   data: () => ({
-    items: [
-      { title: "Editar", icon: "mdi-pencil" },
-      { title: "Eliminar", icon: "mdi-delete" },
-      { title: "Reportar", icon: "mdi-alert" },
-    ],
+    items: {
+      self: [
+        { title: "Editar", icon: "mdi-pencil" },
+        { title: "Eliminar", icon: "mdi-delete" },
+      ],
+      other: [{ title: "Reportar", icon: "mdi-alert" }],
+    },
     apiDir: "barter-list/",
     barters: "",
     loaded: false,
+    barterComments: null,
   }),
   computed: {
     ...mapState(["baseUrl", "user"]),
   },
   mounted() {
-    this.fetchBarterList();
     this.$root.$on("comments", (data) => {
-      if(data.barter === this.barterId){
-       this.getReactions();
+      if (data.barter === this.barterId) {
+        this.getReactions();
       }
     });
+    this.fetchBarterList();
   },
   methods: {
     fetchBarterList() {
@@ -159,16 +197,15 @@ export default {
       }
       return username;
     },
-    timeSinceShort(date) {
+    timeSince(date) {
       let timeSince = moment(date).locale("es").fromNow();
       return timeSince;
     },
-  },
-  filters: {
-    capitalize: function (value) {
-      if (!value) return "";
-      value = value.toString();
-      return value.charAt(0).toUpperCase() + value.slice(1);
+    showComments(barter) {
+      if (barter == this.barterComments) this.barterComments = null;
+      else {
+        this.barterComments = barter;
+      }
     },
   },
 };

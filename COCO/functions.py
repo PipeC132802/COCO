@@ -30,3 +30,12 @@ def get_profile_url(user):
     except:
         profile_picture = ''
     return profile_picture
+
+
+def get_img_url_from_model(model, query):
+    try:
+        field = DOMAIN + model.objects.get(query).photo.url
+    except:
+        field = ''
+
+    return field

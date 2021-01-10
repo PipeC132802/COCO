@@ -1,5 +1,6 @@
 from django.apps import AppConfig
+class BartersConfig(AppConfig):
+    name = 'Apps.ManageBarters'
 
-
-class ManagebartersConfig(AppConfig):
-    name = 'ManageBarters'
+    def ready(self):
+        import Apps.ManageBarters.signals

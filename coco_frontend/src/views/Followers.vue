@@ -23,12 +23,12 @@
         transition="fade-transition"
       >
         <v-list-item class="user-suggest" two-line>
-          <v-list-item-avatar>
+          <v-list-item-avatar color="secondary">
             <v-img
               v-if="follower.profile_picture"
               :src="follower.profile_picture"
             ></v-img>
-            <span v-else>{{ follower.name.slice(0, 1) }}</span>
+            <span class="white--text" v-else>{{ follower.name.slice(0, 1) }}</span>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title

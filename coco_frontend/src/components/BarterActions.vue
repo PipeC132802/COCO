@@ -54,7 +54,7 @@
 
       <v-btn @click="showComments" text class="mr-1 action">
         <v-icon left small> mdi-comment-text-multiple </v-icon>
-        Comentar
+       Proponer
       </v-btn>
       <v-btn class="action" text>
         <v-icon left small> mdi-share-variant </v-icon>
@@ -143,10 +143,7 @@ export default {
       }
     },
     showComments() {
-      this.$root.$emit("comments", {
-        barter: this.barterId,
-        comments: true,
-      });
+      this.$emit("comments", this.barterId);
     },
     getReactionVerbose(reaction) {
       let msg = "";

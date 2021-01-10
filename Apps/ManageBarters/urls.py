@@ -7,4 +7,5 @@ urlpatterns = [
     path('barter-list/', BarterListApi.as_view(), name='barter_list'),
     path('barter-reactions/', BarterReactionsApi.as_view(), name='barter_reactions'),
     path('create-barter-reaction/', CreateBarterReactionApi.as_view(), name='barter_reaction'),
+    path('barter-comments/', BarterCommentsApi.as_view(), name='barter_comment'),
 ]

@@ -1,5 +1,6 @@
-<template>
+    <template>
   <v-container class="ma-0 pa-0">
+    <v-card-title class="pl-0"> Edita tu comentario </v-card-title>
     <v-row class="px-3 mr-2">
       <v-avatar color="secondary" size="40">
         <v-img v-if="user.profile_picture" :src="user.profile_picture"> </v-img>
@@ -8,23 +9,21 @@
       <v-col class="pt-0 form">
         <div
           class="comment"
-          placeholder="Propónle algo! 😊"
           contenteditable="true"
-          :id="'CommentDiv' + barterId"
+          :id="'CommentDiv' + comment.id"
           @keydown="setComment"
-        ></div>
+        >
+          {{ comment.comment }}
+        </div>
         <v-img
           max-width="250"
           class="ml-3 mt-1 mb-2 image-in-comment"
-          v-if="image"
-          :src="imgUrl"
+          v-if="(comment.photo && !trigger) || imgUrl.length"
+          :src="trigger ? imgUrl : comment.photo"
         >
           <v-row>
             <v-btn
-              @click="
-                imgUrl = '';
-                image = '';
-              "
+              @click="clearImgData()"
               title="Quitar foto"
               color="primary darken-3"
               class="mr-4 mt-1 ml-auto"
@@ -47,91 +46,120 @@
           ></v-file-input>
         </v-row>
       </v-col>
-      <v-col v-if="comment || image" cols="12">
+      <v-col v-if="commentText || image" cols="12">
         <v-btn
           @click="submitComment"
           class="ml-10"
-          small
           color="primary darken-3"
           rounded
           :loading="loading"
         >
-          Proponer
+          Editar
         </v-btn>
       </v-col>
     </v-row>
+    <v-snackbar v-model="snackbar">
+      {{ message }}
+      <template v-slot:action="{ attrs }">
+        <v-btn color="error" text v-bind="attrs" @click="snackbar = false">
+          Cerrar
+        </v-btn>
+      </template>
+    </v-snackbar>
   </v-container>
 </template>
 
-<script>
+    <script>
 import { mapState } from "vuex";
 export default {
   name: "CommentForm",
-  props: ["barterId"],
+  props: ["commentObj"],
   computed: {
     ...mapState(["user"]),
   },
   data: () => ({
-    comment: "",
+    commentText: "",
     image: "",
-    imgUrl: "",
     apiDir: "barter-comments/",
     loading: false,
+    trigger: false,
+    message: "Debes añadir información.",
+    snackbar: false,
   }),
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
+    comment: function () {
+      return this.commentObj;
+    },
+    imgUrl: {
+      get: function () {
+        if (this.image) return URL.createObjectURL(this.image);
+        else return "";
+      },
+      set: function (val) {
+          this.$emit('commentUpdated')
+      },
+    },
   },
   methods: {
     addImage2Comment(img) {
       this.image = img;
-      this.imgUrl = URL.createObjectURL(img);
+      this.trigger = true;
     },
     setComment() {
-      let commentDiv = document.getElementById("CommentDiv" + this.barterId);
-      this.comment = commentDiv.innerText.trim();
+      let commentDiv = document.getElementById("CommentDiv" + this.comment.id);
+      this.commentText = commentDiv.innerText.trim();
     },
     submitComment() {
-      if (this.comment.trim().length || this.image) {
+      if (this.commentText.trim().length || this.image) {
         this.loading = true;
         const formData = new FormData();
-        formData.append("comment", this.comment);
-        formData.append("barter", this.barterId);
+        formData.append("comment", this.commentText);
+        formData.append("action", 1);
+        formData.append("commentId", this.comment.id);
         formData.append("photo", this.image);
-        console.log(formData)
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
         };
         delete headers["Content-Type"];
         fetch(this.baseUrl + this.apiDir, {
-          method: "POST",
+          method: "PUT",
           headers: headers,
-          body: formData
+          body: formData,
         })
-        .then((response)=>(response.json()))
-        .then((response)=>{
-          let commentDiv = document.getElementById("CommentDiv" + this.barterId);
-          this.comment = '';
-          this.image = '';
-          this.imgUrl = '';
-          commentDiv.innerText = '';
-          this.$emit('commentPosted');
-          this.$root.$emit("reaction", {
-              barter: this.barterId,
+          .then((response) => response.json())
+          .then((response) => {
+            let commentDiv = document.getElementById(
+              "CommentDiv" + this.comment.id
+            );
+            this.commentText = "";
+            this.image = "";
+            this.imgUrl = "";
+            commentDiv.innerText = "";
+            this.$emit("commentPosted");
+            this.$root.$emit("reaction", {
+              barter: this.comment.id,
               reaction: null,
             });
-        })
-        .catch((err)=>console.error(err))
-        .finally(()=>{
-          this.loading = false;
-
-        })
+          })
+          .catch((err) => console.error(err))
+          .finally(() => {
+            this.loading = false;
+          });
+      } else {
+        this.snackbar = true;
       }
+    },
+    clearImgData() {
+      this.trigger = true;
+      console.log(this.trigger);
+      this.image = "";
     },
   },
 };
 </script>
 
-<style>
+    <style>
 .comment {
   min-height: 30px;
   overflow: auto;

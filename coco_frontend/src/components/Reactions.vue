@@ -2,15 +2,15 @@
   <div>
     <v-container fluid class="ma-0 pt-0">
       <v-row class="ma-0 pa-0 verbose">
-        <div v-if="reactionsTypes.length" class="mr-1">
+        <div :title="reactionsEmojis" v-if="reactionsTypes.length" class="mr-1">
           {{ reactionsEmojis }}
         </div>
-        <span>
+        <span :title="reactionsVerbose">
           {{ reactionsVerbose }}
         </span>
 
         <span class="mx-1">•</span>
-        <p class="ma-0 verbose comments">{{ commentsVerbose }}</p>
+        <p @click="showComments" :title="commentsVerbose" class="ma-0 verbose comments">{{ commentsVerbose }}</p>
       </v-row>
     </v-container>
   </div>
@@ -69,9 +69,9 @@ export default {
     commentsVerbose: function () {
       let string = "";
       if (this.comments > 1 || this.comments == 0) {
-        string = this.comments + " comentarios";
+        string = this.comments + " propuestas";
       } else {
-        string = "Un comentario";
+        string = "Una propuesta";
       }
       return string;
     },
@@ -91,6 +91,9 @@ export default {
           this.comments = response.comments;
         });
     },
+    showComments(){
+      this.$emit("comments", this.barterId);
+    }
   },
 };
 </script>

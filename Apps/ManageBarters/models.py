@@ -69,6 +69,9 @@ class BarterComment(models.Model):
     user_from = models.ForeignKey(User, on_delete=models.CASCADE)
     photo = models.ImageField(upload_to=comment_directory_path, blank=True, null=True)
     accepted = models.BooleanField(default=False)
+    updated = models.BooleanField(default=False)
+    deleted = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 class BarterSkill(models.Model):
