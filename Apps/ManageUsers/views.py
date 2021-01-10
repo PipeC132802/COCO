@@ -247,7 +247,7 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
                     'profile_picture': '',
                     'skills': [user_skill.area.area for user_skill in
                                UserSkill.objects.filter(user__username=username)],
-                    'date_joined': user_profile.user.date_joined.strftime("Se unión en %B de %Y"),
+                    'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
                     'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
                     'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
                     'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,

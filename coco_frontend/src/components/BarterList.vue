@@ -98,7 +98,7 @@
         class="mx-1 mt-3"
       />
       <BarterActions :barterId="barter.id" class="mx-1 mt-0 ml-3" />
-      <Comments class="mx-1 mt-0 ml-3" :barterId="barter.id" />
+      <Comments @commentComponents="showComments" class="mx-1 mt-0 ml-3" :barterId="barter.id" />
     </v-card>
   </div>
 </template>
@@ -132,6 +132,11 @@ export default {
   },
   mounted() {
     this.fetchBarterList();
+    this.$root.$on("comments", (data) => {
+      if(data.barter === this.barterId){
+       this.getReactions();
+      }
+    });
   },
   methods: {
     fetchBarterList() {

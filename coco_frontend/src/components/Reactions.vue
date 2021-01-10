@@ -69,9 +69,9 @@ export default {
     commentsVerbose: function () {
       let string = "";
       if (this.comments > 1 || this.comments == 0) {
-        string = this.comments + " propuestas";
+        string = this.comments + " comentarios";
       } else {
-        string = "Una propuesta";
+        string = "Un comentario";
       }
       return string;
     },

@@ -5,7 +5,6 @@
         <v-btn
           :color="getColor"
           class="mr-1 pl-3 action"
-          
           text
           @click="reac2Barter(0)"
         >
@@ -53,11 +52,11 @@
         </v-btn>
       </v-hover>
 
-      <v-btn  text class="mr-1 action">
+      <v-btn @click="showComments" text class="mr-1 action">
         <v-icon left small> mdi-comment-text-multiple </v-icon>
         Comentar
       </v-btn>
-      <v-btn  class="action" text>
+      <v-btn class="action" text>
         <v-icon left small> mdi-share-variant </v-icon>
         Compartir
       </v-btn>
@@ -142,6 +141,12 @@ export default {
           })
           .catch((err) => console.error(err));
       }
+    },
+    showComments() {
+      this.$root.$emit("comments", {
+        barter: this.barterId,
+        comments: true,
+      });
     },
     getReactionVerbose(reaction) {
       let msg = "";
