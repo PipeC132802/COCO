@@ -111,7 +111,8 @@ export default {
       this.commentText = commentDiv.innerText.trim();
     },
     submitComment() {
-      if (this.commentText.trim().length || this.image) {
+      if (this.commentText || this.image) {
+        console.log(this.commentText)
         this.loading = true;
         const formData = new FormData();
         formData.append("comment", this.commentText);

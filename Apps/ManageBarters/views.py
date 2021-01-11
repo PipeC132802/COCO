@@ -166,8 +166,8 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
 
     def put(self, request, *args, **kwargs):
         action = request.data['action'][0]
-        print(action)
-        if action == 1:
+        # TO-DO fix update comment
+        if int(action) == 1:
            response = self.update_comment(request)
         else:
             response = self.just_accepted_status(request)
@@ -181,12 +181,18 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
         return {'Detail': 'Comment accepted status updated successfully'}
 
     def update_comment(self, request):
-        comment = request.data['comment'][0]
-        photo = request.FILES.get("photo")[0]
-        comment_model = BarterComment.objects.get(id=request.data['commentId'][0])
+        comment = request.data['comment']
+
+        comment_model = BarterComment.objects.get(id=request.data['commentId'])
         comment_model.comment = comment
-        comment_model.photo = photo
         comment_model.edited = True
+        try:
+            photo = request.FILES.get("photo")
+            comment_model.photo = photo
+        except:
+            pass
+        comment_model.save()
+
         return {'Detail': 'Comment updated successfully'}
 
     def get_comments(self, barter):
