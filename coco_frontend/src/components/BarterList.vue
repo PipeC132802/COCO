@@ -18,7 +18,7 @@
       :key="barter.id"
     >
       <v-container v-if="barter.reaction">
-        
+
       </v-container>
       <v-list class="pb-0 mb-0" subheader two-line>
         <v-list-item class="pb-0 mb-0">

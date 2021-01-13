@@ -30,8 +30,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-
 INSTALLED_APPS = [
+    'channels',
+
     'dj_rest_auth',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,12 +43,15 @@ INSTALLED_APPS = [
     # Self apps
     'Apps.ManageUsers.apps.UsersConfig',
     'Apps.ManageBarters.apps.BartersConfig',
+    'Apps.ManageNotifications',
     # Third Party apps
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    'notify',
 
 ]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -116,6 +120,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
+
+
+ASGI_APPLICATION = "COCO.routing.application"
+
 
 CORS_ALLOW_ALL_ORIGINS = True
 

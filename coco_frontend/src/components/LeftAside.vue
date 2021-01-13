@@ -135,6 +135,7 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
           this.setUser(respose);
+          console.log(respose)
         });
     },
     closeSession() {
