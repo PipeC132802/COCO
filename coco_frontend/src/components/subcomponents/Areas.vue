@@ -80,7 +80,6 @@ export default {
   watch: {
     search(val) {
       // Items have already been loaded
-      if (this.items.length > 0) return;
 
       // Items have already been requested
       if (this.isLoading) return;

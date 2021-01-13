@@ -1,12 +1,13 @@
 <template>
   <div>
     <v-container fluid>
-      <v-row>
+      <v-row wrap>
         <v-col sm="12" md="8" lg="9" xl="10">
           <NewBarter />
-          <BarterList :field="'newsfeed'" />
+          <BarterList class="mt-3" :field="'newsfeed'" />
         </v-col>
-        <v-col>
+        <v-col sm="12" md="4" lg="3" xl="2">
+          <User2FollowSuggestion />
         </v-col>
       </v-row>
     </v-container>
@@ -17,13 +18,15 @@
 // @ is an alias to /src
 import NewBarter from "@/components/NewBarter";
 import BarterList from "@/components/BarterList.vue";
+import User2FollowSuggestion from "@/components/User2FollowSuggestion.vue";
 
 export default {
   name: "Home",
 
   components: {
     NewBarter,
-    BarterList
+    BarterList,
+    User2FollowSuggestion
   },
   created(){
     document.title = "Inicio / COCO"

@@ -1,6 +1,6 @@
 
 <template>
-  <div class="mt-5">
+  <div>
     <div v-if="!loaded">
       <v-skeleton-loader
         v-for="index in 10"
@@ -12,12 +12,14 @@
       No hay trueques disponibles 🤨
     </div>
     <v-card
-      elevation="5"
+      elevation="10"
       class="mb-4"
       v-for="barter in barters"
       :key="barter.id"
     >
-      <v-divider></v-divider>
+      <v-container v-if="barter.reaction">
+        
+      </v-container>
       <v-list class="pb-0 mb-0" subheader two-line>
         <v-list-item class="pb-0 mb-0">
           <v-list-item-avatar>
@@ -193,7 +195,7 @@ export default {
       fetch(
         this.baseUrl +
           this.apiDir.barterList +
-          `?username=${this.getUsername()}&field=${this.field}&user=${this.user.username}`
+          `?username=${this.getUsername()}&field=${this.field}&user=${this.$route.params.username}`
       )
         .then((response) => response.json())
         .then((response) => {
@@ -240,6 +242,9 @@ export default {
         })
         .catch((err) => console.error(err));
     },
+    getReaction(){
+
+    }
   },
 };
 </script>

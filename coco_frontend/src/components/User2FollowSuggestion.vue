@@ -1,15 +1,15 @@
 <template>
-  <v-card v-if="users.length">
-    <v-card-title> Puedes seguir </v-card-title>
+  <v-card elevation="5" v-if="users.length">
+    <v-card-title> Sugerencias </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="mt-0 pa-0">
       <v-list-item class="user-suggest" v-for="(userSuggestion, i) in users" :key="i" two-line>
-        <v-list-item-avatar>
+        <v-list-item-avatar color="secondary"> 
           <v-img
             v-if="userSuggestion.profile_picture"
             :src="userSuggestion.profile_picture"
           ></v-img>
-          <span v-else>{{ userSuggestion.name.slice(0, 1) }}</span>
+          <span class="white--text" v-else>{{ userSuggestion.name.slice(0, 1) }}</span>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title :title=" userSuggestion.name" class="link" @click="toProfile(userSuggestion.username)">{{
@@ -70,8 +70,7 @@ export default {
 </script>
 
 <style>
-.link {
-}
+
 .link:hover {
   text-decoration: underline;
   cursor: pointer;

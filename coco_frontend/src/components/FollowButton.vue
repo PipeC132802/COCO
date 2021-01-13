@@ -5,10 +5,8 @@
       :outlined="!followed"
       color="success"
       :title="followed ? 'Siguiendo' : 'Seguir'"
-      class="mr-3"
     >
-      <v-icon left> mdi-account-plus </v-icon>
-      <span>{{ followed ? "Siguiendo" : "Seguir" }}</span>
+      <v-icon> mdi-account-plus </v-icon>
     </v-btn>
   </div>
 </template>

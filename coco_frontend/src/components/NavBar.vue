@@ -4,9 +4,7 @@
       <v-toolbar-title>
         <v-list-item
           id="logo-btn"
-          color="primary--text"
-          exact
-          class="mt-2 mb-2 pl-3"
+          class="mt-2 mb-2 pl-3 primary--text"
           one-line
           :to="{path:'/'}"
         >
@@ -16,8 +14,8 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title class="primary--text">
-              <h2>COCO</h2>
+            <v-list-item-title >
+              <h2 class="primary--text">COCO</h2>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
