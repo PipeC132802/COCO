@@ -59,7 +59,10 @@
                   <v-icon color="grey darken-3">mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list  v-if="comment.user.username == user.username" class="pa-0">
+              <v-list
+                v-if="comment.user.username == user.username"
+                class="pa-0"
+              >
                 <v-list-item
                   class="item-menu pl-1"
                   v-for="(item, i) in items.self"
@@ -71,14 +74,14 @@
                   >
                 </v-list-item>
               </v-list>
-              <v-list  v-else class="pa-0">
+              <v-list v-else class="pa-0">
                 <v-list-item
                   class="item-menu pl-1"
                   v-for="(item, i) in items.other"
                   :key="i"
                 >
-                  <v-list-item-title >
-                    <v-icon  class="ml-1" left>{{ item.icon }}</v-icon>
+                  <v-list-item-title>
+                    <v-icon class="ml-1" left>{{ item.icon }}</v-icon>
                     {{ item.title }}</v-list-item-title
                   >
                 </v-list-item>
@@ -97,11 +100,6 @@
         <v-divider class="mt-1"></v-divider>
       </v-list>
     </div>
-    <v-dialog max-width="700" class="dialog" v-if="comment2Edit" v-model="commentDialog">
-        <v-card max-width="700" style="overflow-x: hidden;" max-height="600" class="pa-4">
-        <UpdateComment  :commentObj="comment2Edit" />
-        </v-card>
-    </v-dialog>
   </v-container>
 </template>
 
@@ -109,33 +107,28 @@
 import { mapState } from "vuex";
 import moment from "moment";
 import CommentForm from "../components/CommentForm.vue";
-import UpdateComment from "../components/UpdateComment.vue";
 export default {
   name: "Comments",
   props: ["barterId", "author"],
   components: {
     CommentForm,
-    UpdateComment
   },
   data: () => ({
     comments: [],
     apiDir: "barter-comments/",
     items: {
-      self: [
-        { title: "Editar", icon: "mdi-pencil"},
-        { title: "Eliminar", icon: "mdi-delete"},
-      ],
+      self: [{ title: "Eliminar", icon: "mdi-delete" }],
       other: [{ title: "Reportar", icon: "mdi-alert" }],
     },
-    comment2Edit: '',
+    comment2Edit: "",
     commentDialog: false,
   }),
   computed: {
     ...mapState(["user", "authentication", "baseUrl"]),
   },
-  beforeUpdate(){
-      if (this.commentDialog == false){
-          this.comment2Edit = '';
+  beforeUpdate() {
+    if (this.commentDialog == false) {
+      this.comment2Edit = "";
     }
   },
   mounted() {
@@ -159,15 +152,24 @@ export default {
       let timeSince = moment(date).locale("es").fromNow();
       return timeSince;
     },
-    setEvent(title, comment){
-        if(title = 'Editar'){
-            this.editComment(comment);
-        }
+    setEvent(title, comment) {
+      if ((title = "Eliminar")) {
+        this.deleteComment(comment);
+      }
     },
-    editComment(comment){
-        this.comment2Edit = comment;
-        this.commentDialog = true;
-    }
+    deleteComment(comment) {
+      fetch(this.baseUrl + this.apiDir + `?comment=${comment.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then(() => {
+          this.getComments();
+        })
+        .catch((err) => console.log(err));
+    },
   },
 };
 </script>

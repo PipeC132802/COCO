@@ -36,17 +36,7 @@
               <small :title="timeSince(barter.created) | capitalize">{{
                 timeSince(barter.created) | capitalize
               }}</small>
-              <v-chip
-                small
-                color="info darken-4"
-                v-if="barter.edited"
-                class="ml-2"
-                label
-                outlined
-                title="Editado"
-              >
-                Editado
-              </v-chip>
+              <small title="Editado" v-if="barter.edited" class="ml-2 edit-tag">Editado</small>
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -67,6 +57,7 @@
                   class="item-menu pl-1"
                   v-for="(item, i) in items.self"
                   :key="i"
+                  @click="setEvent(item.title, barter)"
                 >
                   <v-list-item-title>
                     <v-icon class="ml-1" left>{{ item.icon }}</v-icon>
@@ -135,6 +126,16 @@
         :barterId="barter.id"
       />
     </v-card>
+    <v-dialog v-model="updateDialog" max-width="600px">
+      <UpdateBarter
+        v-if="updateDialog"
+        v-on:barterUpdated="
+          fetchBarterList();
+          updateDialog = false;
+        "
+        :barter="barter2Edit"
+      />
+    </v-dialog>
   </div>
 </template>
 
@@ -144,6 +145,7 @@ import moment from "moment";
 import Reactions from "../components/Reactions.vue";
 import BarterActions from "../components/BarterActions.vue";
 import Comments from "../components/Comments.vue";
+import UpdateBarter from "../components/UpdateBarter.vue";
 export default {
   name: "BarterList",
   props: ["field"],
@@ -151,6 +153,7 @@ export default {
     Reactions,
     BarterActions,
     Comments,
+    UpdateBarter,
   },
   data: () => ({
     items: {
@@ -160,13 +163,19 @@ export default {
       ],
       other: [{ title: "Reportar", icon: "mdi-alert" }],
     },
-    apiDir: "barter-list/",
-    barters: "",
+    apiDir: {
+      barter: "barter/",
+      barterList: "barter-list/",
+    },
+    barters: [],
     loaded: false,
     barterComments: null,
+    barter2Edit: "",
+    barter2Delete: "",
+    updateDialog: false,
   }),
   computed: {
-    ...mapState(["baseUrl", "user"]),
+    ...mapState(["baseUrl", "user","authentication"]),
   },
   mounted() {
     this.$root.$on("comments", (data) => {
@@ -180,7 +189,7 @@ export default {
     fetchBarterList() {
       fetch(
         this.baseUrl +
-          this.apiDir +
+          this.apiDir.barterList +
           `?username=${this.getUsername()}&field=${this.field}`
       )
         .then((response) => response.json())
@@ -207,6 +216,27 @@ export default {
         this.barterComments = barter;
       }
     },
+    setEvent(title, barter) {
+      if (title == "Editar") {
+        this.barter2Edit = barter;
+        this.updateDialog = true;
+      } else if (title == "Eliminar") {
+        this.deleteBarter(barter);
+      }
+    },
+    deleteBarter(barter) {
+      fetch(this.baseUrl + this.apiDir.barter + `?barter=${barter.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then(() => {
+          this.fetchBarterList();
+        })
+        .catch((err) => console.error(err));
+    },
   },
 };
 </script>
@@ -219,6 +249,13 @@ export default {
 p {
   font-size: 14pt;
   color: rgb(59, 59, 59);
+}
+.edit-tag{
+  background: rgb(73, 73, 73);
+  color: white;
+  padding: 5px;
+  letter-spacing: 0.5px;
+  border-radius: 30%;
 }
 </style>
 

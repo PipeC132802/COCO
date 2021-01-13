@@ -8,9 +8,9 @@
           <router-view class="mt-2" />
           <div v-if="pathName == 'Profile'">
             <v-tabs v-model="tab" class="mt-1">
-              <v-tab> <v-icon left>mdi-comment</v-icon> Trueques </v-tab>
-              <v-tab><v-icon left>mdi-star</v-icon> Reseñas</v-tab>
-              <v-tab><v-icon left>mdi-heart</v-icon> Me gusta</v-tab>
+              <v-tab> <v-icon left>mdi-comment</v-icon> Mis Trueques </v-tab>
+              <v-tab><v-icon left>mdi-star</v-icon>Mis Reseñas</v-tab>
+              <v-tab><v-icon left>mdi-heart</v-icon>Mis Reacciones</v-tab>
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item>
@@ -19,8 +19,8 @@
                   <BarterList :field="'profile'" />
                 </div>
               </v-tab-item>
-              <v-tab-item> Rese;a </v-tab-item>
-              <v-tab-item> Me gusta </v-tab-item>
+              <v-tab-item> Reseñas </v-tab-item>
+              <v-tab-item> Reacciones </v-tab-item>
             </v-tabs-items>
           </div>
         </v-col>
