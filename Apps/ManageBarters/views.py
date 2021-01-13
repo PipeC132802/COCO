@@ -64,7 +64,7 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
         user = request.user
         return Barter.objects.create(user=user, barter_title=title)
 
-    def create_bartr_about(self, request, barter):
+    def create_barter_about(self, request, barter):
         description = request.data['description']
         country = request.data['country']
         city = request.data['city']
@@ -108,7 +108,7 @@ class BarterListApi(generics.ListAPIView):
         user = User.objects.get(username=request.GET['username'])
         field = request.GET['field']
         if field == 'profile':
-            query = Q(user=user, deleted=False, field=field)
+            query = Q(user=user, deleted=False)
             barters_json = self.get_barter_list(query)
         elif field == 'reactions':
             barters_json = self.get_barters_reacted(request)
@@ -125,7 +125,7 @@ class BarterListApi(generics.ListAPIView):
         following.append(user.pk)
         return following
 
-    def get_barter_list(self, query, field):
+    def get_barter_list(self, query):
         barters = Barter.objects.filter(query).order_by('-created')
         barter_list = []
         for barter in barters:
@@ -150,13 +150,13 @@ class BarterListApi(generics.ListAPIView):
         return barter_list
 
     def get_barters_reacted(self, request):
-        barters_reacted = BarterReaction.objects.filter(user_from=request.user, barter__deleted=False).exclude(
-            barter__user=request.user).order_by('-created')
+        barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'], barter__deleted=False).exclude(
+            barter__user__username=request.GET['user']).order_by('-barter__created')
         barter_list = []
         for barter_reacted in barters_reacted:
             barter_about = BarterAbout.objects.get(barter=barter_reacted.barter)
             barter_json = {
-                'id': barter_reacted.pk,
+                'id': barter_reacted.barter.pk,
                 'user': {
                     'username': barter_reacted.barter.user.username,
                     'name': '{0} {1}'.format(barter_reacted.barter.user.first_name,

@@ -15,20 +15,30 @@
             <v-tabs-items v-model="tab">
               <v-tab-item>
                 <div class="pa-1" v-if="tab == 0">
-                  <NewBarter v-on:newBarterPosted="bartersReload" class="mt-5" v-if="username == user.username" />
+                  <NewBarter
+                    v-on:newBarterPosted="bartersReload"
+                    class="mt-5"
+                    v-if="username == user.username"
+                  />
                   <BarterList :field="'profile'" />
                 </div>
               </v-tab-item>
-              <v-tab-item> Reseñas </v-tab-item>
-              <v-tab-item> Reacciones </v-tab-item>
+              <v-tab-item>
+                <div v-if="tab == 1">Rese;as {{ tab }}</div>
+              </v-tab-item>
+              <v-tab-item>
+                <div class="ma-0" v-if="tab == 2">
+                  <BarterList :field="'reactions'" />
+                </div>
+              </v-tab-item>
             </v-tabs-items>
           </div>
         </v-col>
         <v-col cols="4" tile>
-          <UserAbout  />
+          <UserAbout />
           <UserContact />
           <User2FollowSuggestion
-          v-if="$route.params.username != user.username"
+            v-if="$route.params.username != user.username"
             v-on:followUser="followUser"
             class="ma-2 mt-3"
           />
@@ -53,14 +63,14 @@ export default {
     UserAbout,
     UserContact,
     User2FollowSuggestion,
-    BarterList
+    BarterList,
   },
   data: () => ({
     username: "",
     tab: null,
     currentUsernamePath: "",
     user2Follow: null,
-    pathName: '',
+    pathName: "",
   }),
   watch: {
     $route(to, from) {
@@ -89,14 +99,12 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
-    bartersReload(){
-      console.log("Nuevo trueque")
-    }
-    
+    bartersReload() {
+      console.log("Nuevo trueque");
+    },
   },
 };
 </script>
 
 <style>
-
 </style>

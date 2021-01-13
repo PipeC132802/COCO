@@ -8,6 +8,9 @@
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
     </div>
+    <div class="ml-3" v-if="!barters.length">
+      No hay trueques disponibles 🤨
+    </div>
     <v-card
       elevation="5"
       class="mb-4"
@@ -190,7 +193,7 @@ export default {
       fetch(
         this.baseUrl +
           this.apiDir.barterList +
-          `?username=${this.getUsername()}&field=${this.field}`
+          `?username=${this.getUsername()}&field=${this.field}&user=${this.user.username}`
       )
         .then((response) => response.json())
         .then((response) => {
