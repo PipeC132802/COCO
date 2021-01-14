@@ -8,6 +8,7 @@
         </v-col>
         <v-col sm="12" md="4" lg="3" xl="2">
           <User2FollowSuggestion />
+          <CompanyInfo class="mx-1" />
         </v-col>
       </v-row>
     </v-container>
@@ -19,6 +20,7 @@
 import NewBarter from "@/components/NewBarter";
 import BarterList from "@/components/BarterList.vue";
 import User2FollowSuggestion from "@/components/User2FollowSuggestion.vue";
+import CompanyInfo from "@/components/CompanyInfo.vue";
 
 export default {
   name: "Home",
@@ -26,10 +28,11 @@ export default {
   components: {
     NewBarter,
     BarterList,
-    User2FollowSuggestion
+    User2FollowSuggestion,
+    CompanyInfo,
   },
-  created(){
-    document.title = "Inicio | COCO"
-  }
+  created() {
+    document.title = "Inicio | COCO";
+  },
 };
 </script>

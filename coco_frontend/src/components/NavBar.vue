@@ -24,9 +24,10 @@
       <v-text-field
         dense
         class="pt-7"
-        outlined
-        @click:append="searchPubs"
-        placeholder="¿Trueque o miedo?"
+        v-model="seachValue"
+        @click:append="go2search"
+        @keydown.enter="go2search"
+        placeholder="Buscar trueques"
         solo
         append-icon="mdi-magnify"
       ></v-text-field>
@@ -66,6 +67,7 @@ export default {
   data: () => ({
     loginDialog: false,
     signUpDialog: false,
+    seachValue: '',
   }),
   components: {
     Login,
@@ -84,6 +86,12 @@ export default {
       }
       
       this.updateFormsInfo(formDialog)
+    },
+    go2search(){
+      console.log(this.seachValue)
+      let searchKey = this.seachValue;
+      this.seachValue = '';
+      this.$router.push({name:'Explore',query:{q:searchKey}});
     }
 
   },

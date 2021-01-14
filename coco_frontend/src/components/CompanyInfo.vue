@@ -2,26 +2,39 @@
   <div class="mt-5">
     <v-container content="center">
       <span class="mr-1"
-        ><router-link class="link title--text" :to="{ name: 'AboutUs' }"
+        ><router-link
+          class="link title--text"
+          target="_blank"
+          title="Sobre COCO"
+          :to="{ name: 'AboutUs' }"
           >Sobre COCO</router-link
         ></span
       >
-      • <span class="link mr-1">Ayuda</span> •
-      <span class="link mr-1">Términos y condiciones</span> •
-      <span class="primary--text link" @click="sheet = !sheet">Más</span>
+      • <span class="link mr-1" title="Ayuda">Ayuda</span> •
+      <span class="link mr-1" title="Términos y condiciones"
+        >Términos y condiciones</span
+      >
+      •
+      <span class="primary--text link" title="Más" @click="sheet = !sheet"
+        >Más</span
+      >
     </v-container>
 
     <v-row class="pl-5 mb-1" align="center">
       <v-img
-        class="mr-2"
+        class="mr-2 mt-1"
         src="@/assets/logo.png"
         max-height="23"
         max-width="23"
+        alt="COCO logo"
       >
       </v-img>
-      <span class="primary--text mr-2 COCO"> COCO </span>
+      <span class="primary--text mr-2 COCO" title="COCO"> COCO </span>
       <span
-        ><small class="pt-2">
+        ><small
+          :title="`Todos los derechos reservados © ${currentYear}`"
+          class="pt-2 grey--text"
+        >
           Todos los derechos reservados © {{ currentYear }}
         </small></span
       >
@@ -45,6 +58,7 @@
               <v-row class="mb-1" align="center">
                 <v-col sm="12" class="mt-2pt-0 pb-0">
                   <router-link
+                    target="_blank"
                     class="link title--text"
                     :to="{ name: 'AboutUs' }"
                     >Sobre COCO</router-link
@@ -52,6 +66,7 @@
                 </v-col>
                 <v-col sm="12" class="pt-0 pb-0">
                   <router-link
+                    target="_blank"
                     class="link title--text"
                     :to="{ name: 'CommunityRules' }"
                     >Reglas comunitarias</router-link
@@ -59,6 +74,7 @@
                 </v-col>
                 <v-col sm="12" class="pt-0 pb-0">
                   <router-link
+                    target="_blank"
                     class="link title--text"
                     :to="{ name: 'AboutUs' }"
                     >Términos y condiciones</router-link
@@ -70,15 +86,16 @@
               </v-row>
             </v-col>
             <v-col class="pt-0">
-                <v-row class="mb-1" align="center">
+              <v-row class="mb-1" align="center">
                 <v-col sm="12" class="mt-2pt-0 pb-0">
-                    <v-icon>mdi-help-circle-outline</v-icon>
+                  <v-icon>mdi-help-circle-outline</v-icon>
                   <router-link
                     class="link title--text"
                     :to="{ name: 'AboutUs' }"
-                    >  Ayuda</router-link
                   >
-                </v-col>              
+                    Ayuda</router-link
+                  >
+                </v-col>
               </v-row>
             </v-col>
             <v-col></v-col>

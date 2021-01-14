@@ -1,9 +1,16 @@
 
   <template>
   <div>
-    <div v-if="!loaded">
+    <div v-if="!loaded && field != 'detail'">
       <v-skeleton-loader
         v-for="index in 10"
+        :key="index"
+        type="list-item-avatar-two-line, article"
+      ></v-skeleton-loader>
+    </div>
+    <div v-else-if="!loaded && field == 'detail'">
+      <v-skeleton-loader
+        v-for="index in 1"
         :key="index"
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
@@ -24,7 +31,7 @@
       <p v-else-if="field == 'recommendations'">
         No hemos encontrado sugerencias para ti 😔
       </p>
-      <p v-else>
+      <p v-else-if="field == 'newsfeed'">
         Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
         comunidad! 🤗
       </p>

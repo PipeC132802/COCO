@@ -5,14 +5,13 @@
         <AccountBox />
       </v-col>
       <v-col tile md="6" lg="6">
-       <BarterList :field="'detail'" :pk="$route.params.pk" />
+        <BarterList :field="'detail'" :pk="$route.params.pk" />
       </v-col>
       <v-col md="3" lg="3">
         <User2FollowSuggestions class="mx-2" />
         <CompanyInfo class="mx-1" />
       </v-col>
     </v-row>
-
   </v-container>
 </template>
 
@@ -26,11 +25,11 @@ export default {
     User2FollowSuggestions,
     AccountBox,
     BarterList,
-    CompanyInfo
+    CompanyInfo,
   },
-  beforeCreate(){
-    document.title = 'Trueque | COCO';
-  }
+  beforeCreate() {
+    document.title = "Trueque | COCO";
+  },
 };
 </script>
 
