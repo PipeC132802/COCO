@@ -7,6 +7,7 @@
       :title="followed ? 'Siguiendo' : 'Seguir'"
     >
       <v-icon> mdi-account-plus </v-icon>
+      <span class="ml-2" v-if="text">{{ verbose }}</span>
     </v-btn>
   </div>
 </template>
@@ -14,10 +15,11 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 export default {
-  props: ["from", "to", "target"],
+  props: ["from", "to", "target", "text"],
   data: () => ({
     followed: 0,
     apiDir: "follow-user/",
+    verbose: "",
   }),
   computed: {
     ...mapState(["authentication", "baseUrl"]),
@@ -44,6 +46,9 @@ export default {
         })
         .then((response) => {
           this.followed = response.follow_this_user;
+          if (this.text) {
+            this.getVerbose();
+          }
         });
     },
     followUser() {
@@ -66,6 +71,7 @@ export default {
           })
           .then((response) => {
             this.followed = response.follow_this_user;
+            this.getVerbose();
             if (this.from == this.$route.params.username) {
               let followObj = {
                 followers: response.followers,
@@ -80,6 +86,9 @@ export default {
             console.error(err);
           });
       }
+    },
+    getVerbose() {
+      this.verbose = this.followed ? "Siguiendo" : "Seguir";
     },
   },
 };

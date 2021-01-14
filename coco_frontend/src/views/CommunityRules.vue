@@ -1,12 +1,10 @@
 <template>
-  <v-container>
-      {{$route.params}}
-  </v-container>
+  <div>Community rules</div>
 </template>
 
 <script>
 export default {
-
+    name: 'CommunityRules'
 }
 </script>
 

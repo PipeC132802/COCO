@@ -80,10 +80,10 @@
           Te sigue
         </v-chip>
         <FollowButton
-          :followThisUser="userP.followThisUser"
           :from="user.username"
           :to="userP.username"
           v-on:followObj="followInfo"
+          :text="true"
           :target="$route.params.username == user.username ? 'self' : 'other'"
         />
       </v-card-actions>
@@ -164,7 +164,8 @@ export default {
           this.userP.following = response.following;
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
-          document.title = this.userP.name + ` (@${this.userP.username}) | COCO`;
+          document.title =
+            this.userP.name + ` (@${this.userP.username}) | COCO`;
           this.searchCover();
         })
         .catch((err) => {
@@ -204,7 +205,6 @@ export default {
       });
     },
   },
- 
 };
 </script>
 

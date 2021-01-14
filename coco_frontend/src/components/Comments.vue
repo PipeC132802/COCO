@@ -30,7 +30,7 @@
           <v-list-item-content class="mt-0 pa-0" style="line-heigth: 1">
             <v-list-item-title :title="comment.user.name">
               <router-link
-                class="other--text"
+                class="title--text"
                 :to="{
                   name: 'Profile',
                   params: { username: comment.user.username },

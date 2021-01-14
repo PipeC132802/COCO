@@ -10,6 +10,16 @@ const routes = [
     component: () => import('../views/Welcome.vue')
   },
   {
+    path: '/about',
+    name: 'AboutUs',
+    component: () => import('../views/AboutCOCO.vue')
+  },
+  {
+    path: '/community-rules',
+    name: 'CommunityRules',
+    component: () => import('../views/AboutCOCO.vue')
+  },
+  {
     path: '/user/complete-info',
     name: 'MoreInfo',
     component: () => import('../views/MoreUserInfo.vue'),
@@ -82,12 +92,12 @@ const routes = [
 
   },
   {
-    path: '/barter/:slug/:pk',
+    path: '/:username/barters/:slug/:pk',
     name: 'Barter',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import('../views/DetailBarter.vue'),
+    component: () => import('../views/Barter.vue'),
   }
 
 ]

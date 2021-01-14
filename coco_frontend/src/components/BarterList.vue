@@ -45,17 +45,16 @@
             <span v-else>{{ barter.user.name.slice(0, 1).toUpperCase() }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="mt-0" style="line-heigth: 1">
-            <v-list-item-title
-              :title="barter.user.name"
-            >
-            
-              <span class="link"><router-link
-                class="other--text"
-                :to="{
-                  name: 'Profile',
-                  params: { username: barter.user.username },
-                }"
-                >{{ barter.user.name }}</router-link></span
+            <v-list-item-title :title="barter.user.name">
+              <span class="link"
+                ><router-link
+                  class="title--text"
+                  :to="{
+                    name: 'Profile',
+                    params: { username: barter.user.username },
+                  }"
+                  >{{ barter.user.name }}</router-link
+                ></span
               ><span class="grey--text ml-2" :title="'@' + barter.user.username"
                 >@{{ barter.user.username }}</span
               >
@@ -113,14 +112,18 @@
         </v-list-item>
         <v-card-title class="mt-0 pt-0 mb-1">
           <router-link
-                class="other--text"
-                :title="barter.title"
-                :to="{
-                  name: 'Barter',
-                  params: { slug: barter.slug, pk: barter.id },
-                }"
-                >{{ barter.title }}</router-link>
-          
+            class="title--text"
+            :title="barter.title"
+            :to="{
+              name: 'Barter',
+              params: {
+                username: barter.user.username,
+                slug: barter.slug,
+                pk: barter.id,
+              },
+            }"
+            >{{ barter.title }}</router-link
+          >
         </v-card-title>
         <v-card-subtitle class="pa-0 pt-0 mx-4">
           <v-chip :title="'Enseñaré ' + barter.skill" color="primary darken-1">
@@ -187,7 +190,7 @@ import Comments from "../components/Comments.vue";
 import UpdateBarter from "../components/UpdateBarter.vue";
 export default {
   name: "BarterList",
-  props: ["field"],
+  props: ["field", "pk"],
   components: {
     Reactions,
     BarterActions,
@@ -226,18 +229,21 @@ export default {
   },
   methods: {
     fetchBarterList() {
-      fetch(
-        this.baseUrl +
-          this.apiDir.barterList +
-          `?username=${this.getUsername()}&field=${
-            this.field
-          }&user=${this.getUsername()}`
-      )
+      let query = '';
+      if (this.field == "detail") {
+        query = `?id=${this.getPk()}&field=${this.field}&username=${this.getUsername()}`;
+      } else {
+         query = `?username=${this.getUsername()}&field=${
+          this.field
+        }&user=${this.getUsername()}`;
+      }
+      fetch(this.baseUrl + this.apiDir.barterList + query)
         .then((response) => response.json())
         .then((response) => {
           this.barters = response;
           this.loaded = true;
-        });
+        })
+        .catch((err)=>console.error(err))
     },
     getUsername() {
       let username = "";
@@ -245,8 +251,10 @@ export default {
       if (username == undefined) {
         username = this.user.username;
       }
-      console.log(username);
       return username;
+    },
+    getPk(){
+      return this.$route.params.pk;
     },
     timeSince(date) {
       let timeSince = moment(date).locale("es").fromNow();

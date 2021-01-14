@@ -3,6 +3,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from django.db import models
 
+from COCO.settings import DOMAIN
+
 
 class UserOnline(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
@@ -25,8 +27,15 @@ class UserAbout(models.Model):
         return 'About ' + self.user.username
 
     def serializer(self):
+        try:
+            profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=self.user).profile_picture.url
+        except:
+            profile_picture = ''
+
         return {
             'user': self.user.username,
+            'name': '{0} {1}'.format(self.user.first_name, self.user.last_name),
+            'profile_picture': profile_picture,
             'bio': self.bio,
             'birthday': self.birthday.strftime("%d de %b. de %Y"),
             'gender': self.gender

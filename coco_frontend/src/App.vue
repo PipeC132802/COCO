@@ -30,9 +30,7 @@ export default {
   },
 
   data: () => ({}),
-  watch: {
-
-  },
+  watch: {},
   beforeUpdate() {},
   beforeMount() {
     let aside = document.getElementById("leftAside");
@@ -57,13 +55,20 @@ export default {
 </script>
 
 <style>
+body {
+  background: rgb(211, 211, 211);
+}
 #content {
   min-height: 100vh;
   width: 100%;
 }
 #container-body {
-  background: white;
   margin: 20px auto;
 }
-
+link {
+  text-decoration: none;
+}
+link:hover {
+  text-decoration: underline;
+}
 </style>

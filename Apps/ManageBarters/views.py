@@ -106,7 +106,7 @@ class BarterListApi(generics.ListAPIView):
 
     def get(self, request, *args, **kwargs):
         def get_interest(request):
-            return UserInterest.objects.filter(user__username=request.GET['user']).values_list('area__area',
+            return UserInterest.objects.filter(user__username=request.GET['username']).values_list('area__area',
                                                                                                flat=True).distinct()
 
         user = User.objects.get(username=request.GET['username'])
@@ -118,8 +118,11 @@ class BarterListApi(generics.ListAPIView):
             barters_json = self.get_barters_reacted(request)
         elif field == 'recommendations':
             interests = get_interest(request)
-            print(interests)
             barters_json = self.get_barters_recomendations(interests, request)
+        elif field == 'detail':
+            print(request.GET)
+            query = Q(id=request.GET['id'])
+            barters_json = self.get_barter_list(query)
         else:
             query = Q(user_id__in=self.get_following_users(user), deleted=False)
             barters_json = self.get_barter_list(query)
