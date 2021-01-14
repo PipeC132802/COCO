@@ -13,16 +13,16 @@ const routes = [
     path: '/user/complete-info',
     name: 'MoreInfo',
     component: () => import('../views/MoreUserInfo.vue'),
-    meta : {
-      requiresLogin : true
+    meta: {
+      requiresLogin: true
     }
   },
   {
     path: '/home',
     name: 'Home',
     component: () => import('../views/Home.vue'),
-    meta : {
-      requiresLogin : true
+    meta: {
+      requiresLogin: true
     }
   },
   {
@@ -32,7 +32,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Explore.vue'),
-    
+
   },
   {
     path: '/notifications',
@@ -41,8 +41,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Notifications.vue'),
-    meta : {
-      requiresLogin : true
+    meta: {
+      requiresLogin: true
     }
   },
   {
@@ -52,8 +52,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Inbox.vue'),
-    meta : {
-      requiresLogin : true
+    meta: {
+      requiresLogin: true
     }
   },
   {
@@ -63,8 +63,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Settings.vue'),
-    meta : {
-      requiresLogin : true
+    meta: {
+      requiresLogin: true
     }
   },
   {
@@ -78,10 +78,18 @@ const routes = [
       { path: 'followers', name: 'Followers', component: () => import('../views/Followers.vue') },
       { path: 'following', name: 'Following', component: () => import('../views/Following.vue') },
       { path: 'edit', name: 'Edit', component: () => import('../views/EditProfile.vue') },
-  ]
-    
+    ]
+
   },
-  
+  {
+    path: '/barter/:slug/:pk',
+    name: 'Barter',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('../views/DetailBarter.vue'),
+  }
+
 ]
 
 const router = new VueRouter({

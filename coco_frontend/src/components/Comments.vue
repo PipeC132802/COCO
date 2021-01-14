@@ -28,9 +28,17 @@
             }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="mt-0 pa-0" style="line-heigth: 1">
-            <v-list-item-title :title="comment.user.name"
-              >{{ comment.user.name }}
-              <span class="grey--text" :title="'@' + comment.user.username"
+            <v-list-item-title :title="comment.user.name">
+              <router-link
+                class="other--text"
+                :to="{
+                  name: 'Profile',
+                  params: { username: comment.user.username },
+                }"
+                >{{ comment.user.name }}</router-link
+              >
+
+              <span class="grey--text ml-2" :title="'@' + comment.user.username"
                 >@{{ comment.user.username }}</span
               >
             </v-list-item-title>
@@ -174,7 +182,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .recents {
   font-size: 11pt;
   font-weight: bold;
@@ -186,5 +194,11 @@ export default {
 .item-menu:hover {
   background: rgb(219, 219, 219);
   cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 </style>

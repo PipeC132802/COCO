@@ -56,7 +56,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 #content {
   min-height: 100vh;
   width: 100%;
@@ -65,4 +65,5 @@ export default {
   background: white;
   margin: 20px auto;
 }
+
 </style>

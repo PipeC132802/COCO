@@ -28,7 +28,7 @@
               </v-tab-item>
               <v-tab-item>
                 <div class="ma-0" v-if="tab == 2">
-                  <BarterList :field="'reactions'" />
+                  <BarterList class="mt-3" :field="'reactions'" />
                 </div>
               </v-tab-item>
             </v-tabs-items>

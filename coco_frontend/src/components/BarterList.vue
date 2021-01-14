@@ -1,5 +1,5 @@
 
-<template>
+  <template>
   <div>
     <div v-if="!loaded">
       <v-skeleton-loader
@@ -8,8 +8,26 @@
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
     </div>
-    <div class="ml-3" v-if="!barters.length">
-      No hay trueques disponibles 🤨
+    <div class="ml-3 mt-2" v-if="!barters.length">
+      <p v-if="field == 'profile'">
+        <span v-if="$route.params.username !== user.username">
+          @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
+        </span>
+        <span v-else> No has publicado ningún trueque 🙄 </span>
+      </p>
+      <p v-else-if="field == 'reactions'">
+        <span v-if="$route.params.username !== user.username">
+          @{{ $route.params.username }} no ha reaccionado a ningún trueque 😒
+        </span>
+        <span v-else> No has reaccionado a ningún trueque 😒 </span>
+      </p>
+      <p v-else-if="field == 'recommendations'">
+        No hemos encontrado sugerencias para ti 😔
+      </p>
+      <p v-else>
+        Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
+        comunidad! 🤗
+      </p>
     </div>
     <v-card
       elevation="10"
@@ -27,9 +45,18 @@
             <span v-else>{{ barter.user.name.slice(0, 1).toUpperCase() }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="mt-0" style="line-heigth: 1">
-            <v-list-item-title :title="barter.user.name"
-              >{{ barter.user.name }}
-              <span class="grey--text" :title="'@' + barter.user.username"
+            <v-list-item-title
+              :title="barter.user.name"
+            >
+            
+              <span class="link"><router-link
+                class="other--text"
+                :to="{
+                  name: 'Profile',
+                  params: { username: barter.user.username },
+                }"
+                >{{ barter.user.name }}</router-link></span
+              ><span class="grey--text ml-2" :title="'@' + barter.user.username"
                 >@{{ barter.user.username }}</span
               >
             </v-list-item-title>
@@ -38,7 +65,9 @@
               <small :title="timeSince(barter.created) | capitalize">{{
                 timeSince(barter.created) | capitalize
               }}</small>
-              <small title="Editado" v-if="barter.edited" class="ml-2 edit-tag">Editado</small>
+              <small title="Editado" v-if="barter.edited" class="ml-2 edit-tag"
+                >Editado</small
+              >
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -83,7 +112,15 @@
           </v-list-item-action>
         </v-list-item>
         <v-card-title class="mt-0 pt-0 mb-1">
-          {{ barter.title }}
+          <router-link
+                class="other--text"
+                :title="barter.title"
+                :to="{
+                  name: 'Barter',
+                  params: { slug: barter.slug, pk: barter.id },
+                }"
+                >{{ barter.title }}</router-link>
+          
         </v-card-title>
         <v-card-subtitle class="pa-0 pt-0 mx-4">
           <v-chip :title="'Enseñaré ' + barter.skill" color="primary darken-1">
@@ -141,7 +178,7 @@
   </div>
 </template>
 
-<script>
+  <script>
 import { mapState } from "vuex";
 import moment from "moment";
 import Reactions from "../components/Reactions.vue";
@@ -177,7 +214,7 @@ export default {
     updateDialog: false,
   }),
   computed: {
-    ...mapState(["baseUrl", "user","authentication"]),
+    ...mapState(["baseUrl", "user", "authentication"]),
   },
   mounted() {
     this.$root.$on("comments", (data) => {
@@ -192,7 +229,9 @@ export default {
       fetch(
         this.baseUrl +
           this.apiDir.barterList +
-          `?username=${this.getUsername()}&field=${this.field}&user=${this.$route.params.username}`
+          `?username=${this.getUsername()}&field=${
+            this.field
+          }&user=${this.getUsername()}`
       )
         .then((response) => response.json())
         .then((response) => {
@@ -206,6 +245,7 @@ export default {
       if (username == undefined) {
         username = this.user.username;
       }
+      console.log(username);
       return username;
     },
     timeSince(date) {
@@ -239,11 +279,14 @@ export default {
         })
         .catch((err) => console.error(err));
     },
+    toProfile(username) {
+      this.$router.push({ name: "Profile", params: { username: username } });
+    },
   },
 };
 </script>
 
-<style  scoped>
+  <style  scoped>
 .item-menu:hover {
   background: rgb(219, 219, 219);
   cursor: pointer;
@@ -252,12 +295,22 @@ p {
   font-size: 14pt;
   color: rgb(59, 59, 59);
 }
-.edit-tag{
+.edit-tag {
   background: rgb(73, 73, 73);
   color: white;
   padding: 5px;
   letter-spacing: 0.5px;
   border-radius: 30%;
+}
+.link:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
 }
 </style>
 

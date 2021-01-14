@@ -356,7 +356,7 @@ class SuggestUserApi(generics.ListAPIView):
         except:
             pass
         user_interests = [user_interest.area.area for user_interest in
-                          UserInterest.objects.filter(user__username=user.username)]
+                          UserInterest.objects.filter(user__username=user.username).distinct('user')]
         users = [user_skill.user for user_skill in UserSkill.objects.filter(area__area__in=user_interests).exclude(
             user__in=id_users_following).distinct()[:5]]
         json_response = []

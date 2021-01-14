@@ -186,7 +186,7 @@ export default {
   created() {
     this.token = readCookie("token");
 
-    document.title = "Completa tu información / COCO";
+    document.title = "Completa tu información | COCO";
 
     let authObj = this.authentication;
     authObj.userIsAuthenticated = false;

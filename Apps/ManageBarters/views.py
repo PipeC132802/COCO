@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest, BarterReaction, \
     BarterComment
 from Apps.ManageBarters.serializer import BarterCommentSerializer
-from Apps.ManageUsers.models import Area, UserRelationship
+from Apps.ManageUsers.models import Area, UserRelationship, UserInterest
 from COCO.functions import get_place, get_profile_url, get_img_url_from_model
 
 
@@ -105,6 +105,10 @@ class BarterListApi(generics.ListAPIView):
     queryset = Barter.objects.all()[0]
 
     def get(self, request, *args, **kwargs):
+        def get_interest(request):
+            return UserInterest.objects.filter(user__username=request.GET['user']).values_list('area__area',
+                                                                                               flat=True).distinct()
+
         user = User.objects.get(username=request.GET['username'])
         field = request.GET['field']
         if field == 'profile':
@@ -112,7 +116,10 @@ class BarterListApi(generics.ListAPIView):
             barters_json = self.get_barter_list(query)
         elif field == 'reactions':
             barters_json = self.get_barters_reacted(request)
-
+        elif field == 'recommendations':
+            interests = get_interest(request)
+            print(interests)
+            barters_json = self.get_barters_recomendations(interests, request)
         else:
             query = Q(user_id__in=self.get_following_users(user), deleted=False)
             barters_json = self.get_barter_list(query)
@@ -150,8 +157,8 @@ class BarterListApi(generics.ListAPIView):
         return barter_list
 
     def get_barters_reacted(self, request):
-        barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'], barter__deleted=False).exclude(
-            barter__user__username=request.GET['user']).order_by('-barter__created')
+        barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
+                                                        barter__deleted=False).exclude(barter__user__username=request.GET['user']).exclude(reaction=0).order_by('-barter__created')
         barter_list = []
         for barter_reacted in barters_reacted:
             barter_about = BarterAbout.objects.get(barter=barter_reacted.barter)
@@ -172,6 +179,30 @@ class BarterListApi(generics.ListAPIView):
                 'title': barter_reacted.barter.barter_title,
                 'slug': barter_reacted.barter.slug,
                 'reaction': barter_reacted.reaction
+            }
+            barter_list.append(barter_json)
+        return barter_list
+
+    def get_barters_recomendations(self, interests, request):
+        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__deleted=False).exclude(barter__user__username=request.GET['user'])
+        barter_list = []
+        for barter_skill in barters_skill:
+            barter_about = BarterAbout.objects.get(barter=barter_skill.barter)
+            barter_json = {
+                'id': barter_skill.barter.pk,
+                'user': {
+                    'username': barter_skill.barter.user.username,
+                    'name': '{0} {1}'.format(barter_skill.barter.user.first_name, barter_skill.barter.user.last_name),
+                    'profile_picture': get_profile_url(barter_skill.barter.user)
+                },
+                'about': barter_about.serializer(),
+                'mode': BarterMode.objects.get(barter=barter_skill.barter).mode,
+                'skill': BarterSkill.objects.get(barter=barter_skill.barter).area.area,
+                'interest': BarterInterest.objects.get(barter=barter_skill.barter).area.area,
+                'created': barter_skill.barter.created,
+                'edited': barter_skill.barter.edit,
+                'title': barter_skill.barter.barter_title,
+                'slug': barter_skill.barter.slug
             }
             barter_list.append(barter_json)
         return barter_list

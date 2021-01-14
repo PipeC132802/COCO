@@ -29,7 +29,7 @@ export default {
     User2FollowSuggestion
   },
   created(){
-    document.title = "Inicio / COCO"
+    document.title = "Inicio | COCO"
   }
 };
 </script>

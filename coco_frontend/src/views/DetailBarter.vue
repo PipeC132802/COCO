@@ -1,12 +1,12 @@
 <template>
-  <div>Inbox</div>
+  <v-container>
+      {{$route.params}}
+  </v-container>
 </template>
 
 <script>
 export default {
-    created(){
-        document.title = "Inbox | COCO"
-    }
+
 }
 </script>
 

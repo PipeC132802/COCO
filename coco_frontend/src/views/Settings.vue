@@ -7,7 +7,7 @@
 <script>
 export default {
     created(){
-        document.title = "Ajustes / COCO";
+        document.title = "Ajustes | COCO";
     }
 }
 </script>

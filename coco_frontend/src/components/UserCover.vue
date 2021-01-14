@@ -164,7 +164,7 @@ export default {
           this.userP.following = response.following;
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
-          document.title = this.userP.name + `(@${this.userP.username}) / COCO`;
+          document.title = this.userP.name + ` (@${this.userP.username}) | COCO`;
           this.searchCover();
         })
         .catch((err) => {
