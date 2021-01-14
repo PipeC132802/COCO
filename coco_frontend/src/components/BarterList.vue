@@ -17,9 +17,6 @@
       v-for="barter in barters"
       :key="barter.id"
     >
-      <v-container v-if="barter.reaction">
-
-      </v-container>
       <v-list class="pb-0 mb-0" subheader two-line>
         <v-list-item class="pb-0 mb-0">
           <v-list-item-avatar>
@@ -242,9 +239,6 @@ export default {
         })
         .catch((err) => console.error(err));
     },
-    getReaction(){
-
-    }
   },
 };
 </script>

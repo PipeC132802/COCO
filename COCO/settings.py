@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-    'channels',
 
     'dj_rest_auth',
     'django.contrib.admin',
@@ -45,17 +44,21 @@ INSTALLED_APPS = [
     'Apps.ManageBarters.apps.BartersConfig',
     'Apps.ManageNotifications',
     # Third Party apps
+
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders',
+    #'channels',
+
     'notify',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -121,10 +124,16 @@ REST_FRAMEWORK = {
     ]
 }
 
-
 ASGI_APPLICATION = "COCO.routing.application"
-
-
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Internationalization

@@ -20,7 +20,7 @@
                     class="mt-5"
                     v-if="username == user.username"
                   />
-                  <BarterList :field="'profile'" />
+                  <BarterList class="mt-3" :field="'profile'" />
                 </div>
               </v-tab-item>
               <v-tab-item>
