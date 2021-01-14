@@ -88,10 +88,7 @@ export default {
       this.updateFormsInfo(formDialog)
     },
     go2search(){
-      console.log(this.seachValue)
-      let searchKey = this.seachValue;
-      this.seachValue = '';
-      this.$router.push({name:'Explore',query:{q:searchKey}});
+      this.$router.push({name:'Explore',query:{q:this.seachValue}});
     }
 
   },

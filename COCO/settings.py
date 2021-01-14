@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
-
     'dj_rest_auth',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -43,15 +42,13 @@ INSTALLED_APPS = [
     'Apps.ManageUsers.apps.UsersConfig',
     'Apps.ManageBarters.apps.BartersConfig',
     'Apps.ManageNotifications',
+    'Apps.ManageSearchs',
     # Third Party apps
-
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     #'channels',
-
     'notify',
-
 ]
 
 MIDDLEWARE = [
