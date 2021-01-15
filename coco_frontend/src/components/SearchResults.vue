@@ -103,6 +103,11 @@ export default {
   computed: {
     ...mapState(["baseUrl"]),
   },
+  watch: {
+    $route(to, from) {
+      this.getSearchResults();
+    },
+  },
   beforeMount() {
     document.title = "Búsqueda | COCO";
     this.getSearchResults();
