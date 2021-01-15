@@ -17,7 +17,7 @@
             <v-card
               v-if="hover"
               class="d-flex transition-fast-in-fast-out v-card--reveal reactions-box mx-1"
-              elevation="10"
+              elevation="5"
               rounded="pill"
               min-width="120"
             >

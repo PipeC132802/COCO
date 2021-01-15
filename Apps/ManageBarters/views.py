@@ -107,7 +107,7 @@ class BarterListApi(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
         def get_interest(request):
             return UserInterest.objects.filter(user__username=request.GET['username']).values_list('area__area',
-                                                                                               flat=True).distinct()
+                                                                                                   flat=True).distinct()
 
         user = User.objects.get(username=request.GET['username'])
         field = request.GET['field']
@@ -120,7 +120,6 @@ class BarterListApi(generics.ListAPIView):
             interests = get_interest(request)
             barters_json = self.get_barters_recomendations(interests, request)
         elif field == 'detail':
-            print(request.GET)
             query = Q(id=request.GET['id'])
             barters_json = self.get_barter_list(query)
         else:
@@ -161,7 +160,8 @@ class BarterListApi(generics.ListAPIView):
 
     def get_barters_reacted(self, request):
         barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
-                                                        barter__deleted=False).exclude(barter__user__username=request.GET['user']).exclude(reaction=0).order_by('-barter__created')
+                                                        barter__deleted=False).exclude(
+            barter__user__username=request.GET['user']).exclude(reaction=0).order_by('-barter__created')
         barter_list = []
         for barter_reacted in barters_reacted:
             barter_about = BarterAbout.objects.get(barter=barter_reacted.barter)
@@ -187,7 +187,8 @@ class BarterListApi(generics.ListAPIView):
         return barter_list
 
     def get_barters_recomendations(self, interests, request):
-        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__deleted=False).exclude(barter__user__username=request.GET['user'])
+        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__deleted=False).exclude(
+            barter__user__username=request.GET['user'])
         barter_list = []
         for barter_skill in barters_skill:
             barter_about = BarterAbout.objects.get(barter=barter_skill.barter)

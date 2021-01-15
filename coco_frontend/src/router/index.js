@@ -36,7 +36,7 @@ const routes = [
     }
   },
   {
-    path: '/explore',
+    path: '/search',
     name: 'Explore',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

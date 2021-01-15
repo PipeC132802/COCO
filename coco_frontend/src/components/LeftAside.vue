@@ -93,7 +93,7 @@ export default {
     drawer: true,
     items: [
       { title: "Inicio", icon: "mdi-home", link: "/home", value: "" },
-      { title: "Explorar", icon: "mdi-magnify", link: "/explore", value: "" },
+      { title: "Explorar", icon: "mdi-magnify", link: "/search", value: "" },
       {
         title: "Notificaciones",
         icon: "mdi-bell",
@@ -135,7 +135,6 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
           this.setUser(respose);
-          console.log(respose)
         });
     },
     closeSession() {

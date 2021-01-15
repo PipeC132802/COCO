@@ -110,7 +110,8 @@ class UserVerificationApi(APIView):
             )
         else:
             description.append(
-                'Vamos a confirmar tu correo electrónico para que puedas usar COCO, construyendo comunidad alrededor del conocimiento.'
+                'Vamos a confirmar tu correo electrónico para que puedas usar COCO, construyendo comunidad alrededor '
+                'del conocimiento. '
             )
         description.append('Para continuar pulsa el botón que está a continuación:')
         token = instance.token

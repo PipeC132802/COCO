@@ -1,5 +1,5 @@
 <template>
-  <v-card elevation="5" v-if="users.length">
+  <v-card elevation="3" v-if="users.length">
     <v-card-title> Sugerencias </v-card-title>
     <v-divider></v-divider>
     <v-card-text class="mt-0 pa-0">

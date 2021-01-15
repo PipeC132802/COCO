@@ -37,7 +37,7 @@
       </p>
     </div>
     <v-card
-      elevation="10"
+      elevation="5"
       class="mb-4"
       v-for="barter in barters"
       :key="barter.id"
@@ -261,7 +261,7 @@ export default {
       return username;
     },
     getPk(){
-      return this.$route.params.pk;
+      return this.$route.params.pk | this.pk;
     },
     timeSince(date) {
       let timeSince = moment(date).locale("es").fromNow();

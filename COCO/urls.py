@@ -20,9 +20,11 @@ from django.conf import settings
 
 from Apps.ManageUsers import urls as user_urls
 from Apps.ManageBarters import urls as barter_urls
+from Apps.ManageSearchs import urls as search_urls
 
 
 coco_api_base = 'coco/api/v1.0/'
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -31,4 +33,7 @@ urlpatterns = [
 
     # Barter app apis
     path(coco_api_base, include(barter_urls)),
+
+    # Search app apis
+    path(coco_api_base, include(search_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

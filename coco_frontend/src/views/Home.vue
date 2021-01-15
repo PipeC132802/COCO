@@ -4,7 +4,7 @@
       <v-row wrap>
         <v-col tile sm="12" md="8" lg="9" xl="10">
           <NewBarter />
-          <BarterList class="mt-4" :field="'newsfeed'" />
+          <BarterList class="mt-5" :field="'newsfeed'" />
         </v-col>
         <v-col sm="12" md="4" lg="3" xl="2">
           <User2FollowSuggestion />

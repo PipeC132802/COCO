@@ -24,7 +24,7 @@
       <v-text-field
         dense
         class="pt-7"
-        v-model="seachValue"
+        v-model="searchValue"
         @click:append="go2search"
         @keydown.enter="go2search"
         placeholder="Buscar trueques"
@@ -67,11 +67,19 @@ export default {
   data: () => ({
     loginDialog: false,
     signUpDialog: false,
-    seachValue: '',
+    searchValue: '',
   }),
   components: {
     Login,
     SignUp
+  },
+  watch: {
+    $route(to, from) {
+      if(this.$route.name != 'Explore') this.searchValue = '';
+    },
+  },
+  created(){
+    if(this.$route.query.q) this.searchValue = this.$route.query.q;
   },
   methods: {
     ...mapMutations(["updateFormsInfo"]),
@@ -88,7 +96,7 @@ export default {
       this.updateFormsInfo(formDialog)
     },
     go2search(){
-      this.$router.push({name:'Explore',query:{q:this.seachValue}});
+      this.$router.push({name:'Explore',query:{q:this.searchValue}});
     }
 
   },

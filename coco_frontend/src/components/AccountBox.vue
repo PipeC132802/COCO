@@ -1,6 +1,6 @@
 <template>
   <v-container fluid>
-    <v-card outlined elevation="5" class="ma-0 pa-0">
+    <v-card outlined elevation="3" class="ma-0 pa-0">
       <v-row justify="center" class="pa-0">
         <v-avatar class="mx-auto mt-4" size="70">
           <img
@@ -59,7 +59,9 @@ export default {
   },
   data: () => ({
     username: "",
-    account: "",
+    account: {
+      name: ''
+    },
     apiDir: "user-about/",
   }),
   computed: {

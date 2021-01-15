@@ -13,7 +13,7 @@
         Editar información de tu cuenta
       </v-card-title>
     </v-card>
-    <v-card elevation="12" class="mt-3">
+    <v-card elevation="3" class="mt-3">
       <v-card-title class="mb-0">
         Información del perfil
         <v-container class="header ma-0 pa-0"></v-container>
