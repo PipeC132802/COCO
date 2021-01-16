@@ -234,6 +234,29 @@ class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
             im.save(path, format="JPEG", quality=50)
 
 
+class CoverPhotoApi(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+
+        try:
+            return Response(self.update(request))
+        except:
+            cover_photo = request.FILES.get("cover_photo")
+            cover_photo_model = UserCoverPhoto.objects.create(user=request.user, photo=cover_photo)
+            return JsonResponse({'Detail': 'Cover photo updated successfully',
+                                 'cover_photo': DOMAIN + cover_photo_model.photo.url})
+
+    def update(self, request):
+        cover_photo = request.FILES.get("cover_photo")
+        cover_photo_model = UserCoverPhoto.objects.get(user=request.user)
+        cover_photo_model.photo = cover_photo
+        cover_photo_model.save()
+        return {'Detail': 'Cover photo updated successfully',
+                'cover_photo': DOMAIN + cover_photo_model.photo.url
+                }
+
+
 class UserAccountInfoApi(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):

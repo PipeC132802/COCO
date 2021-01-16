@@ -1,10 +1,10 @@
 <template>
   <v-card>
     <v-img
-      lazy-src="https://cdn.pixabay.com/photo/2015/08/28/11/27/space-911785_1280.jpg"
+      lazy-src="https://cdn.pixabay.com/photo/2018/03/29/19/34/northern-lights-3273425_1280.jpg"
       aspect-ratio="1.7"
       max-height="300"
-      :src="cover"
+      :src="userP.coverPhoto"
     >
       <template v-slot:placeholder>
         <v-row class="fill-height ma-0" align="center" justify="center">
@@ -14,6 +14,23 @@
           ></v-progress-circular>
         </v-row>
       </template>
+      <v-row
+        v-if="user.username == $route.params.username"
+        class="px-5 pt-2"
+        justify="end"
+      >
+        <div class="cover-btn">
+          <v-file-input
+            @change="addCoverPhoto"
+            class="cover-input"
+            accept="image/png, image/jpeg, image/bmp"
+          ></v-file-input>
+          <v-btn>
+            <v-icon left>mdi-camera-outline</v-icon>
+            <span class="text-btn">Subir portada</span>
+          </v-btn>
+        </div>
+      </v-row>
     </v-img>
     <v-card-title class="pb-0">
       <v-hover v-slot="{ hover }">
@@ -24,7 +41,10 @@
         >
           <img v-if="userP.profilePicture" :src="userP.profilePicture" />
           <span v-else>{{ userP.name.slice(0, 1) }}</span>
-          <div class="upload-profile" v-if="user.username == $route.params.username">
+          <div
+            class="upload-profile"
+            v-if="user.username == $route.params.username"
+          >
             <v-file-input
               class="file-upload"
               accept="image/png, image/jpeg, image/bmp"
@@ -128,6 +148,37 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog width="600" persistent v-model="coverPhotoDialog">
+      <v-card class="px-3">
+        <v-card-title class="pl-9">Subir foto de portada </v-card-title>
+        <v-img
+          class="mx-auto"
+          :src="coverPhoto.url"
+          aspect-ratio="1.7"
+          max-width="500"
+        >
+        </v-img>
+        <v-card-actions class="ml-5">
+          <v-btn
+            :loading="loadingCoverBtn"
+            class="mt-2 ml-3 mb-5"
+            color="primary darken-3"
+            @click="uploadCoverPhoto"
+          >
+            Subir
+          </v-btn>
+          <v-btn
+            @click="loadingCoverBtn = false"
+            outlined
+            class="mt-2 ml-3 mb-5"
+            color="error darken-3"
+            :disabled="loadingCoverBtn"
+          >
+            Cancelar
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -145,15 +196,22 @@ export default {
   data: () => ({
     apiDir: {
       profilePicture: "profile-picture-user/",
+      coverPhoto: "cover-photo-user/",
       account: "account/",
     },
-    cover: "",
     profileDialog: false,
+    coverPhotoDialog: false,
+    loadingCoverBtn: false,
     loadingProfileBtn: false,
     profilePicture: {
       file: "",
       url: "",
     },
+    coverPhoto: {
+      file: "",
+      url: "",
+    },
+
     userP: {
       name: "",
       profilePicture: "",
@@ -164,7 +222,7 @@ export default {
       following: "",
       followYou: false,
       followThisUser: true,
-      coverPhoto: ''
+      coverPhoto: "",
     },
   }),
   computed: {
@@ -214,8 +272,9 @@ export default {
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
           this.userP.coverPhoto = response.cover_photo;
-          document.title = this.userP.name + ` (@${this.userP.username}) | COCO`;
-          if(!response.cover_photo) this.searchCover();
+          document.title =
+            this.userP.name + ` (@${this.userP.username}) | COCO`;
+          if (!response.cover_photo) this.searchCover();
         })
         .catch((err) => {
           console.error(err);
@@ -239,7 +298,7 @@ export default {
           let hits = response.hits;
           let total = hits.length;
           let img_slected = hits[Math.floor(Math.random() * hits.length)];
-          this.cover = img_slected.largeImageURL;
+          this.userP.coverPhoto = img_slected.largeImageURL;
         });
     },
     followInfo(followObj) {
@@ -258,11 +317,16 @@ export default {
       this.profilePicture.url = URL.createObjectURL(img);
       this.profileDialog = true;
     },
+    addCoverPhoto(img) {
+      this.coverPhoto.file = img;
+      this.coverPhoto.url = URL.createObjectURL(img);
+      this.coverPhotoDialog = true;
+    },
     uploadProfilePicture() {
       this.loadingProfileBtn = true;
       if (this.profilePicture.file) {
         const formData = new FormData();
-        
+
         formData.append("profile_picture", this.profilePicture.file);
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
@@ -277,13 +341,41 @@ export default {
           .then((response) => {
             this.userP.profilePicture = response.profile_picture;
           })
-          .catch((err)=>console.error(err))
-          .finally(()=>{
+          .catch((err) => console.error(err))
+          .finally(() => {
             this.loadingProfileBtn = false;
             this.profileDialog = false;
-            this.profilePicture.file = '';
-            this.profilePicture.url = '';
+            this.profilePicture.file = "";
+            this.profilePicture.url = "";
+          });
+      }
+    },
+    uploadCoverPhoto() {
+      this.loadingCoverBtn = true;
+      if (this.coverPhoto.file) {
+        const formData = new FormData();
+
+        formData.append("cover_photo", this.coverPhoto.file);
+        let headers = {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        };
+        delete headers["Content-Type"];
+        fetch(this.baseUrl + this.apiDir.coverPhoto, {
+          method: "POST",
+          headers: headers,
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((response) => {
+            this.userP.coverPhoto = response.cover_photo;
           })
+          .catch((err) => console.error(err))
+          .finally(() => {
+            this.loadingCoverBtn = false;
+            this.coverPhotoDialog = false;
+            this.coverPhoto.file = "";
+            this.coverPhoto.url = "";
+          });
       }
     },
   },
@@ -358,5 +450,26 @@ h2 {
   width: 200px;
   height: 200px;
   border-radius: 50%;
+}
+.text-btn {
+  text-transform: capitalize;
+  font-size: inherit;
+  color: rgb(34, 34, 34);
+}
+.cover-btn {
+  position: relative;
+}
+.cover-input {
+  position: absolute;
+  z-index: 100;
+  top: -15px;
+  width: 400px;
+  left: -5px;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+.v-file-input__text {
+  cursor: pointer;
+  min-width: 300px !important;
 }
 </style>

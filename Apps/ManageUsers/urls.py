@@ -10,6 +10,7 @@ urlpatterns = [
     path('contact-user/', UserContactApi.as_view(), name='contact_user'),
     path('about-user/', UserAboutAndAreasApi.as_view(), name='about_user'),
     path('profile-picture-user/', ProfilePictureApi.as_view(), name='profile_picture'),
+    path('cover-photo-user/', CoverPhotoApi.as_view(), name='cover_photo'),
     path('area-list/', AreaListApi.as_view(), name='areas'),
     path('account/', UserAccountInfoApi.as_view(), name='account_info'),
     path('user-about/', UserAboutApi.as_view(), name='user_about'),
