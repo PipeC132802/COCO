@@ -6,8 +6,8 @@
           <NewBarter />
           <BarterList class="mt-5" :field="'newsfeed'" />
         </v-col>
-        <v-col sm="12" md="4" lg="3" xl="2">
-          <User2FollowSuggestion />
+        <v-col sm="12" md="4" lg="3" xl="2" class="pt-0 mt-0">
+          <User2FollowSuggestion class="mt-2" />
           <CompanyInfo class="mx-1" />
         </v-col>
       </v-row>
