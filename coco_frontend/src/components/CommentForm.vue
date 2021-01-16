@@ -139,6 +139,8 @@ export default {
   word-break: break-word;
   padding-top: 5px;
   margin: 1px 0 5px 15px;
+}.comment:hover{
+  cursor: text;
 }
 .image-in-comment {
   border-radius: 2%;

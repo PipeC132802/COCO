@@ -58,7 +58,7 @@
           </div>
         </v-avatar>
       </v-hover>
-      <h2 class="mb-2" :title="userP.name">
+      <h2 class="mb-2 title--text" :title="userP.name">
         {{ userP.name }}
         <span :title="'@' + userP.username" class="text"
           >(@{{ userP.username }})</span

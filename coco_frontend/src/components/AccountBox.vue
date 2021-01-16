@@ -12,19 +12,19 @@
         </v-avatar>
       </v-row>
       <v-row justify="center">
-        <router-link
-          class="name title--text link"
-          :title="account.name"
-          :to="{ name: 'Profile', params: { username: account.user } }"
-        >
-          <v-card-title class="pb-0 mt-0 pt-0">
+        <v-card-title class="pb-0 mt-0 pt-0">
+          <router-link
+            class="name title--text link"
+            :title="account.name"
+            :to="{ name: 'Profile', params: { username: account.user } }"
+          >
             {{ account.name }}
+          </router-link>
 
-            <v-card-subtitle :title="account.user" class="ml-1 px-0">
-              (@{{ account.user }})
-            </v-card-subtitle>
-          </v-card-title>
-        </router-link>
+          <v-card-subtitle :title="account.user" class="ml-1 px-0">
+            (@{{ account.user }})
+          </v-card-subtitle>
+        </v-card-title>
       </v-row>
 
       <v-card-text class="mt-0 pt-0">
@@ -60,7 +60,7 @@ export default {
   data: () => ({
     username: "",
     account: {
-      name: ''
+      name: "",
     },
     apiDir: "user-about/",
   }),

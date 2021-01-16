@@ -67,16 +67,15 @@
                   <v-icon color="grey darken-3">mdi-dots-horizontal</v-icon>
                 </v-btn>
               </template>
-              <v-list
-                v-if="comment.user.username == user.username"
-                class="pa-0"
-              >
+              
+              <v-list v-if="comment.user.username == user.username" class="pa-0">
                 <v-list-item
                   class="item-menu pl-1"
                   v-for="(item, i) in items.self"
                   :key="i"
+                  @click="setEvent(item.title, comment)"
                 >
-                  <v-list-item-title @click="setEvent(item.title, comment)">
+                  <v-list-item-title>
                     <v-icon class="ml-1" left>{{ item.icon }}</v-icon>
                     {{ item.title }}</v-list-item-title
                   >
@@ -190,6 +189,9 @@ export default {
 .accept-action:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+.v-list-item__action {
+  z-index: 100;
 }
 .item-menu:hover {
   background: rgb(219, 219, 219);
