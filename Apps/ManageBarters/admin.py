@@ -9,4 +9,5 @@ admin.site.register(BarterReaction)
 admin.site.register(BarterComment)
 admin.site.register(BarterSkill)
 admin.site.register(BarterInterest)
+admin.site.register(BarterView)
 

@@ -5,7 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest, BarterReaction, \
-    BarterComment
+    BarterComment, BarterView
 from Apps.ManageBarters.serializer import BarterCommentSerializer
 from Apps.ManageUsers.models import Area, UserRelationship, UserInterest
 from COCO.functions import get_place, get_profile_url, get_img_url_from_model
@@ -153,10 +153,21 @@ class BarterListApi(generics.ListAPIView):
                 'created': barter.created,
                 'edited': barter.edit,
                 'title': barter.barter_title,
-                'slug': barter.slug
+                'slug': barter.slug,
+                'views': self.barter_viewed(barter=barter)
             }
             barter_list.append(barter_json)
         return barter_list
+
+    def barter_viewed(self, barter):
+        views = BarterView.objects.filter(barter=barter)
+        if views.exists():
+            views = views.first()
+            views.counter += 1
+            views.save()
+        else:
+            views = BarterView.objects.create(barter=barter)
+        return views.counter
 
     def get_barters_reacted(self, request):
         barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
@@ -280,11 +291,11 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
     def put(self, request, *args, **kwargs):
         action = request.data['action']
         # TO-DO fix update comment
-        if int(action) == 1:
+        response = None
+        if action == 'update':
             response = self.update_comment(request)
-        else:
+        elif action == 'accept':
             response = self.just_accepted_status(request)
-
         return Response(response, status=200)
 
     def delete(self, request, *args, **kwargs):
@@ -299,10 +310,10 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
             return Response({'Detail': 'Comment not found'}, status=404)
 
     def just_accepted_status(self, request):
-        comment = BarterComment.objects.get(id=request.data['commentId'])
+        comment = BarterComment.objects.get(id=request.data['comment'])
         comment.accepted = True
         comment.save()
-        return {'Detail': 'Comment accepted status updated successfully'}
+        return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted}
 
     def update_comment(self, request):
         comment = request.data['comment']

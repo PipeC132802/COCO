@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'Apps.ManageUsers.apps.UsersConfig',
     'Apps.ManageBarters.apps.BartersConfig',
     'Apps.ManageNotifications',
-    'Apps.ManageSearchs',
+    'Apps.ManageSearches',
+    'Apps.ManageReviews',
     # Third Party apps
     'corsheaders',
     'rest_framework',

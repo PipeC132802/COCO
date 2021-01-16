@@ -16,6 +16,7 @@
         class="pb-0 mb-0"
         subheader
         two-line
+        :id="comment.id"
       >
         <v-list-item class="px-0 mb-0">
           <v-list-item-avatar size="30" color="secondary">
@@ -47,11 +48,15 @@
               <small :title="timeSince(comment.created) | capitalize">{{
                 timeSince(comment.created) | capitalize
               }}</small>
+              
               <span
-                v-if="user.username == author"
+                v-if="user.username == author && !comment.accepted"
                 class="success--text ml-2 accept-action"
+                @click="acceptProposal(comment)"
+                title="Aceptar"
                 >Aceptar</span
               >
+              <span title="Aceptada" class="white--text primary accepted ml-2" v-else-if="comment.accepted">Aceptada</span>
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action class="pr-4">
@@ -172,10 +177,30 @@ export default {
         },
       })
         .then((response) => response.json())
-        .then(() => {
+        .then((response) => {
           this.getComments();
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
+    },
+    acceptProposal(comment) {
+      let formData = {
+        comment: comment.id,
+        action: 'accept'
+      } 
+      fetch(this.baseUrl + this.apiDir, {
+        method: "PUT",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      })
+        .then((response) => response.json())
+        .then((response) => {
+          console.log(response)
+          this.getComments();
+        })
+        .catch((err) => console.error(err));
     },
   },
 };
@@ -202,5 +227,11 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+.accepted{
+  font-size: 10pt;
+  padding: 5px;
+  letter-spacing: 0.5px;
+  border-radius: 30%;
 }
 </style>

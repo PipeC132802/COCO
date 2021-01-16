@@ -49,7 +49,9 @@
               v-if="barter.user.profile_picture"
               :src="barter.user.profile_picture"
             ></v-img>
-            <span class="white--text" v-else>{{ barter.user.name.slice(0, 1).toUpperCase() }}</span>
+            <span class="white--text" v-else>{{
+              barter.user.name.slice(0, 1).toUpperCase()
+            }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="mt-0" style="line-heigth: 1">
             <v-list-item-title :title="barter.user.name">
@@ -71,9 +73,18 @@
               <small :title="timeSince(barter.created) | capitalize">{{
                 timeSince(barter.created) | capitalize
               }}</small>
-              <small title="Editado" v-if="barter.edited" class="ml-2 edit-tag"
-                >Editado</small
-              >
+              
+              <small v-if="barter.edited" class="ml-2">
+                <v-chip title="Editado" x-small color="primary darken-5" label>
+                  Editado
+                </v-chip>
+              </small>
+              <small :title="barter.views +' vistas'" v-if="user.username == barter.user.username" class="ml-2">
+                <v-chip small color="default" label>
+                  <v-icon small left> mdi-eye </v-icon>
+                  {{ barter.views }}
+                </v-chip>
+              </small>
             </v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -236,11 +247,13 @@ export default {
   },
   methods: {
     fetchBarterList() {
-      let query = '';
+      let query = "";
       if (this.field == "detail") {
-        query = `?id=${this.getPk()}&field=${this.field}&username=${this.getUsername()}`;
+        query = `?id=${this.getPk()}&field=${
+          this.field
+        }&username=${this.getUsername()}`;
       } else {
-         query = `?username=${this.getUsername()}&field=${
+        query = `?username=${this.getUsername()}&field=${
           this.field
         }&user=${this.getUsername()}`;
       }
@@ -250,7 +263,7 @@ export default {
           this.barters = response;
           this.loaded = true;
         })
-        .catch((err)=>console.error(err))
+        .catch((err) => console.error(err));
     },
     getUsername() {
       let username = "";
@@ -260,7 +273,7 @@ export default {
       }
       return username;
     },
-    getPk(){
+    getPk() {
       return this.$route.params.pk | this.pk;
     },
     timeSince(date) {
@@ -315,7 +328,7 @@ p {
   color: white;
   padding: 5px;
   letter-spacing: 0.5px;
-  border-radius: 30%;
+  border-radius: 10%;
 }
 .link:hover {
   text-decoration: underline;

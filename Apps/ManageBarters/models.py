@@ -82,3 +82,8 @@ class BarterSkill(models.Model):
 class BarterInterest(models.Model):
     barter = models.OneToOneField(Barter, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
+
+
+class BarterView(models.Model):
+    barter = models.ForeignKey(Barter, on_delete=models.CASCADE)
+    counter = models.IntegerField(default=0)

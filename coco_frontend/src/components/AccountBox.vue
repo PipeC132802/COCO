@@ -14,9 +14,10 @@
       <v-row justify="center">
         <v-card-title class="pb-0 mt-0 pt-0">
           <router-link
-            class="name title--text link"
+            class="title--text link"
             :title="account.name"
             :to="{ name: 'Profile', params: { username: account.user } }"
+            style="font-size: 16pt;"
           >
             {{ account.name }}
           </router-link>
@@ -114,7 +115,5 @@ export default {
 .blockquote:after {
   content: "";
 }
-.name {
-  font-size: 16pt;
-}
+
 </style>

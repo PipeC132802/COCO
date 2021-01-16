@@ -20,7 +20,7 @@ from django.conf import settings
 
 from Apps.ManageUsers import urls as user_urls
 from Apps.ManageBarters import urls as barter_urls
-from Apps.ManageSearchs import urls as search_urls
+from Apps.ManageSearches import urls as search_urls
 
 
 coco_api_base = 'coco/api/v1.0/'
