@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-row wrap>
-        <v-col tile sm="12" md="8" lg="9" xl="10">
+        <v-col class="px-4" tile sm="12" md="8" lg="9" xl="10">
           <NewBarter />
           <BarterList class="mt-5" :field="'newsfeed'" />
         </v-col>

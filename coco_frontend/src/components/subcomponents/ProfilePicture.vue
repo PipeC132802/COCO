@@ -2,11 +2,9 @@
   <div>
     <div class="img-preview">
       <v-icon v-if="!avatar" size="280"> mdi-account </v-icon>
-      
-<v-img v-else
-  :src="avatar"
-  size="280"></v-img>
-      <v-avatar  size="280"> </v-avatar>
+
+      <v-img v-else :src="avatar" size="280"></v-img>
+      <v-avatar size="280" color="secondary"> </v-avatar>
     </div>
     <v-file-input
       v-model="file"
@@ -25,7 +23,7 @@ export default {
     file: null,
     avatar: "",
   }),
-  beforeUpdate(){
+  beforeUpdate() {
     this.$emit("profilePicture", this.file);
   },
   methods: {

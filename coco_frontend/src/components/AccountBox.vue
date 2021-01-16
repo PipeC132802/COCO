@@ -2,13 +2,13 @@
   <v-container fluid>
     <v-card outlined elevation="3" class="ma-0 pa-0">
       <v-row justify="center" class="pa-0">
-        <v-avatar class="mx-auto mt-4" size="70">
+        <v-avatar color="secondary" class="mx-auto mt-4" size="70">
           <img
             alt="user"
             v-if="account.profile_picture"
             :src="account.profile_picture"
           />
-          <span v-else>{{ account.name.slice(0, 1) }}</span>
+          <span class="white--text" v-else>{{ account.name.slice(0, 1) }}</span>
         </v-avatar>
       </v-row>
       <v-row justify="center">

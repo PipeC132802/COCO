@@ -3,6 +3,7 @@ from datetime import datetime
 from PIL import Image
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.db.models import Q
 from django.http import JsonResponse
 from notify.models import Notification
 from rest_framework import generics
@@ -12,9 +13,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
-    UserInterest, UserRelationship
+    UserInterest, UserRelationship, UserCoverPhoto
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
-from COCO.functions import save_areas, get_place
+from COCO.functions import save_areas, get_place, get_profile_url, get_img_url_from_model
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
@@ -185,7 +186,7 @@ class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, gener
             return JsonResponse({'Error': "There's invalid data."})
 
 
-class ProfilePictureApi(generics.CreateAPIView):
+class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -193,9 +194,23 @@ class ProfilePictureApi(generics.CreateAPIView):
         try:
             profile_picture_obj = UserProfilePhoto.objects.create(user=request.user, profile_picture=profile_picture)
             self.resize_img(profile_picture_obj)
-            return JsonResponse({'profile_picture_created': True})
+            return JsonResponse({'profile_picture_created': True,
+                                 'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url})
         except:
             return Response({'profile_picture_created': False}, status=500)
+
+    def put(self, request, *args, **kwargs):
+        profile_picture = request.FILES.get("profile_picture")
+        try:
+            profile_picture_obj = UserProfilePhoto.objects.get(user=request.user)
+            profile_picture_obj.profile_picture = profile_picture
+            profile_picture_obj.save()
+            self.resize_img(profile_picture_obj)
+            return JsonResponse({'Detail': 'Profile photo updated successfully',
+                                 'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url
+                                 })
+        except:
+            self.post(request, args, kwargs)
 
     def resize_img(self, profile_picture):
         import cv2 as cv
@@ -225,42 +240,23 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
         username = request.GET["username"]
         username_request = request.GET["username_request"]
 
-        try:
-            user_profile = UserProfilePhoto.objects.get(user__username=username)
-            user_json = {
-                'name': "{0} {1}".format(user_profile.user.first_name, user_profile.user.last_name),
-                'profile_picture': DOMAIN + user_profile.profile_picture.url,
-                'date_joined': user_profile.user.date_joined,
-                'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
-                'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
-                'skills': [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)],
-                'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
-                                                                    user_to__username=username,
-                                                                    status=1).exists(),
-                'follow_you': UserRelationship.objects.filter(user_from__username=username,
-                                                              user_to__username=username_request,
-                                                              status=1).exists()
-            }
-        except:
-            try:
-                user = User.objects.get(username=username)
-                user_json = {
-                    'name': "{0} {1}".format(user.first_name, user.last_name),
-                    'profile_picture': '',
-                    'skills': [user_skill.area.area for user_skill in
-                               UserSkill.objects.filter(user__username=username)],
-                    'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
-                    'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
-                    'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
-                    'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
-                                                                        user_to__username=username,
-                                                                        status=1).exists(),
-                    'follow_you': UserRelationship.objects.filter(user_from__username=username,
-                                                                  user_to__username=username_request,
-                                                                  status=1).exists()
-                }
-            except User.DoesNotExist:
-                return Response("User not found", status=404)
+        user = User.objects.get(username=username)
+        user_json = {
+            'name': "{0} {1}".format(user.first_name, user.last_name),
+            'profile_picture': get_profile_url(user),
+            'cover_photo': get_img_url_from_model(UserCoverPhoto, Q(user=user)),
+            'skills': [user_skill.area.area for user_skill in
+                       UserSkill.objects.filter(user__username=username)],
+            'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
+            'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
+            'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
+            'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
+                                                                user_to__username=username,
+                                                                status=1).exists(),
+            'follow_you': UserRelationship.objects.filter(user_from__username=username,
+                                                          user_to__username=username_request,
+                                                          status=1).exists()
+        }
 
         return JsonResponse(user_json)
 

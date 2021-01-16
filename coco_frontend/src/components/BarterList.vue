@@ -44,12 +44,12 @@
     >
       <v-list class="pb-0 mb-0" subheader two-line>
         <v-list-item class="pb-0 mb-0">
-          <v-list-item-avatar>
+          <v-list-item-avatar color="secondary">
             <v-img
               v-if="barter.user.profile_picture"
               :src="barter.user.profile_picture"
             ></v-img>
-            <span v-else>{{ barter.user.name.slice(0, 1).toUpperCase() }}</span>
+            <span class="white--text" v-else>{{ barter.user.name.slice(0, 1).toUpperCase() }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="mt-0" style="line-heigth: 1">
             <v-list-item-title :title="barter.user.name">

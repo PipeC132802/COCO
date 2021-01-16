@@ -37,5 +37,4 @@ def get_img_url_from_model(model, query):
         field = DOMAIN + model.objects.get(query).photo.url
     except:
         field = ''
-
     return field

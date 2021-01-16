@@ -13,7 +13,10 @@
       }}
       en {{ results.time }} segundos
     </p>
-    <v-tabs v-model="tab">
+    <v-row v-if="loading" justify="center">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </v-row>
+    <v-tabs v-else v-model="tab">
       <v-tab
         ><v-icon left>mdi-clipboard-list</v-icon
         ><span class="tab-title">Todos</span>
@@ -97,6 +100,7 @@ export default {
       users: [],
       barters: [],
       time: "",
+      loading: true,
     },
     apiDir: "search/",
   }),
@@ -117,7 +121,10 @@ export default {
       fetch(this.baseUrl + this.apiDir + "?q=" + this.$route.query.q)
         .then((response) => response.json())
         .then((response) => (this.results = response))
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => {
+          this.loading = false;
+        });
     },
     pluralize: function (val) {
       if (val > 1 || val == 0) {

@@ -60,7 +60,7 @@ class UserCoverPhoto(models.Model):
         return 'cover_photos/{0}'.format(filename + ".jpg")
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    cover_photo = models.ImageField(upload_to=user_directory_path, blank=True)
+    photo = models.ImageField(upload_to=user_directory_path, blank=True)
 
     def __str__(self):
         return "@" + self.user.username + "'s cover photo"

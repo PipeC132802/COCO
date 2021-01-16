@@ -273,13 +273,13 @@ export default {
     submitProfilePicture() {
       this.loadingBtn = true;
       if (this.profilePicture) {
-        const formdata = new FormData();
+        const formData = new FormData();
         formdata.append("profile_picture", this.profilePicture);
 
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
         };
-        this.api(this.apiDirs.profilePicture, headers, formdata);
+        this.api(this.apiDirs.profilePicture, headers, formData);
       } else {
         this.snackbar = true;
         this.message = "Completa los campos";
