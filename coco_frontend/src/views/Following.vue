@@ -48,7 +48,7 @@
           v-if="user.username && followed.username != user.username"
         >
           <FollowButton :followThisUser="false" :from="user.username" :to="followed.username" 
-              :target="$route.params.username == user.username?'self':'other'"  />
+              :target="$route.params.username == user.username?'self':'other'" :text="true"/>
         </v-list-item-action>
       </v-list-item>
     </v-card-text>

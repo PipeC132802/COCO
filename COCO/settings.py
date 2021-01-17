@@ -166,6 +166,7 @@ DOMAIN = "http://127.0.0.1:8000"
 
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 def lookup_cast(self, lookup_type, internal_type=None):
     if lookup_type in ('icontains', 'istartswith'):

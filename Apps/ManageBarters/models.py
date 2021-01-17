@@ -85,5 +85,14 @@ class BarterInterest(models.Model):
 
 
 class BarterView(models.Model):
-    barter = models.ForeignKey(Barter, on_delete=models.CASCADE)
+    barter = models.OneToOneField(Barter, on_delete=models.CASCADE)
     counter = models.IntegerField(default=0)
+    users = models.TextField(blank=True)
+
+    def __str__(self):
+        return '{0} views in {1}'.format(self.counter, self.barter.barter_title)
+
+    def store_as_list(self, value):
+        self.users += value + ','
+        self.counter = len(self.users.strip(',').split(','))
+        super(BarterView, self).save()

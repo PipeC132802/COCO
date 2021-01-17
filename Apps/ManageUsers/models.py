@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.db import models
 
 from COCO.settings import DOMAIN
@@ -101,6 +102,7 @@ class UserContact(models.Model):
             'place': self.place.__str__()
         }
 
+
 class Area(models.Model):
     area = models.CharField(max_length=50, unique=True)
 
@@ -146,6 +148,7 @@ class UserRelationship(models.Model):
     def __str__(self):
         return '{0} to {1}: {2}'.format(self.user_from.username, self.user_to.username, self.status)
 
+
 class UserSettings(models.Model):
     notifications = models.BooleanField(default=True)
     include_user_in_search = models.BooleanField(default=True)
@@ -163,3 +166,8 @@ class VerifyUser(models.Model):
 
     def __str__(self):
         return 'token de: @' + self.user.username
+
+
+class UserSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)

@@ -39,6 +39,7 @@ class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
         unread_notifications = Notification.objects.filter(recipient_id=request.user.pk, read=False).count()
         unread_messages = 3
         return JsonResponse({
+            'id': user.pk,
             'username': user.username,
             'name': user.first_name + ' ' + user.last_name,
             'profile_picture': profile_picture,

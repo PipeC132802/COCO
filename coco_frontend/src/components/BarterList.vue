@@ -75,7 +75,7 @@
               }}</small>
               
               <small v-if="barter.edited" class="ml-2">
-                <v-chip title="Editado" x-small color="primary darken-5" label>
+                <v-chip title="Editado" small color="primary darken-5" label>
                   Editado
                 </v-chip>
               </small>
@@ -247,15 +247,16 @@ export default {
   },
   methods: {
     fetchBarterList() {
+      console.log(this.user.id)
       let query = "";
       if (this.field == "detail") {
         query = `?id=${this.getPk()}&field=${
           this.field
-        }&username=${this.getUsername()}`;
+        }&username=${this.getUsername()}&user_request=${this.user.id}`;
       } else {
         query = `?username=${this.getUsername()}&field=${
           this.field
-        }&user=${this.getUsername()}`;
+        }&user=${this.getUsername()}&user_request=${this.user.id}`;
       }
       fetch(this.baseUrl + this.apiDir.barterList + query)
         .then((response) => response.json())

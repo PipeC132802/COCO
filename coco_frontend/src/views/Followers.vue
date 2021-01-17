@@ -51,6 +51,7 @@
               :target="
                 $route.params.username == user.username ? 'self' : 'other'
               "
+              :text="true"
             />
           </v-list-item-action>
         </v-list-item>

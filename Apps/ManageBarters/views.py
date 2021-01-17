@@ -7,8 +7,10 @@ from rest_framework.response import Response
 from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest, BarterReaction, \
     BarterComment, BarterView
 from Apps.ManageBarters.serializer import BarterCommentSerializer
-from Apps.ManageUsers.models import Area, UserRelationship, UserInterest
+from Apps.ManageUsers.models import Area, UserRelationship, UserInterest, UserSession
+from Apps.ManageUsers.signals import retrieve_barters
 from COCO.functions import get_place, get_profile_url, get_img_url_from_model
+from django.contrib.sessions.models import Session
 
 
 class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.UpdateAPIView):
@@ -102,7 +104,6 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
 
 
 class BarterListApi(generics.ListAPIView):
-    queryset = Barter.objects.all()[0]
 
     def get(self, request, *args, **kwargs):
         def get_interest(request):
@@ -160,14 +161,13 @@ class BarterListApi(generics.ListAPIView):
         return barter_list
 
     def barter_viewed(self, barter):
-        views = BarterView.objects.filter(barter=barter)
-        if views.exists():
-            views = views.first()
-            views.counter += 1
-            views.save()
-        else:
-            views = BarterView.objects.create(barter=barter)
-        return views.counter
+
+        barter_views = BarterView.objects.filter(barter=barter).first()
+        user_request_id = self.request.GET['user_request']
+        if user_request_id not in barter_views.users.strip(',').split(
+                ',') and barter_views and user_request_id != 'undefined':
+            barter_views.store_as_list(user_request_id)
+        return barter_views.counter
 
     def get_barters_reacted(self, request):
         barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
