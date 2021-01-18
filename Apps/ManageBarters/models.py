@@ -25,6 +25,12 @@ class Barter(models.Model):
     class Meta:
         ordering = ('-created',)
 
+    def serializer(self):
+        return {
+            'title': self.barter_title,
+            'slug': self.slug,
+            'id': self.pk
+        }
 
 class BarterAbout(models.Model):
     description = models.TextField()

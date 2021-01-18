@@ -54,7 +54,7 @@
 
       <v-btn @click="showComments" text class="mr-1 action">
         <v-icon left small> mdi-comment-text-multiple </v-icon>
-       Proponer
+        Proponer
       </v-btn>
       <v-btn class="action" text>
         <v-icon left small> mdi-share-variant </v-icon>
@@ -66,6 +66,7 @@
 
     <script>
 import { mapState } from "vuex";
+import { sendNotificationViaWS } from "../functions.js";
 export default {
   name: "BarterActions",
   props: ["barterId"],
@@ -76,7 +77,7 @@ export default {
     apiDir: "create-barter-reaction/",
   }),
   computed: {
-    ...mapState(["baseUrl", "authentication"]),
+    ...mapState(["baseUrl", "authentication", "wsBase", "user"]),
     getColor: function () {
       let color = "default";
       switch (this.reaction) {
@@ -134,12 +135,24 @@ export default {
           .then((response) => {
             this.reactionMsg = this.getReactionVerbose(response.reaction);
             this.reaction = response.reaction;
+            this.notifyUser(response);
             this.$root.$emit("reaction", {
               barter: this.barterId,
               reaction: reaction,
             });
           })
           .catch((err) => console.error(err));
+      }
+    },
+    notifyUser(response) {
+      if (response.reaction > 0) {
+        let sockedData = {
+          type: "new_notification",
+          sender: this.user.username,
+          receiver: response.user_to,
+          reaction: response.reaction,
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, response.user_to);
       }
     },
     showComments() {

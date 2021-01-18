@@ -74,6 +74,7 @@
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
+    
   </div>
 </template>
 
@@ -109,16 +110,18 @@ export default {
       { title: "Perfil", icon: "mdi-account", link: "/profile", value: "" },
       { title: "Ajustes ", icon: "mdi-cogs", link: "/settings", value: "" },
     ],
+    notifications_box: [],
     mini: true,
   }),
   computed: {
-    ...mapState(["baseUrl", "authentication"]),
+    ...mapState(["baseUrl", "authentication","wsBase"]),
   },
-  created() {
+  mounted() {
     this.getUserInfo();
+    
   },
   methods: {
-    ...mapMutations(["setUser", "updateAuthInfo"]),
+    ...mapMutations(["setUser", "updateAuthInfo", "addNotification" ]),
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
         method: "GET",
@@ -135,6 +138,7 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
           this.setUser(respose);
+          this.connect();
         });
     },
     closeSession() {
@@ -155,6 +159,25 @@ export default {
         },
       });
     },
+    
+    connect() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      this.websocket = new WebSocket(
+        protocol + this.wsBase + "/ws/notifications/" + this.user.username + "/"
+      );
+      this.websocket.onopen = () => {
+        this.websocket.onmessage = ({ data }) => {
+          // this.messages.unshift(JSON.parse(data));
+          const socketData = JSON.parse(data);
+          if(socketData.type == 'new_notification'){
+            this.items[2].value = socketData.unread_notifications;
+          }
+          this.addNotification(socketData)
+
+        };
+      };
+      this.websocket.onclose = () => {};
+    },
   },
 };
 </script>
@@ -173,4 +196,5 @@ export default {
   width: 100%;
   border-radius: 10px 10px 0px 0;
 }
+
 </style>

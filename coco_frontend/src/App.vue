@@ -12,14 +12,18 @@
     <v-main id="content">
       <router-view />
     </v-main>
+    <div class="notifications">
+        <NotificationBox v-for="(notification, index) in notifications" :key="index" :notification="notification" />
+    </div>
   </v-app>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
 import { readCookie } from "@/js/cookiesfunctions.js";
-import LeftAside from "@/components/LeftAside";
-import NavBar from "@/components/NavBar";
+import LeftAside from "@/components/LeftAside.vue";
+import NavBar from "@/components/NavBar.vue";
+import NotificationBox from "@/components/NotificationBox.vue";
 
 export default {
   name: "App",
@@ -27,9 +31,12 @@ export default {
   components: {
     NavBar,
     LeftAside,
+    NotificationBox
   },
 
-  data: () => ({}),
+  data: () => ({
+    list: ['Hola']
+  }),
   watch: {},
   beforeUpdate() {},
   beforeMount() {
@@ -42,7 +49,7 @@ export default {
     this.updateAuthInfo(responseObj);
   },
   computed: {
-    ...mapState(["authentication"]),
+    ...mapState(["authentication","notifications"]),
   },
   methods: {
     ...mapMutations(["updateAuthInfo"]),
@@ -50,6 +57,9 @@ export default {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
+    listMela(val){
+      this.list.pop(val)
+    }
   },
 };
 </script>
@@ -70,5 +80,15 @@ link {
 }
 link:hover {
   text-decoration: underline;
+}
+.notifications{
+  position: fixed;
+  right: 10px;
+  top: 55px;
+  width: 350px;
+  height: 90vh;
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
 }
 </style>

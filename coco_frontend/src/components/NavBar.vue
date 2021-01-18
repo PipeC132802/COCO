@@ -97,8 +97,7 @@ export default {
     },
     go2search(){
       this.$router.push({name:'Explore',query:{q:this.searchValue}});
-    }
-
+    },
   },
   computed: {
     ...mapState(["authentication", "forms","userRequireMoreInfo"]),

@@ -31,6 +31,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 INSTALLED_APPS = [
+    # Self apps
+    'Apps.ManageUsers.apps.UsersConfig',
+    'Apps.ManageBarters.apps.BartersConfig',
+    'Apps.ManageNotifications',
+    'Apps.ManageSearches',
+    'Apps.ManageReviews',
+    # Django apps
     'dj_rest_auth',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,18 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Self apps
-    'Apps.ManageUsers.apps.UsersConfig',
-    'Apps.ManageBarters.apps.BartersConfig',
-    'Apps.ManageNotifications',
-    'Apps.ManageSearches',
-    'Apps.ManageReviews',
     # Third Party apps
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    #'channels',
     'notify',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -122,7 +123,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-ASGI_APPLICATION = "COCO.routing.application"
+ASGI_APPLICATION = "COCO.asgi.application"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
@@ -131,6 +132,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -167,6 +169,7 @@ DOMAIN = "http://127.0.0.1:8000"
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 
 def lookup_cast(self, lookup_type, internal_type=None):
     if lookup_type in ('icontains', 'istartswith'):

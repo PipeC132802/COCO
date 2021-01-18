@@ -1,9 +1,7 @@
 import json
+
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from datetime import datetime
-
-from django.contrib.auth.models import User
 from notify.models import Notification
 
 
@@ -37,8 +35,7 @@ class NotificationConsumer(WebsocketConsumer):
     # Receive message from room group
     def new_notification(self, event):
         # Send message to WebSocket
-        unread_notifications = self.get_unread_notifications(event)
-        event['unread_notifications'] = unread_notifications
+        event['unread_notifications'] = self.get_unread_notifications(event)
         self.send(text_data=json.dumps(event))
 
     def get_unread_notifications(self, event):

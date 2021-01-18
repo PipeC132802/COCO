@@ -247,7 +247,6 @@ export default {
   },
   methods: {
     fetchBarterList() {
-      console.log(this.user.id)
       let query = "";
       if (this.field == "detail") {
         query = `?id=${this.getPk()}&field=${

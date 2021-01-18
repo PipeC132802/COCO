@@ -1,5 +1,9 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db.models import Q
+from notify.models import Notification
+from notify.signals import notify
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -257,7 +261,25 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
             barter = Barter.objects.get(id=request.data["barter_id"])
             barter_reaction = BarterReaction.objects.create(barter=barter, user_from=request.user,
                                                             reaction=request.data["reaction"])
-        return Response({'Detail': 'barter reaction set successfully', 'reaction': barter_reaction.reaction})
+            if request.user.pk != barter_reaction.barter.user.pk:
+                notify.send(request.user, recipient=barter_reaction.barter.user, actor=request.user,
+                            target=barter_reaction.barter,
+                            verb=str(barter_reaction.reaction), nf_type='reacted_by_one_user')
+
+        return Response(
+            {'Detail': 'barter reaction set successfully',
+             'reaction': barter_reaction.reaction,
+             'user_to': barter_reaction.barter.user.username,
+             'user_from': {
+                 'username': request.user.username,
+                 'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
+                 'profile_picture': get_profile_url(request.user)
+             },
+             'action': 'Reaccionó a tu trueque',
+             'created': datetime.now(),
+             'barter': barter_reaction.barter.serializer()
+             }
+        )
 
 
 class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.UpdateAPIView, generics.DestroyAPIView):

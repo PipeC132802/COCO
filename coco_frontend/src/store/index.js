@@ -22,6 +22,8 @@ export default new Vuex.Store({
       following: '',
       followThisUser: false,
     },
+    wsBase : '127.0.0.1:8000',
+    notifications: [],
   },
   mutations: {
     setUser(state, user) {
@@ -38,13 +40,15 @@ export default new Vuex.Store({
     },
     updateProfileFollowStatus(state, profileFollowStatus) {
       state.profileFollowStatus = profileFollowStatus;
+    },
+    addNotification(state, notification){
+      state.notifications.unshift(notification)
+    },
+    removeNotification(state){
+      state.notifications.pop()
     }
-
-
   },
   actions: {
-
-
   },
   modules: {
   },
