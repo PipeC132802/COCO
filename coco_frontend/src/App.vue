@@ -84,9 +84,8 @@ link:hover {
 .notifications{
   position: fixed;
   right: 10px;
-  top: 55px;
+  bottom: 55px;
   width: 350px;
-  height: 90vh;
   z-index: 100;
   display: flex;
   flex-direction: column-reverse;

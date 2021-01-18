@@ -151,6 +151,10 @@ export default {
           sender: this.user.username,
           receiver: response.user_to,
           reaction: response.reaction,
+          userFrom: response.user_from,
+          action: response.action,
+          barter: response.barter
+
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_to);
       }
