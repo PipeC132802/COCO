@@ -8,7 +8,7 @@
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
     </div>
-    <div v-else-if="!loaded && field == 'detail'">
+    <div v-else-if="!loaded && (field == 'detail' || field == 'search')">
       <v-skeleton-loader
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
@@ -246,7 +246,7 @@ export default {
   methods: {
     fetchBarterList() {
       let query = "";
-      if (this.field == "detail") {
+      if (this.field == "detail" || this.field == 'search') {
         query = `?id=${this.getPk()}&field=${
           this.field
         }&username=${this.getUsername()}&user_request=${this.user.id}`;

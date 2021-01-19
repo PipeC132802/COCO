@@ -2,12 +2,12 @@
   <div>
     <v-list-item>
       <v-badge
-        overlap
-        color="accent white--text"
-        bottom
-        content="💬"
         offset-x="35"
         :offset-y="place ? '25' : '30'"
+        overlap
+        color="accent"
+        bottom
+        content="👋"
       >
         <v-list-item-avatar color="secondary">
           <v-img
@@ -33,17 +33,16 @@
           <span class="grey--text">@{{ notification.userFrom.username }}</span>
         </v-list-item-title>
         <v-list-item-subtitle>
-          {{ notification.action }}:
-          <router-link
-            class="link title--text"
-            :to="{
-              path: `/${notification.receiver}/barters/${notification.barter.slug}/${notification.barter.id}#comment_${notification.comment.id}`,
-            }"
-          >
-            {{ notification.comment.text }}</router-link
-          >
+          {{ notification.action }}
         </v-list-item-subtitle>
-        <v-row justify="start"  class="grey--text pl-3" :title="timeSince|capitalize"> <v-icon left small>mdi-progress-clock</v-icon> <small>{{timeSince|capitalize}}</small> </v-row>
+        <v-row
+          justify="start"
+          class="grey--text pl-3"
+          :title="timeSince | capitalize"
+        >
+          <v-icon left small>mdi-progress-clock</v-icon>
+          <small>{{ timeSince | capitalize }}</small>
+        </v-row>
       </v-list-item-content>
     </v-list-item>
   </div>
@@ -51,29 +50,13 @@
 
 <script>
 import moment from "moment";
+
 export default {
   name: "ReactionNotification",
   props: ["notification", "place"],
   computed: {
-    getEmoji: function () {
-      let msg = "";
-      switch (this.notification.reaction) {
-        case 1:
-          msg = "😎";
-          break;
-        case 2:
-          msg = "🤩";
-          break;
-        case 3:
-          msg = "🤔";
-          break;
-
-        default:
-          break;
-      }
-      return msg;
-    },
-    timeSince: function() {
+    
+    timeSince: function () {
       let timeSince = moment(this.notification.created).locale("es").fromNow();
       return timeSince;
     },

@@ -22,6 +22,11 @@
         :notification="notification"
         v-else-if="notification.field == 'comment'"
       />
+      <follow-user-notification
+        :place="true"
+        :notification="notification"
+        v-else-if="notification.field == 'follow'"
+      />
     </v-card>
   </div>
 </template>
@@ -30,11 +35,13 @@
 import { mapState } from "vuex";
 import ReactionNotification from "../components/subcomponents/ReactionNotification.vue";
 import CommentNotification from "../components/subcomponents/CommentNotification.vue";
+import FollowUserNotification from "../components/subcomponents/FollowUserNotification.vue";
 export default {
   name: "NotificationsList",
   components: {
     ReactionNotification,
     CommentNotification,
+    FollowUserNotification,
   },
   data: () => ({
     notifications: [],

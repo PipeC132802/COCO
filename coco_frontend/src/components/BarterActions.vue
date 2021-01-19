@@ -155,7 +155,7 @@ export default {
           action: response.action,
           barter: response.barter,
           field: response.field,
-
+          created: response.created,
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_to);
       }

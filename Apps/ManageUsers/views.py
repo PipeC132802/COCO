@@ -351,15 +351,10 @@ class FollowUserApi(generics.GenericAPIView):
             if follow_status.status != 2:
                 if follow_status.status == 1:
                     follow_status.status = 0
-                    get_notification_and_mark_as_unread(get_query())
+
                 else:
                     follow_status.status = 1
-                    notify.send(request.user,
-                                recipient=follow_status.user_to,
-                                actor=request.user,
-                                target=follow_status.user_to,
-                                verb='Te siguió',
-                                nf_type='followed_by_user')
+                    get_notification_and_mark_as_unread(get_query())
                     notification_json = {
                         'user_to': username_to,
                         'user_from': {
@@ -377,6 +372,12 @@ class FollowUserApi(generics.GenericAPIView):
             user_from = User.objects.get(username=username_from)
             user_to = User.objects.get(username=username_to)
             follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
+            notify.send(request.user,
+                        recipient=follow_status.user_to,
+                        actor=request.user,
+                        target=follow_status.user_to,
+                        verb='Te siguió',
+                        nf_type='followed_by_user')
         if target == 'self':
             following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
             followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()

@@ -10,6 +10,7 @@
           v-if="notification.field == 'comment'"
           :notification="notification"
         />
+        <FollowUserNotification v-if="notification.field == 'follow'" :notification="notification" />
       </v-list>
     </v-card-text>
   </v-card>
@@ -19,12 +20,14 @@
 import { mapMutations } from "vuex";
 import ReactionNotification from "../components/subcomponents/ReactionNotification.vue";
 import CommentNotification from "../components/subcomponents/CommentNotification.vue";
+import FollowUserNotification from "../components/subcomponents/FollowUserNotification.vue";
 export default {
   name: "NotificationBox",
   props: ["notification"],
   components: {
     ReactionNotification,
-    CommentNotification
+    CommentNotification,
+    FollowUserNotification
   },
   data: () => ({
     timeOut: 5, // segs

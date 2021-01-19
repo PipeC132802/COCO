@@ -50,10 +50,10 @@
         </v-list-item-subtitle>
         <v-row
           justify="start"
-          class="grey--text"
+          class="grey--text pl-3"
           :title="timeSince | capitalize"
         >
-          <v-icon small>mdi-progress-clock</v-icon>
+          <v-icon left small>mdi-progress-clock</v-icon>
           <small>{{ timeSince | capitalize }}</small>
         </v-row>
       </v-list-item-content>

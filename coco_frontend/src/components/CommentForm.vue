@@ -139,7 +139,8 @@ export default {
           action: response.action,
           barter: response.barter,
           field: response.field,
-          comment: response.comment
+          comment: response.comment,
+          created: response.created,
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_barter);
       }

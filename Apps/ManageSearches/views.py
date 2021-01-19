@@ -24,7 +24,7 @@ def get_barters(request):
     barters = BarterAbout.objects.filter(
         Q(barter__barter_title__icontains=query) | Q(barter__user__username__icontains=query) |
         Q(description__icontains=query) | Q(barter__user__first_name__icontains=query) | Q(
-            barter__user__last_name__icontains=query), barter__deleted=False).distinct('barter_id')
+            barter__user__last_name__icontains=query), barter__deleted=False).distinct('barter')
 
     return serialize_barters(barters)
 

@@ -14,6 +14,8 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { sendNotificationViaWS } from "../functions.js";
+
 export default {
   props: ["from", "to", "target", "text"],
   data: () => ({
@@ -22,7 +24,7 @@ export default {
     verbose: "",
   }),
   computed: {
-    ...mapState(["authentication", "baseUrl"]),
+    ...mapState(["authentication", "baseUrl", "wsBase"]),
   },
   created() {
     this.followed = this.followThisUser;
@@ -81,6 +83,8 @@ export default {
               this.updateProfileFollowStatus(followObj);
             }
             this.$emit("followObj", response);
+            this.notifyUser(response.notification);
+
           })
           .catch((err) => {
             console.error(err);
@@ -89,6 +93,22 @@ export default {
     },
     getVerbose() {
       this.verbose = this.followed ? "Siguiendo" : "Seguir";
+    },
+    notifyUser(response) {
+      console.log('res', response)
+      if (response) {
+        let sockedData = {
+          type: "new_notification",
+          sender: response.user_from.username,
+          receiver: response.user_to,
+          userFrom: response.user_from,
+          action: response.action,
+          created: response.created,
+          field: response.field,
+
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, response.user_to);
+      }
     },
   },
 };

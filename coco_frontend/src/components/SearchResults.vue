@@ -41,7 +41,7 @@
             }}
           </div>
           <div v-for="barter in results.barters" :key="barter.id">
-            <BarterList :field="'detail'" :pk="barter.id" />
+            <BarterList :field="'search'" :pk="barter.id" />
           </div>
           <v-divider class="mb-2"></v-divider>
           <div v-if="results.users" class="mt-2 ml-3">
@@ -64,7 +64,7 @@
             }}
           </div>
           <div v-for="barter in results.barters" :key="barter.id">
-            <BarterList :field="'detail'" :pk="barter.id" />
+            <BarterList :field="'search'" :pk="barter.id" />
           </div>
         </div>
       </v-tab-item>
