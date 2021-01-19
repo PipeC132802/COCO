@@ -316,7 +316,7 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
                                                               user_from=user_from,
                                                               photo=photo)
                 notify.send(request.user, recipient=barter_comment.barter.user, actor=request.user,
-                            target=barter_comment.barter,
+                            target=barter_comment.barter, obj=barter_comment,
                             verb='Comentó en tu trueque', nf_type='barter_commented')
                 return Response({'Detail': 'Comment created successfully',
                                  'user_barter': barter_comment.barter.user.username,

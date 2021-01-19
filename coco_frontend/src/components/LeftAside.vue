@@ -118,8 +118,11 @@ export default {
   },
   mounted() {
     this.getUserInfo();
-    
+    this.$root.$on("notificationsReaded", () => {
+      this.items[2].value = 0;
+    });
   },
+ 
   methods: {
     ...mapMutations(["setUser", "updateAuthInfo", "addNotification" ]),
     getUserInfo() {

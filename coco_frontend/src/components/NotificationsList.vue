@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div v-if="loading">
+      <v-skeleton-loader
+        v-for="index in 10"
+        :key="index"
+        type="list-item-avatar-two-line"
+      ></v-skeleton-loader>
+    </div>
+
     <v-card
       class="ma-2"
       v-for="notification in notifications"
@@ -10,6 +18,10 @@
         :notification="notification"
         v-if="notification.field == 'reaction'"
       />
+      <comment-notification
+        :notification="notification"
+        v-else-if="notification.field == 'comment'"
+      />
     </v-card>
   </div>
 </template>
@@ -17,14 +29,17 @@
 <script>
 import { mapState } from "vuex";
 import ReactionNotification from "../components/subcomponents/ReactionNotification.vue";
+import CommentNotification from "../components/subcomponents/CommentNotification.vue";
 export default {
   name: "NotificationsList",
   components: {
     ReactionNotification,
+    CommentNotification,
   },
   data: () => ({
     notifications: [],
     apiDir: "notifications/",
+    loading: true,
   }),
   computed: {
     ...mapState(["baseUrl", "authentication"]),
@@ -33,9 +48,8 @@ export default {
     this.retrieveNotifications();
   },
   methods: {
-      // TO-DO Find why this overload the server
+    // TO-DO Find why this overload the server
     retrieveNotifications() {
-        
       fetch(this.baseUrl + this.apiDir, {
         headers: {
           Authorization: `Token ${this.authentication.accessToken}`,
@@ -46,11 +60,13 @@ export default {
         })
         .then((response) => {
           this.notifications = response;
-          this.$emit("unreadNotifications", 0);
-          console.log(response);
+          this.$root.$emit("notificationsReaded");
         })
         .catch((err) => {
           console.error(err);
+        })
+        .finally(() => {
+          this.loading = false;
         });
     },
   },

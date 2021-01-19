@@ -10,8 +10,6 @@
     </div>
     <div v-else-if="!loaded && field == 'detail'">
       <v-skeleton-loader
-        v-for="index in 1"
-        :key="index"
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
     </div>
