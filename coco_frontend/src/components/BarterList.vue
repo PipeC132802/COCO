@@ -35,7 +35,7 @@
       </p>
     </div>
     <v-card
-      elevation="5"
+      elevation="3"
       class="mb-4"
       v-for="barter in barters"
       :key="barter.id"
