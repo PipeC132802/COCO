@@ -6,6 +6,7 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db.models import Q
 from django.http import JsonResponse
 from notify.models import Notification
+from notify.signals import notify
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
@@ -15,7 +16,8 @@ from rest_framework.views import APIView
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest, UserRelationship, UserCoverPhoto
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
-from COCO.functions import save_areas, get_place, get_profile_url, get_img_url_from_model
+from COCO.functions import save_areas, get_place, get_profile_url, get_img_url_from_model, \
+    get_notification_and_mark_as_unread
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
 
@@ -333,17 +335,42 @@ class FollowUserApi(generics.GenericAPIView):
         })
 
     def post(self, request, *args, **kwargs):
+        def get_query():
+            query = Q(recipient=follow_status.user_to, actor_object_id=request.user.pk,
+                      target_object_id=follow_status.user_to.pk,
+                      verb='Te siguió', nf_type='followed_by_user')
+            return query
+
         username_from = request.data["username_from"]
         username_to = request.data["username_to"]
         target = request.data["target"]
+        notification_json = {}
         try:
             follow_status = UserRelationship.objects.get(user_from__username=username_from,
                                                          user_to__username=username_to)
             if follow_status.status != 2:
                 if follow_status.status == 1:
                     follow_status.status = 0
+                    get_notification_and_mark_as_unread(get_query())
                 else:
                     follow_status.status = 1
+                    notify.send(request.user,
+                                recipient=follow_status.user_to,
+                                actor=request.user,
+                                target=follow_status.user_to,
+                                verb='Te siguió',
+                                nf_type='followed_by_user')
+                    notification_json = {
+                        'user_to': username_to,
+                        'user_from': {
+                            'username': request.user.username,
+                            'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
+                            'profile_picture': get_profile_url(request.user)
+                        },
+                        'action': 'Te siguió',
+                        'created': datetime.now(),
+                        'field': 'follow'
+                    }
 
                 follow_status.save()
         except:
@@ -360,7 +387,8 @@ class FollowUserApi(generics.GenericAPIView):
         return Response({
             'following': following,
             'followers': followers,
-            'follow_this_user': follow_status.status
+            'follow_this_user': follow_status.status,
+            'notification': notification_json
         })
 
 
@@ -409,9 +437,11 @@ class FollowApi(generics.ListAPIView):
         response = self.get_context(follow_list, field, username_request)
         return Response(response)
 
-    def get_context(self, follow_list, field, username_request):
+    @staticmethod
+    def get_context(follow_list, field, username_request):
         json_obj = []
         for follow_item in follow_list:
+            dic = {}
             if field == 'followers':
                 try:
                     profile_picture = DOMAIN + UserProfilePhoto.objects.get(

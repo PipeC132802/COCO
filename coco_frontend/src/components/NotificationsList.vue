@@ -7,7 +7,6 @@
         type="list-item-avatar-two-line"
       ></v-skeleton-loader>
     </div>
-
     <v-card
       class="ma-2"
       v-for="notification in notifications"
@@ -19,6 +18,7 @@
         v-if="notification.field == 'reaction'"
       />
       <comment-notification
+        :place="true"
         :notification="notification"
         v-else-if="notification.field == 'comment'"
       />

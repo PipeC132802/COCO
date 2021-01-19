@@ -11,14 +11,17 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from Apps.ManageNotifications.serializer import NotificationSerializer
 from COCO.functions import get_profile_url
 
 
 class NotificationsListApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     model = Notification
+    #serializer_class = NotificationSerializer
 
     def get(self, request, *args, **kwargs):
+
         notifications = Notification.objects.filter(recipient_id=request.user.pk)[:50]
         notifications_list = []
         for notification in notifications:
@@ -50,6 +53,7 @@ class NotificationsListApi(generics.ListAPIView):
             'action': notification.verb,
             'barter': notification.target.serializer(),
             'field': 'reaction',
+            'created': notification.created
         }
 
     @staticmethod
@@ -68,6 +72,7 @@ class NotificationsListApi(generics.ListAPIView):
             'action': notification.verb,
             'barter': notification.target.serializer(),
             'field': 'comment',
+            'created': notification.created
         }
 
     @staticmethod
@@ -86,10 +91,10 @@ class NotificationsListApi(generics.ListAPIView):
             'action': notification.verb,
             'barter': notification.obj.serializer(),
             'field': 'comment',
+            'created': notification.created
         }
 
     def get_obj_context(self, notification):
-
         target = self.get_target(notification)
         return {
             'type': notification.nf_type,

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from notify.models import Notification
 
 from Apps.ManageUsers.models import Area, Place, UserProfilePhoto
@@ -45,4 +47,5 @@ def get_img_url_from_model(model, query):
 def get_notification_and_mark_as_unread(query):
     notification = Notification.objects.filter(query).first()
     if notification:
+        notification.created = datetime.now()
         notification.mark_as_unread()

@@ -7,7 +7,7 @@
         bottom
         content="💬"
         offset-x="35"
-        offset-y="30"
+        :offset-y="place ? '25' : '30'"
       >
         <v-list-item-avatar color="secondary">
           <v-img
@@ -43,15 +43,17 @@
             {{ notification.comment.text }}</router-link
           >
         </v-list-item-subtitle>
+        <v-row justify="start"  class="grey--text" :title="timeSince|capitalize"> <v-icon small>mdi-progress-clock</v-icon> <small>{{timeSince|capitalize}}</small> </v-row>
       </v-list-item-content>
     </v-list-item>
   </div>
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "ReactionNotification",
-  props: ["notification"],
+  props: ["notification", "place"],
   computed: {
     getEmoji: function () {
       let msg = "";
@@ -70,6 +72,10 @@ export default {
           break;
       }
       return msg;
+    },
+    timeSince: function() {
+      let timeSince = moment(this.notification.created).locale("es").fromNow();
+      return timeSince;
     },
   },
 };

@@ -1,16 +1,14 @@
 <template>
   <div>
-    
     <v-list-item>
       <v-badge
         offset-x="35"
-        :offset-y="place?'25':'30'"
+        :offset-y="place ? '25' : '30'"
         overlap
         color="accent"
         bottom
         :content="getEmoji"
       >
-      
         <v-list-item-avatar color="secondary">
           <v-img
             v-if="notification.userFrom.profile_picture"
@@ -50,12 +48,22 @@
             {{ notification.barter.title }}</router-link
           >
         </v-list-item-subtitle>
+        <v-row
+          justify="start"
+          class="grey--text"
+          :title="timeSince | capitalize"
+        >
+          <v-icon small>mdi-progress-clock</v-icon>
+          <small>{{ timeSince | capitalize }}</small>
+        </v-row>
       </v-list-item-content>
     </v-list-item>
   </div>
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   name: "ReactionNotification",
   props: ["notification", "place"],
@@ -77,6 +85,10 @@ export default {
           break;
       }
       return msg;
+    },
+    timeSince: function () {
+      let timeSince = moment(this.notification.created).locale("es").fromNow();
+      return timeSince;
     },
   },
 };
