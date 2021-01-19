@@ -29,6 +29,8 @@ class NotificationsListApi(generics.ListAPIView):
                 notification_dictionary = self.get_reaction_notification_json(notification)
             elif notification.nf_type == 'barter_commented':
                 notification_dictionary = self.get_comment_notification_json(notification)
+            elif notification.nf_type == 'accepted_by_user':
+                notification_dictionary = self.get_accept_notification_json(notification)
             else:
                 notification_dictionary = {}
             notifications_list.append(notification_dictionary)
@@ -68,6 +70,24 @@ class NotificationsListApi(generics.ListAPIView):
             'field': 'comment',
         }
 
+    @staticmethod
+    def get_accept_notification_json(notification):
+        return {
+            'receiver': notification.recipient.username,
+            'comment': {
+                'text': notification.target.comment,
+                'id': notification.target.pk
+            },
+            'userFrom': {
+                'username': notification.actor.username,
+                'name': '{0} {1}'.format(notification.actor.first_name, notification.actor.last_name),
+                'profile_picture': get_profile_url(notification.actor)
+            },
+            'action': notification.verb,
+            'barter': notification.obj.serializer(),
+            'field': 'comment',
+        }
+
     def get_obj_context(self, notification):
 
         target = self.get_target(notification)
@@ -84,15 +104,3 @@ class NotificationsListApi(generics.ListAPIView):
             'created': notification.created,
             'read': notification.read
         }
-
-    def get_target(self, notification):
-        # TO-DO get notification target
-        if notification.nf_type == 'reacted_by_one_user':
-            target = notification.target
-        elif notification.nf_type == 'commented_by_one_user':
-            target = ''
-        elif notification.nf_type == 'reviewed_by_one_user':
-            target = ''
-        elif notification.nf_type == 'followed_by_one_user':
-            target = ''
-        return target

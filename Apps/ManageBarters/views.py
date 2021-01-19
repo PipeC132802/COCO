@@ -260,8 +260,8 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
     def post(self, request, *args, **kwargs):
         def get_query():
             query = Q(recipient=barter_reaction.barter.user, actor_object_id=request.user.pk,
-                            target_object_id=barter_reaction.barter.pk, obj_object_id=barter_reaction.pk,
-                            verb='Reaccionó a tu trueque', nf_type='reacted_by_one_user')
+                      target_object_id=barter_reaction.barter.pk, obj_object_id=barter_reaction.pk,
+                      verb='Reaccionó a tu trueque', nf_type='reacted_by_one_user')
             return query
 
         try:
@@ -280,19 +280,19 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
 
         return Response(
             {
-             'Detail': 'barter reaction set successfully',
-             'reaction': barter_reaction.reaction,
-             'user_to': barter_reaction.barter.user.username,
-             'user_from': {
-                 'username': request.user.username,
-                 'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
-                 'profile_picture': get_profile_url(request.user)
-             },
-             'action': 'Reaccionó a tu trueque',
-             'created': datetime.now(),
-             'barter': barter_reaction.barter.serializer(),
-             'field': 'reaction'
-             }
+                'Detail': 'barter reaction set successfully',
+                'reaction': barter_reaction.reaction,
+                'user_to': barter_reaction.barter.user.username,
+                'user_from': {
+                    'username': request.user.username,
+                    'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
+                    'profile_picture': get_profile_url(request.user)
+                },
+                'action': 'Reaccionó a tu trueque',
+                'created': datetime.now(),
+                'barter': barter_reaction.barter.serializer(),
+                'field': 'reaction'
+            }
         )
 
 
@@ -315,9 +315,14 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
                 barter_comment = BarterComment.objects.create(comment=comment.strip(' '), barter=barter,
                                                               user_from=user_from,
                                                               photo=photo)
-                notify.send(request.user, recipient=barter_comment.barter.user, actor=request.user,
-                            target=barter_comment.barter, obj=barter_comment,
-                            verb='Comentó en tu trueque', nf_type='barter_commented')
+                notify.send(request.user,
+                            recipient=barter_comment.barter.user,
+                            actor=request.user,
+                            target=barter_comment.barter,
+                            obj=barter_comment,
+                            verb='Comentó en tu trueque',
+                            nf_type='barter_commented')
+
                 return Response({'Detail': 'Comment created successfully',
                                  'user_barter': barter_comment.barter.user.username,
                                  'user_comment': {
@@ -361,7 +366,6 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
             comment.save()
             return Response({'Detail': 'Comment deleted'}, status=200)
         except:
-
             return Response({'Detail': 'Comment not found'}, status=404)
 
     @staticmethod
@@ -369,9 +373,14 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
         comment = BarterComment.objects.get(id=request.data['comment'])
         comment.accepted = True
         comment.save()
-        notify.send(request.user, recipient=comment.user_from, actor=request.user,
+        notify.send(request.user,
+                    recipient=comment.user_from,
+                    actor=request.user,
                     target=comment,
-                    verb='Aceptó tu propuesta', nf_type='accepted_by_user')
+                    obj=comment.barter,
+                    verb='Aceptó tu propuesta',
+                    nf_type='accepted_by_user')
+
         return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted,
                 'user_comment': comment.user_from.username,
                 'user_accept': {
