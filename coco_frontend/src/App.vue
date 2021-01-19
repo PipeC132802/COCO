@@ -84,7 +84,7 @@ link:hover {
 .notifications{
   position: fixed;
   right: 10px;
-  bottom: 55px;
+  bottom: 10px;
   width: 350px;
   z-index: 100;
   display: flex;

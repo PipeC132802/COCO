@@ -13,7 +13,7 @@
       }}
       en {{ results.time }} segundos
     </p>
-    <v-row v-if="loading" justify="center">
+    <v-row v-if="results.loading" justify="center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-row>
     <v-tabs v-else v-model="tab">
@@ -123,7 +123,7 @@ export default {
         .then((response) => (this.results = response))
         .catch((err) => console.error(err))
         .finally(() => {
-          this.loading = false;
+          this.results.loading = false;
         });
     },
     pluralize: function (val) {

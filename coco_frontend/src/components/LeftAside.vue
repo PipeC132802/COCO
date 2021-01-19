@@ -172,7 +172,7 @@ export default {
           if(socketData.type == 'new_notification'){
             this.items[2].value = socketData.unread_notifications;
           }
-          this.addNotification(socketData)
+          this.addNotification(socketData);
 
         };
       };

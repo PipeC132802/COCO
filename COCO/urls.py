@@ -21,6 +21,7 @@ from django.conf import settings
 from Apps.ManageUsers import urls as user_urls
 from Apps.ManageBarters import urls as barter_urls
 from Apps.ManageSearches import urls as search_urls
+from Apps.ManageNotifications import urls as notify_urls
 
 
 coco_api_base = 'coco/api/v1.0/'
@@ -36,4 +37,7 @@ urlpatterns = [
 
     # Search app apis
     path(coco_api_base, include(search_urls)),
+
+    # Notifications app apis
+    path(coco_api_base, include(notify_urls)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

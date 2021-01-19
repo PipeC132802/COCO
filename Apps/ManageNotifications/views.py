@@ -18,12 +18,27 @@ class NotificationsListApi(generics.ListAPIView):
         notifications = Notification.objects.filter(recipient_id=request.user.pk)
         notifications_list = []
         for notification in notifications:
-            notification_dictionary = self.get_obj_context(notification)
-            notifications_list.append(notification_dictionary)
-            notification.read = True
-            notification.save()
+            if notification.nf_type == 'reacted_by_one_user' and notification.obj.reaction:
+                notification_dictionary = self.get_reaction_notification_json(notification)
+                notifications_list.append(notification_dictionary)
+            notification.mark_as_read()
 
-        return JsonResponse(notifications_list, safe=False)
+        return Response(notifications_list, status=200)
+
+    @staticmethod
+    def get_reaction_notification_json(notification):
+        return {
+            'receiver': notification.recipient.username,
+            'reaction': notification.obj.reaction,
+            'userFrom': {
+                'username': notification.actor.username,
+                'name': '{0} {1}'.format(notification.actor.first_name, notification.actor.last_name),
+                'profile_picture': get_profile_url(notification.actor)
+            },
+            'action': notification.verb,
+            'barter': notification.target.serializer(),
+            'field': 'reaction',
+        }
 
     def get_obj_context(self, notification):
 

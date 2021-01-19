@@ -1,3 +1,5 @@
+from notify.models import Notification
+
 from Apps.ManageUsers.models import Area, Place, UserProfilePhoto
 from COCO.settings import DOMAIN
 
@@ -38,3 +40,9 @@ def get_img_url_from_model(model, query):
     except:
         field = ''
     return field
+
+
+def get_notification_and_mark_as_unread(query):
+    notification = Notification.objects.filter(query).first()
+    if notification:
+        notification.mark_as_unread()

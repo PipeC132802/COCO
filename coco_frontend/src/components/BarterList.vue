@@ -180,7 +180,7 @@
         class="mx-1 mt-0 ml-3"
       />
       <Comments
-        v-if="barterComments == barter.id"
+        v-if="barterComments == barter.id || field == 'detail'"
         :author="barter.user.username"
         class="mx-1 mt-0 ml-2"
         :barterId="barter.id"
@@ -237,7 +237,7 @@ export default {
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
   },
-  mounted() {
+  beforeMount() {
     this.$root.$on("comments", (data) => {
       if (data.barter === this.barterId) {
         this.getReactions();
@@ -271,6 +271,7 @@ export default {
       if (username == undefined) {
         username = this.user.username;
       }
+      
       return username;
     },
     getPk() {

@@ -11,7 +11,7 @@
           placeholder="Propónle algo! 😊"
           contenteditable="true"
           :id="'CommentDiv' + barterId"
-          @keydown="setComment"
+          @keyup="setComment"
         ></div>
         <v-img
           max-width="250"
@@ -65,6 +65,8 @@
 
 <script>
 import { mapState } from "vuex";
+import { sendNotificationViaWS } from "../functions.js";
+
 export default {
   name: "CommentForm",
   props: ["barterId"],
@@ -79,7 +81,7 @@ export default {
     loading: false,
   }),
   computed: {
-    ...mapState(["baseUrl", "user", "authentication"]),
+    ...mapState(["baseUrl", "user", "authentication","wsBase"]),
   },
   methods: {
     addImage2Comment(img) {
@@ -88,7 +90,8 @@ export default {
     },
     setComment() {
       let commentDiv = document.getElementById("CommentDiv" + this.barterId);
-      this.comment = commentDiv.innerText.trim();
+      this.comment = commentDiv.innerText;
+      console.log(this.comment, commentDiv.innerText)
     },
     submitComment() {
       if (this.comment.trim().length || this.image) {
@@ -97,7 +100,6 @@ export default {
         formData.append("comment", this.comment);
         formData.append("barter", this.barterId);
         formData.append("photo", this.image);
-        console.log(formData)
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
         };
@@ -109,6 +111,7 @@ export default {
         })
         .then((response)=>(response.json()))
         .then((response)=>{
+          this.notifyUser(response);
           let commentDiv = document.getElementById("CommentDiv" + this.barterId);
           this.comment = '';
           this.image = '';
@@ -127,6 +130,19 @@ export default {
         })
       }
     },
+    notifyUser(response) {
+        let sockedData = {
+          type: "new_notification",
+          sender: this.user.username,
+          receiver: response.user_barter,
+          userFrom: response.user_comment,
+          action: response.action,
+          barter: response.barter,
+          field: response.field,
+          comment: response.comment
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, response.user_barter);
+      }
   },
 };
 </script>

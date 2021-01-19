@@ -1,14 +1,14 @@
 <template>
   <v-container
     v-if="comments.length || author != user.username"
-    class="ma-0 pt-0"
+    class="ma-0 pt-0 px-0"
   >
     <CommentForm
       v-on:commentPosted="getComments"
       v-if="author != user.username"
       :barterId="barterId"
     />
-    <div class="pl-1" v-if="comments.length">
+    <div class="pl-1 pr-4" v-if="comments.length">
       <p title="Más recientes" class="recents mt-4 mb-0 pb-0">Más recientes</p>
       <v-list
         v-for="comment in comments"
@@ -16,9 +16,9 @@
         class="pb-0 mb-0"
         subheader
         two-line
-        :id="comment.id"
+        :id="'comment_'+comment.id"
       >
-        <v-list-item class="px-0 mb-0">
+        <v-list-item class="px-2 mb-0">
           <v-list-item-avatar size="30" color="secondary">
             <v-img
               v-if="comment.user.profile_picture"
@@ -101,7 +101,7 @@
             </v-menu>
           </v-list-item-action>
         </v-list-item>
-        <v-card-text class="pa-0 ma-0 pl-12 pr-5">
+        <v-card-text class="pa-0 ma-0 ml-2 pl-12 pr-5">
           {{ comment.comment }}
           <v-img
             v-if="comment.photo"
@@ -117,6 +117,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { sendNotificationViaWS } from "../functions.js";
 import moment from "moment";
 import CommentForm from "../components/CommentForm.vue";
 export default {
@@ -136,7 +137,7 @@ export default {
     commentDialog: false,
   }),
   computed: {
-    ...mapState(["user", "authentication", "baseUrl"]),
+    ...mapState(["user", "authentication", "baseUrl", "wsBase"]),
   },
   beforeUpdate() {
     if (this.commentDialog == false) {
@@ -197,11 +198,25 @@ export default {
       })
         .then((response) => response.json())
         .then((response) => {
-          console.log(response)
+          this.notifyUser(response)
           this.getComments();
         })
         .catch((err) => console.error(err));
     },
+     notifyUser(response) {
+        let sockedData = {
+          type: "new_notification",
+          sender: this.user.username,
+          receiver: response.user_comment,
+          userFrom: response.user_accept,
+          action: response.action,
+          barter: response.barter,
+          field: response.field,
+          comment: response.comment
+        };
+        console.log(sockedData)
+        sendNotificationViaWS(sockedData, this.wsBase, sockedData.receiver);
+      }
   },
 };
 </script>
@@ -233,5 +248,9 @@ a:hover {
   padding: 5px;
   letter-spacing: 0.5px;
   border-radius: 30%;
+}
+:target {
+  background: rgba(185, 185, 185, 0.61);
+  border-radius: 5px;
 }
 </style>

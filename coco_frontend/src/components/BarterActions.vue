@@ -145,7 +145,7 @@ export default {
       }
     },
     notifyUser(response) {
-      if (response.reaction > 0) {
+      if (response.reaction > 0 && response.user_to !== response.user_from.username) {
         let sockedData = {
           type: "new_notification",
           sender: this.user.username,
@@ -153,7 +153,8 @@ export default {
           reaction: response.reaction,
           userFrom: response.user_from,
           action: response.action,
-          barter: response.barter
+          barter: response.barter,
+          field: response.field,
 
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_to);

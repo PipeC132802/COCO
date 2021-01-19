@@ -2,7 +2,6 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from django.db.models import Q
-from notify.models import Notification
 from notify.signals import notify
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +12,7 @@ from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMo
 from Apps.ManageBarters.serializer import BarterCommentSerializer
 from Apps.ManageUsers.models import Area, UserRelationship, UserInterest, UserSession
 from Apps.ManageUsers.signals import retrieve_barters
-from COCO.functions import get_place, get_profile_url, get_img_url_from_model
+from COCO.functions import get_place, get_profile_url, get_img_url_from_model, get_notification_and_mark_as_unread
 from django.contrib.sessions.models import Session
 
 
@@ -53,7 +52,6 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
             self.create_barter_skill(request=request, barter=barter)
             self.create_barter_interest(request=request, barter=barter)
             return Response({'Detail': 'Barter edited successfully'}, status=200)
-
         except:
             return Response({'Detail': 'Barter not found'}, status=404)
 
@@ -65,12 +63,14 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
         self.create_barter_mode(request, barter)
         return Response({'Detail': 'new barter created succesfuly'}, status=200)
 
-    def create_barter(self, request):
+    @staticmethod
+    def create_barter(request):
         title = request.data['title']
         user = request.user
         return Barter.objects.create(user=user, barter_title=title)
 
-    def create_barter_about(self, request, barter):
+    @staticmethod
+    def create_barter_about(request, barter):
         description = request.data['description']
         country = request.data['country']
         city = request.data['city']
@@ -99,11 +99,13 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
                 barter_interest.area = area[0]
                 barter_interest.save()
 
-    def create_barter_mode(self, request, barter):
+    @staticmethod
+    def create_barter_mode(request, barter):
         mode = request.data['mode']
         BarterMode.objects.create(mode=mode, barter=barter)
 
-    def get_area(self, area):
+    @staticmethod
+    def get_area(area):
         return Area.objects.filter(area=area)
 
 
@@ -123,7 +125,7 @@ class BarterListApi(generics.ListAPIView):
             barters_json = self.get_barters_reacted(request)
         elif field == 'recommendations':
             interests = get_interest(request)
-            barters_json = self.get_barters_recomendations(interests, request)
+            barters_json = self.get_barters_recommendations(interests, request)
         elif field == 'detail':
             query = Q(id=request.GET['id'])
             barters_json = self.get_barter_list(query)
@@ -133,7 +135,8 @@ class BarterListApi(generics.ListAPIView):
 
         return Response(barters_json, status=200)
 
-    def get_following_users(self, user):
+    @staticmethod
+    def get_following_users(user):
         following = list(
             UserRelationship.objects.filter(user_from=user, status=1).values_list('user_to_id', flat=True).distinct())
         following.append(user.pk)
@@ -173,7 +176,8 @@ class BarterListApi(generics.ListAPIView):
             barter_views.store_as_list(user_request_id)
         return barter_views.counter
 
-    def get_barters_reacted(self, request):
+    @staticmethod
+    def get_barters_reacted(request):
         barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
                                                         barter__deleted=False).exclude(
             barter__user__username=request.GET['user']).exclude(reaction=0).order_by('-barter__created')
@@ -201,7 +205,8 @@ class BarterListApi(generics.ListAPIView):
             barter_list.append(barter_json)
         return barter_list
 
-    def get_barters_recomendations(self, interests, request):
+    @staticmethod
+    def get_barters_recommendations(interests, request):
         barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__deleted=False).exclude(
             barter__user__username=request.GET['user'])
         barter_list = []
@@ -253,21 +258,29 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
             return Response({'reaction': 0})
 
     def post(self, request, *args, **kwargs):
+        def get_query():
+            query = Q(recipient=barter_reaction.barter.user, actor_object_id=request.user.pk,
+                            target_object_id=barter_reaction.barter.pk, obj_object_id=barter_reaction.pk,
+                            verb='Reaccionó a tu trueque', nf_type='reacted_by_one_user')
+            return query
+
         try:
             barter_reaction = BarterReaction.objects.get(barter_id=request.data["barter_id"], user_from=request.user)
             barter_reaction.reaction = request.data["reaction"]
             barter_reaction.save()
+            get_notification_and_mark_as_unread(get_query())
         except:
             barter = Barter.objects.get(id=request.data["barter_id"])
             barter_reaction = BarterReaction.objects.create(barter=barter, user_from=request.user,
                                                             reaction=request.data["reaction"])
             if request.user.pk != barter_reaction.barter.user.pk:
                 notify.send(request.user, recipient=barter_reaction.barter.user, actor=request.user,
-                            target=barter_reaction.barter,
-                            verb=str(barter_reaction.reaction), nf_type='reacted_by_one_user')
+                            target=barter_reaction.barter, obj=barter_reaction,
+                            verb='Reaccionó a tu trueque', nf_type='reacted_by_one_user')
 
         return Response(
-            {'Detail': 'barter reaction set successfully',
+            {
+             'Detail': 'barter reaction set successfully',
              'reaction': barter_reaction.reaction,
              'user_to': barter_reaction.barter.user.username,
              'user_from': {
@@ -277,7 +290,8 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
              },
              'action': 'Reaccionó a tu trueque',
              'created': datetime.now(),
-             'barter': barter_reaction.barter.serializer()
+             'barter': barter_reaction.barter.serializer(),
+             'field': 'reaction'
              }
         )
 
@@ -298,8 +312,27 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
 
         if barter.user != user_from:
             try:
-                BarterComment.objects.create(comment=comment, barter=barter, user_from=user_from, photo=photo)
-                return Response({'comment': 'created successfully'}, status=200)
+                barter_comment = BarterComment.objects.create(comment=comment.strip(' '), barter=barter,
+                                                              user_from=user_from,
+                                                              photo=photo)
+                notify.send(request.user, recipient=barter_comment.barter.user, actor=request.user,
+                            target=barter_comment.barter,
+                            verb='Comentó en tu trueque', nf_type='barter_commented')
+                return Response({'Detail': 'Comment created successfully',
+                                 'user_barter': barter_comment.barter.user.username,
+                                 'user_comment': {
+                                     'username': request.user.username,
+                                     'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
+                                     'profile_picture': get_profile_url(request.user)
+                                 },
+                                 'action': 'Comentó en tu trueque',
+                                 'barter': barter_comment.barter.serializer(),
+                                 'comment': {
+                                     'text': barter_comment.comment,
+                                     'id': barter_comment.pk
+                                 },
+                                 'field': 'comment'
+                                 }, status=200)
             except:
                 return Response({'Detail': 'An error have occurred'}, status=500)
         else:
@@ -331,13 +364,31 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
 
             return Response({'Detail': 'Comment not found'}, status=404)
 
-    def just_accepted_status(self, request):
+    @staticmethod
+    def just_accepted_status(request):
         comment = BarterComment.objects.get(id=request.data['comment'])
         comment.accepted = True
         comment.save()
-        return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted}
+        notify.send(request.user, recipient=comment.user_from, actor=request.user,
+                    target=comment,
+                    verb='Aceptó tu propuesta', nf_type='accepted_by_user')
+        return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted,
+                'user_comment': comment.user_from.username,
+                'user_accept': {
+                    'username': request.user.username,
+                    'name': '{0} {1}'.format(request.user.first_name, request.user.last_name),
+                    'profile_picture': get_profile_url(request.user)
+                },
+                'action': 'Aceptó tu propuesta',
+                'barter': comment.barter.serializer(),
+                'comment': {
+                    'text': comment.comment,
+                    'id': comment.pk
+                },
+                'field': 'comment'}
 
-    def update_comment(self, request):
+    @staticmethod
+    def update_comment(request):
         comment = request.data['comment']
 
         comment_model = BarterComment.objects.get(id=request.data['commentId'])
@@ -352,7 +403,8 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
 
         return {'Detail': 'Comment updated successfully'}
 
-    def get_comments(self, barter):
+    @staticmethod
+    def get_comments(barter):
         comment_list = []
         comments = BarterComment.objects.filter(barter_id=barter, deleted=False).order_by('-created')
         for comment in comments:
