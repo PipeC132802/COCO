@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'Apps.ManageNotifications',
     'Apps.ManageSearches',
     'Apps.ManageReviews',
+    'Apps.ManageChats',
     # Django apps
     'dj_rest_auth',
     'django.contrib.admin',
