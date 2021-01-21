@@ -30,7 +30,8 @@ class ReviewsListApi(generics.RetrieveAPIView):
                 'username': review.user_from.username,
                 'name': '{0} {1}'.format(review.user_from.first_name, review.user_from.last_name),
                 'profile_profile': get_profile_url(review.user_from)
-            }
+            },
+            'created': review.created
         }
 
 
