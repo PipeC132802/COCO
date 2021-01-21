@@ -14,7 +14,7 @@
             </v-tabs>
             <v-tabs-items v-model="tab">
               <v-tab-item>
-                <div class="pa-1" v-if="tab == 0">
+                <div class="pa-1">
                   <NewBarter
                     v-on:newBarterPosted="bartersReload"
                     class="mt-5"
@@ -24,10 +24,12 @@
                 </div>
               </v-tab-item>
               <v-tab-item>
-                <div v-if="tab == 1">Rese;as {{ tab }}</div>
+                <div>
+                  <ReviewsList />
+                </div>
               </v-tab-item>
               <v-tab-item>
-                <div class="ma-0" v-if="tab == 2">
+                <div class="ma-0">
                   <BarterList class="mt-3" :field="'reactions'" />
                 </div>
               </v-tab-item>
@@ -55,6 +57,7 @@ import User2FollowSuggestion from "@/components/User2FollowSuggestion.vue";
 import UserAbout from "@/components/subcomponents/UserAbout.vue";
 import UserContact from "@/components/subcomponents/UserContact.vue";
 import BarterList from "@/components/BarterList.vue";
+import ReviewsList from "../components/ReviewsList.vue";
 import { mapState } from "vuex";
 export default {
   components: {
@@ -64,6 +67,7 @@ export default {
     UserContact,
     User2FollowSuggestion,
     BarterList,
+    ReviewsList
   },
   data: () => ({
     username: "",
