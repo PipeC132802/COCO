@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -24,6 +23,7 @@ export default new Vuex.Store({
     },
     wsBase : '127.0.0.1:8000',
     notifications: [],
+    chat: '',
   },
   mutations: {
     setUser(state, user) {
@@ -46,6 +46,9 @@ export default new Vuex.Store({
     },
     removeNotification(state){
       state.notifications.pop()
+    },
+    setChat(state, chat){
+      state.chat = chat;
     }
   },
   actions: {

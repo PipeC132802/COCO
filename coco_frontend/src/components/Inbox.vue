@@ -9,7 +9,6 @@
             type="list-item-avatar-two-line"
           ></v-skeleton-loader>
         </div>
-
         <MessageInInbox
           v-for="chat in chats"
           :key="chat.id"
@@ -48,7 +47,8 @@ export default {
         },
       })
         .then((response) => response.json())
-        .then((response) => (this.chats = response))
+        .then((response) => {this.chats = response;
+        console.log(this.chats)})
         .catch((err) => console.error(err))
         .finally(() => {
           this.loading = false;

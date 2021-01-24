@@ -4,11 +4,11 @@
       <v-list-item
         class="chat"
         active-class="grey lighten-3"
-        
-        :to="{name:'Messages',params:{id: chat.conversation}}"
         exact
+        :to="{ name: 'Messages', params: { id: encryptId(chat.conversation) } }"
         @mousemove="menu = true"
         @mouseleave="menu = false"
+        @click="chatSelected"
       >
         <v-list-item-avatar color="secondary">
           <v-img
@@ -39,11 +39,14 @@
             </div>
             <div v-else>
               <span v-if="chat.sender == user.username">
-
-                <v-icon title="Enviado" class="mr-1" v-if="!chat.read" small>mdi-check</v-icon>
-                <v-icon title="Visto" class="mr-1" v-else color="primary" small>mdi-check-all</v-icon>
+                <v-icon title="Enviado" class="mr-1" v-if="!chat.read" small
+                  >mdi-check</v-icon
+                >
+                <v-icon title="Visto" class="mr-1" v-else color="primary" small
+                  >mdi-check-all</v-icon
+                >
               </span>
-              <span  :title="chat.text">
+              <span :title="chat.text">
                 {{ chat.text }}
               </span>
             </div>
@@ -65,7 +68,7 @@
             >
               <small class="white--text">{{ getUnreadMsgs }}</small>
             </v-avatar>
-            <v-btn v-if="menu" class="ml-1" x-small icon>
+            <v-btn v-if="menu" color="primary" class="ml-1" x-small icon>
               <v-icon>mdi-menu-down</v-icon>
             </v-btn>
           </span>
@@ -78,7 +81,8 @@
 
 <script>
 import moment from "moment";
-import { mapState } from "vuex";
+import { mapMutations, mapState, setChat } from "vuex";
+import { encrypt } from "../functions.js";
 export default {
   name: "MessageInInbox",
   props: ["chat"],
@@ -89,7 +93,7 @@ export default {
     websocket: null,
   }),
   computed: {
-    ...mapState(["wsBase", "user"]),
+    ...mapState(["wsBase", "user", "secretKey"]),
     getHour() {
       let getHour = moment(this.chat.send).locale("es").format("hh:mm a");
       return getHour;
@@ -103,8 +107,12 @@ export default {
     },
   },
   methods: {
-    chooseChat() {
-      this.$router.push({ name: "Messages", params: { id: this.chat.conversation } });
+    ...mapMutations(["setChat"]),
+    encryptId(id) {
+      return encrypt(id, this.user.username);
+    },
+    chatSelected() {
+      this.setChat(this.chat);
     },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
@@ -143,5 +151,4 @@ export default {
 </script>
 
 <style>
-
 </style>

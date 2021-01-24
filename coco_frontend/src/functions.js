@@ -10,11 +10,19 @@ export function sendNotificationViaWS(sockedData, wsBase, channel) {
     };
 }
 
-export function codeLetters2Numbers(word){
-   let array = word.split()
-   let output = "";
-   for (let index = 0; index < array.length; index++) {
-       output += word.codePointAt(index);
-   }
-   return output
+var CryptoJS = require("crypto-js");
+export function encrypt(msg, value2Key) {
+    var key = CryptoJS.SHA256(value2Key.toString()); //hashing the key using SHA256
+    var encryptedString = CryptoJS.AES.encrypt(msg.toString(), key.toString()).toString();
+    return encryptedString;
+}
+
+export function decript(value2Key, msgEncrypted) {
+    var key = CryptoJS.SHA256(value2Key).toString();
+    var bytes = CryptoJS.AES.decrypt(
+        msgEncrypted,
+        key
+    );
+    var originalText = bytes.toString(CryptoJS.enc.Utf8);
+    return originalText;
 }

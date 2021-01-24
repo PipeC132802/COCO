@@ -5,9 +5,7 @@
         <InboxComponent />
       </v-col>
       <v-col class="chatlist" sm="12" md="8">
-        <div v-if="chat">
-          <router-view class="mt-2" />
-        </div>
+                <router-view />
       </v-col>
     </v-row>
   </v-container>
