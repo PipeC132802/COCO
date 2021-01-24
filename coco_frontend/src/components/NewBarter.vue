@@ -236,7 +236,7 @@ export default {
         .then((response)=>{
           this.clearFields();
           
-          this.$emit('newBarterPosted')
+          this.$root.$emit('newBarterPosted')
         })
       } else {
         this.snackbar = true;

@@ -64,7 +64,10 @@ const routes = [
     component: () => import('../views/Inbox.vue'),
     meta: {
       requiresLogin: true
-    }
+    },
+    children: [
+      { path: 'messages/:id', name: 'Messages', component: () => import('../views/Messages.vue') },
+    ]
   },
   {
     path: '/settings',
@@ -75,7 +78,8 @@ const routes = [
     component: () => import('../views/Settings.vue'),
     meta: {
       requiresLogin: true
-    }
+    },
+    
   },
   {
     path: '/:username',

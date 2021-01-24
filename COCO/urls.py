@@ -23,6 +23,7 @@ from Apps.ManageBarters import urls as barter_urls
 from Apps.ManageSearches import urls as search_urls
 from Apps.ManageNotifications import urls as notify_urls
 from Apps.ManageReviews import urls as reviews_urls
+from Apps.ManageChats import urls as chat_urls
 
 coco_api_base = 'coco/api/v1.0/'
 
@@ -43,5 +44,8 @@ urlpatterns = [
 
                   # Reviews app apis
                   path(coco_api_base, include(reviews_urls)),
+
+                  # Chat app apis
+                  path(coco_api_base, include(chat_urls)),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

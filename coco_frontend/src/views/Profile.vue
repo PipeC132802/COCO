@@ -16,7 +16,6 @@
               <v-tab-item>
                 <div class="pa-1">
                   <NewBarter
-                    v-on:newBarterPosted="bartersReload"
                     class="mt-5"
                     v-if="username == user.username"
                   />
@@ -103,9 +102,7 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
-    bartersReload() {
-      console.log("Nuevo trueque");
-    },
+    
   },
 };
 </script>

@@ -116,10 +116,10 @@ class BarterListApi(generics.ListAPIView):
             return UserInterest.objects.filter(user__username=request.GET['username']).values_list('area__area',
                                                                                                    flat=True).distinct()
 
-        user = User.objects.get(username=request.GET['username'])
+        user = User.objects.filter(username=request.GET['username'])
         field = request.GET['field']
         if field == 'profile':
-            query = Q(user=user, deleted=False)
+            query = Q(user=user.first(), deleted=False)
             barters_json = self.get_barter_list(query)
         elif field == 'reactions':
             barters_json = self.get_barters_reacted(request)
@@ -130,7 +130,7 @@ class BarterListApi(generics.ListAPIView):
             query = Q(id=request.GET['id'])
             barters_json = self.get_barter_list(query)
         else:
-            query = Q(user_id__in=self.get_following_users(user), deleted=False)
+            query = Q(user_id__in=self.get_following_users(user.first()), deleted=False)
             barters_json = self.get_barter_list(query)
 
         return Response(barters_json, status=200)
@@ -139,7 +139,8 @@ class BarterListApi(generics.ListAPIView):
     def get_following_users(user):
         following = list(
             UserRelationship.objects.filter(user_from=user, status=1).values_list('user_to_id', flat=True).distinct())
-        following.append(user.pk)
+        if user:
+            following.append(user.pk)
         return following
 
     def get_barter_list(self, query):

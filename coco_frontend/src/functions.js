@@ -9,3 +9,12 @@ export function sendNotificationViaWS(sockedData, wsBase, channel) {
         websocket.close();
     };
 }
+
+export function codeLetters2Numbers(word){
+   let array = word.split()
+   let output = "";
+   for (let index = 0; index < array.length; index++) {
+       output += word.codePointAt(index);
+   }
+   return output
+}

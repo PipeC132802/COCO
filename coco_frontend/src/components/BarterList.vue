@@ -71,13 +71,17 @@
               <small :title="timeSince(barter.created) | capitalize">{{
                 timeSince(barter.created) | capitalize
               }}</small>
-              
+
               <small v-if="barter.edited" class="ml-2">
                 <v-chip title="Editado" small color="primary darken-5" label>
                   Editado
                 </v-chip>
               </small>
-              <small :title="barter.views +' vistas'" v-if="user.username == barter.user.username" class="ml-2">
+              <small
+                :title="barter.views + ' vistas'"
+                v-if="user.username == barter.user.username"
+                class="ml-2"
+              >
                 <v-chip small color="default" label>
                   <v-icon small left> mdi-eye </v-icon>
                   {{ barter.views }}
@@ -235,7 +239,12 @@ export default {
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
   },
-  beforeMount() {
+  mounted() {
+    this.$root.$on("newBarterPosted", () => {
+      this.fetchBarterList();
+    });
+  },
+  mounted() {
     this.$root.$on("comments", (data) => {
       if (data.barter === this.barterId) {
         this.getReactions();
@@ -246,7 +255,7 @@ export default {
   methods: {
     fetchBarterList() {
       let query = "";
-      if (this.field == "detail" || this.field == 'search') {
+      if (this.field == "detail" || this.field == "search") {
         query = `?id=${this.getPk()}&field=${
           this.field
         }&username=${this.getUsername()}&user_request=${this.user.id}`;
@@ -268,8 +277,10 @@ export default {
       username = this.$route.params.username;
       if (username == undefined) {
         username = this.user.username;
+        if (username == undefined) {
+          this.getUsername()
+        }
       }
-      
       return username;
     },
     getPk() {
