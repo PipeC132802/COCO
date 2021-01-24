@@ -77,7 +77,7 @@ export default {
   },
   methods:{
       resetColors(){
-          this.incomingColor = '#f06b24fb'
+          this.incomingColor = '#09243df5'
           this.outgoingColor = '#3079bdfa'
           this.bgColor = '#3636362a';
       }
