@@ -40,12 +40,16 @@
       </v-list>
 
       <v-card-text id="msgs-list" class="messages">
-        <v-row v-for="message in messages" :key="message.id" :class="typing?'mb-5':''">
+        <v-row
+          v-for="message in messages"
+          :key="message.id"
+          :class="typing ? 'mb-2' : ''"
+        >
           <div
             v-if="message.sender_username != user.username"
             class="incoming-msg"
           >
-            {{ message.text }}
+            {{ decriptText(message.text) }}
             <small
               :title="formatDate(message.created) | capitalize"
               class="msg-footer"
@@ -54,7 +58,7 @@
             </small>
           </div>
           <div v-else class="outgoing-msg ml-auto">
-            {{ message.text }}
+            {{ decriptText(message.text) }}
             <small class="msg-footer">
               <span :title="formatDate(message.created) | capitalize">
                 {{ getHour(message.created) }}
@@ -94,6 +98,8 @@
               <v-icon>mdi-emoticon-outline</v-icon>
             </v-btn>
             <v-text-field
+              @keyup="typingMessage"
+              @keyup.enter="sendMessage"
               rounded
               outlined
               dense
@@ -124,7 +130,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { decript } from "../functions.js";
+import { decript, encrypt } from "../functions.js";
 import ColorPicker from "../components/subcomponents/ColorPicker.vue";
 import moment from "moment";
 
@@ -143,6 +149,7 @@ export default {
       outgoing: "#3079bdfa",
       bg: "#3636362a",
     },
+    room: null,
     msg: "",
     typing: false,
   }),
@@ -154,11 +161,13 @@ export default {
     ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
   },
   methods: {
-    decriptId() {
-      return decript(this.user.username, this.$route.params.id);
+    decriptText(dataEncrypted) {
+      var text = decript(this.user.username, dataEncrypted);
+      if (this.room == null) this.room = text;
+      return text;
     },
     getMessages() {
-      fetch(this.baseUrl + this.apiDir + `?conversation=${this.decriptId()}`, {
+      fetch(this.baseUrl + this.apiDir + `?conversation=${this.decriptText(this.$route.params.id.toString())}`, {
         method: "GET",
         headers: {
           Authorization: `Token ${this.authentication.accessToken}`,
@@ -167,10 +176,98 @@ export default {
         .then((response) => response.json())
         .then((response) => {
           this.messages = response;
+          this.connect();
         })
         .catch((err) => {
           console.error(err);
         });
+    },
+    sendMessage() {
+      if (this.msg.length) {
+        this.websocket.send(
+          JSON.stringify({
+            type: "chat_message",
+            conversation: this.room,
+            sender: this.user.username,
+            receiver: this.chat.opponent.username,
+            text: encrypt(this.msg, this.user.username),
+            read: false,
+          })
+        );
+        this.msg = "";
+      }
+    },
+    typingMessage() {
+      let sender = this.user.username;
+      if (this.msg.length) {
+        this.websocket.send(
+          JSON.stringify({
+            type: "type_message",
+            sender: sender,
+            receiver: this.chat.opponent.username,
+            typing: true,
+          })
+        );
+      } else {
+        this.websocket.send(
+          JSON.stringify({
+            type: "type_message",
+            sender: sender,
+            receiver: this.chat.opponent.username,
+            typing: false,
+          })
+        );
+      }
+    },
+    seenText() {
+      if (
+        this.messages.length &&
+        this.messages[0].sender !== this.user.username &&
+        !this.messages[0].read
+      ) {
+        let sender = this.user.username;
+        this.websocket.onopen = () =>
+          this.websocket.send(
+            JSON.stringify({
+              type: "seen_message",
+              sender: sender,
+              receiver: this.chat.username,
+              seen: true,
+              room: this.room,
+            })
+          );
+      }
+    },
+    connect() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      this.websocket = new WebSocket(
+        protocol + this.wsBase + "/ws/chat/" + this.room + "/"
+      );
+      this.websocket.onopen = () => {
+        console.info("conectado exitosamente!", this.room);
+        this.websocket.onmessage = ({ data }) => {
+          // this.messages.unshift(JSON.parse(data));
+          const socketData = JSON.parse(data);
+          if (
+            socketData.type === "type_message" &&
+            socketData.sender != this.user.username
+          ) {
+            this.typing = socketData.typing;
+          } else if (socketData.type === "chat_message") {
+            socketData.text = decript(this.user.username, socketData.text);
+            this.messages.push(socketData);
+            this.date_send = socketData.send.split("-")[0];
+          } else if (socketData.type === "seen_message") {
+            this.checkSeen();
+          }
+        };
+      };
+      this.websocket.onclose = () => {};
+    },
+    closeChat() {
+      this.websocket.close();
+      this.websocket = null;
+      this.$emit("close", { username: this.chat.username, index: this.index });
     },
     setColors2Divs() {
       var messagesDiv = document.getElementById("msgs-list");
@@ -260,7 +357,7 @@ export default {
   display: block;
   position: absolute;
   top: -10px;
-  left: -9px;
+  left: -8px;
   content: "";
   width: 0;
   height: 0;
@@ -286,7 +383,7 @@ export default {
   display: block;
   position: absolute;
   top: -10px;
-  right: -9px;
+  right: -8px;
   content: "";
   width: 0;
   height: 0;
@@ -339,7 +436,7 @@ export default {
       0 0 0 30px rgba(41, 98, 255, 0.15);
   }
 }
-.typing-container{
+.typing-container {
   position: absolute;
   bottom: 30px;
 }

@@ -30,7 +30,7 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
         if text_data_json["type"] == "chat_message":
-            self.save_message(text_data_json)
+            text_data_json = self.save_message(text_data_json)
             text_data_json["unread_messages"] = self.unread_msgs(text_data_json)
         elif text_data_json["type"] == "seen_message":
             self.mark_as_read_messages(text_data_json)
@@ -56,7 +56,7 @@ class ChatConsumer(WebsocketConsumer):
 
     def save_message(self, msg_obj):
         sender = User.objects.get(username=msg_obj['sender'])
-        Message.objects.create(conversation_id=msg_obj['conversation'],
+        return Message.objects.create(conversation_id=msg_obj['conversation'],
                                sender=sender,
                                text=msg_obj['text']
                                ).serializer()

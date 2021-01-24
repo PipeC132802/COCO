@@ -47,7 +47,7 @@
                 >
               </span>
               <span :title="chat.text">
-                {{ chat.text }}
+                {{ msgDecrypted }}
               </span>
             </div>
           </v-list-item-subtitle>
@@ -81,8 +81,8 @@
 
 <script>
 import moment from "moment";
-import { mapMutations, mapState, setChat } from "vuex";
-import { encrypt } from "../functions.js";
+import { mapMutations, mapState } from "vuex";
+import { encrypt, decript } from "../functions.js";
 export default {
   name: "MessageInInbox",
   props: ["chat"],
@@ -94,10 +94,7 @@ export default {
   }),
   computed: {
     ...mapState(["wsBase", "user", "secretKey"]),
-    getHour() {
-      let getHour = moment(this.chat.send).locale("es").format("hh:mm a");
-      return getHour;
-    },
+      
     getUnreadMsgs() {
       if (this.chat.unread_messages > 10) {
         return "+10";
@@ -105,6 +102,13 @@ export default {
         return this.chat.unread_messages;
       }
     },
+      getHour() {
+      let getHour = moment(this.chat.created).locale("es").format("hh:mm a");
+      return getHour;
+    },
+    msgDecrypted(){
+      return decript(this.user.username, this.chat.text);
+    }
   },
   methods: {
     ...mapMutations(["setChat"]),
@@ -114,6 +118,7 @@ export default {
     chatSelected() {
       this.setChat(this.chat);
     },
+    
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
