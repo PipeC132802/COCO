@@ -24,6 +24,7 @@ export default new Vuex.Store({
     wsBase : '127.0.0.1:8000',
     notifications: [],
     chat: '',
+    chats: [],
   },
   mutations: {
     setUser(state, user) {
@@ -49,9 +50,21 @@ export default new Vuex.Store({
     },
     setChat(state, chat){
       state.chat = chat;
-    }
+    },
+    setChats(state, chats){
+      state.chats = chats;
+    },
+    msgReceivedInbox(state, index){
+      let aux = state.chats[index]
+      state.chats.splice(index,1)
+      state.chats.unshift(aux)
+    },
+    
+    
+    
   },
   actions: {
+    
   },
   modules: {
   },

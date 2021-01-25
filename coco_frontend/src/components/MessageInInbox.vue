@@ -2,35 +2,38 @@
   <div>
     <v-list two-line>
       <v-list-item
-        class="chat"
-        active-class="grey lighten-3"
+        :class="
+          chatElement.conversation == msgDecrypted(user.username, $route.params.id)
+            ? 'chatElement active-chatElement'
+            : 'chatElement'
+        "
         exact
-        :to="{ name: 'Messages', params: { id: encryptId(chat.conversation) } }"
+        :to="{ name: 'Messages', params: { id: encryptId(chatElement.conversation) } }"
         @mousemove="menu = true"
         @mouseleave="menu = false"
         @click="chatSelected"
       >
         <v-list-item-avatar color="secondary">
           <v-img
-            v-if="chat.opponent.profile_picture"
-            :src="chat.opponent.profile_picture"
+            v-if="chatElement.opponent.profile_picture"
+            :src="chatElement.opponent.profile_picture"
           ></v-img>
           <span class="white--text" v-else>{{
-            chat.opponent.name.slice(0, 1).toUpperCase()
+            chatElement.opponent.name.slice(0, 1).toUpperCase()
           }}</span>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>
             <router-link
               class="title--text link"
-              :title="chat.opponent.name"
+              :title="chatElement.opponent.name"
               :to="{
                 name: 'Profile',
-                params: { username: chat.opponent.username },
+                params: { username: chatElement.opponent.username },
               }"
-              >{{ chat.opponent.name }}</router-link
-            ><span class="grey--text ml-2" :title="'@' + chat.opponent.username"
-              >@{{ chat.opponent.username }}</span
+              >{{ chatElement.opponent.name }}</router-link
+            ><span class="grey--text ml-2" :title="'@' + chatElement.opponent.username"
+              >@{{ chatElement.opponent.username }}</span
             >
           </v-list-item-title>
           <v-list-item-subtitle>
@@ -38,16 +41,16 @@
               <span class="primary--text">Escribiendo ...</span>
             </div>
             <div v-else>
-              <span v-if="chat.sender == user.username">
-                <v-icon title="Enviado" class="mr-1" v-if="!chat.read" small
+              <span v-if="chatElement.sender == user.username">
+                <v-icon title="Enviado" class="mr-1" v-if="!chatElement.read" small
                   >mdi-check</v-icon
                 >
                 <v-icon title="Visto" class="mr-1" v-else color="primary" small
                   >mdi-check-all</v-icon
                 >
               </span>
-              <span :title="chat.text">
-                {{ msgDecrypted(chat.sender_username) }}
+              <span :title="chatElement.text">
+                {{ msgDecrypted(chatElement.sender_username, chatElement.text) }}
               </span>
             </div>
           </v-list-item-subtitle>
@@ -55,14 +58,14 @@
         <v-list-item-action>
           <span>
             <small
-              :class="chat.unread_messages ? 'info--text' : ''"
+              :class="chatElement.unread_messages ? 'info--text' : ''"
               :title="getHour | capitalize"
               >{{ getHour | capitalize }}</small
             >
           </span>
           <span>
             <v-avatar
-              v-if="chat.unread_messages"
+              v-if="chatElement.unread_messages"
               size="25"
               color="info darken-1"
             >
@@ -81,7 +84,7 @@
 
 <script>
 import moment from "moment";
-import { mapMutations, mapState } from "vuex";
+import { mapMutations, mapState, mapActions } from "vuex";
 import { encrypt, decript } from "../functions.js";
 export default {
   name: "MessageInInbox",
@@ -93,49 +96,61 @@ export default {
     websocket: null,
   }),
   computed: {
-    ...mapState(["wsBase", "user", "secretKey"]),
-    chat:{
-      get: function(){
-        return this.chatObj
+    ...mapState(["wsBase", "user", "secretKey", "chats", "chat"]),
+    chatElement: {
+      get: function () {
+        return this.chatObj;
       },
-      set: function(val){
-
-      }
+      set: function (val) {},
     },
     getUnreadMsgs() {
-      if (this.chat.unread_messages > 10) {
+      if (this.chatElement.unread_messages > 10) {
         return "+10";
       } else {
-        return this.chat.unread_messages;
+        return this.chatElement.unread_messages;
       }
     },
     getHour() {
-      let getHour = moment(this.chat.created).locale("es").format("hh:mm a");
+      let getHour = moment(this.chatElement.created).locale("es").format("hh:mm a");
       return getHour;
     },
   },
   mounted() {
     this.connect();
   },
+  beforeDestroy(){
+  },
   methods: {
-    ...mapMutations(["setChat"]),
-    msgDecrypted(dataKey) {
-      return decript(dataKey, this.chat.text);
+    ...mapMutations(["setChat", "msgReceivedInbox"]),
+    getChatIndex() {
+      let chatElement = this.chats.find(
+        (chatElement) => chatElement.conversation == this.chatElement.conversation
+      );
+      return this.chats.indexOf(chatElement);
+    },
+    msgDecrypted(dataKey, msgEncrypted) {
+      var decryptedMsg = ''
+      try {
+        decryptedMsg = decript(dataKey, msgEncrypted);
+      } catch (error) {
+        decryptedMsg = 0
+      }
+      return decryptedMsg;
     },
     encryptId(id) {
       return encrypt(id, this.user.username);
     },
     chatSelected() {
-      this.setChat(this.chat);
+      this.setChat(this.chatElement);
     },
 
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
-        protocol + this.wsBase + "/ws/chat/" + this.chat.conversation + "/"
+        protocol + this.wsBase + "/ws/chat/" + this.chatElement.conversation + "/"
       );
       this.websocket.onopen = () => {
-        console.info("conectado exitosamente inbox!", this.chat.conversation);
+        console.info("conectado exitosamente inbox!", this.chatElement.conversation);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
@@ -145,16 +160,23 @@ export default {
           ) {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
-            this.chat.text = socketData.text;
-            this.chat.sender_username = socketData.sender_username;
-            this.chat.created = socketData.created;
-            if(socketData.sender_username != this.user.username) this.chat.unread_messages = socketData.unread_messages;
-            else this.chat.unread_messages = 0;
-            this.setChat(this.chat);
+            this.chatElement.text = socketData.text;
+            this.chatElement.sender_username = socketData.sender_username;
+            this.chatElement.created = socketData.created;
+            if (socketData.sender_username != this.user.username){
+              this.chatElement.unread_messages = socketData.unread_messages;
+              
+            }
+              
+            else this.chatElement.unread_messages = 0;
+            this.setChat(this.chatElement);
+
             this.typing = false;
-          } else if (
-            socketData.type == "seen_message" ) {
-            this.chat.unread_messages = socketData.unread_messages;
+          }   else if (socketData.type == "seen_message") {
+            this.chatElement.unread_messages = socketData.unread_messages;
+          }
+          if (socketData.type == "chat_message") {
+            this.msgReceivedInbox(this.getChatIndex());
           }
         };
       };
@@ -165,4 +187,8 @@ export default {
 </script>
 
 <style>
+.active-chatElement {
+  border-radius: 5px;
+  background: rgb(206, 206, 206);
+}
 </style>

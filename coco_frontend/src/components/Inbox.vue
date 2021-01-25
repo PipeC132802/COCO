@@ -10,9 +10,11 @@
           ></v-skeleton-loader>
         </div>
         <MessageInInbox
-          v-for="chat in chats"
+          v-for="(chat, index) in chats"
           :key="chat.id"
           :chatObj="chat"
+          :index="index"
+          v-on:reloadChats="getChatList()"
         />
       </v-card-text>
     </v-card>
@@ -20,7 +22,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import MessageInInbox from "../components/MessageInInbox.vue";
 export default {
   name: "Inbox",
@@ -29,16 +31,16 @@ export default {
   },
   data: () => ({
     apiDir: "inbox/",
-    chats: [],
     loading: true,
   }),
   computed: {
-    ...mapState(["user", "authentication", "baseUrl"]),
+    ...mapState(["user", "authentication", "baseUrl", "chats"]),
   },
   mounted() {
     this.getChatList();
   },
   methods: {
+    ...mapMutations(["setChats"]),
     getChatList() {
       fetch(this.baseUrl + this.apiDir, {
         method: "GET",
@@ -47,8 +49,7 @@ export default {
         },
       })
         .then((response) => response.json())
-        .then((response) => {this.chats = response;
-        console.log(this.chats)})
+        .then((response) => {this.setChats(response);})
         .catch((err) => console.error(err))
         .finally(() => {
           this.loading = false;

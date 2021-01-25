@@ -154,16 +154,25 @@ export default {
     room: null,
     msg: "",
     typing: false,
+    change: false,
   }),
   mounted() {
+    
     this.getMessages();
     this.setColors2Divs();
-    this.gotoBottom();
+  },
+  beforeDestroy(){
+    this.websocket.close();
+    this.websocket = null;
+    console.log("destuyendo", this.room)
   },
   computed: {
     ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
   },
   methods: {
+    sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    },
     decriptText(dataKey, dataEncrypted) {
       var text = decript(dataKey, dataEncrypted);
       if (this.room == null) this.room = text;
@@ -300,14 +309,9 @@ export default {
         }
       });
     },
-    closeChat() {
-      this.websocket.close();
-      this.websocket = null;
-      this.$emit("close", { username: this.chat.username, index: this.index });
-    },
+
     setColors2Divs() {
       var messagesDiv = document.getElementById("msgs-list");
-      try {
         let outgoing = localStorage.getItem("outgoing-msgs");
         let incoming = localStorage.getItem("incoming-msgs");
         let bg = localStorage.getItem("bg-color");
@@ -320,8 +324,9 @@ export default {
             outgoing: outgoing,
             bg: bg,
           };
+          console.log(this.colors)
+
         }
-      } catch (error) {}
     },
     getHour(dateTime) {
       let getHour = moment(dateTime).locale("es").format("hh:mm a");

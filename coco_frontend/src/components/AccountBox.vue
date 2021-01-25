@@ -28,7 +28,7 @@
         </v-card-title>
       </v-row>
 
-      <v-card-text class="mt-0 pt-0">
+      <v-card-text v-if="account.bio" class="mt-0 pt-0">
         <blockquote v-if="account.bio" class="blockquote">
           <p class="mb-0 mt-5 ml-0">
             {{ account.bio }}

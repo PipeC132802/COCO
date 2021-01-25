@@ -16,6 +16,7 @@ class ChatsListApi(generics.RetrieveAPIView):
             Q(conversation__owner_id=request.user.pk) |
             Q(conversation__opponent_id=request.user.pk)).distinct("conversation").order_by('conversation', '-created')
         messages_list = []
+        messages = list(reversed(sorted(messages, key=lambda message: message.created)))
         for message in messages:
             msg_dictionary = message.serializer()
             opponent = self.get_opponent(request.user, message)

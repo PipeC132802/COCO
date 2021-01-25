@@ -34,7 +34,7 @@ class NotificationsListApi(generics.ListAPIView):
                 notification_dictionary = self.get_comment_notification_json(notification)
             elif notification.nf_type == 'accepted_by_user':
                 notification_dictionary = self.get_accept_notification_json(notification)
-            elif notification.nf_type == 'followed_by_user':
+            elif notification.nf_type == 'followed_by_user' and notification.obj.status == 1:
                 notification_dictionary = self.get_follow_notification_json(notification)
             else:
                 notification_dictionary = {}
@@ -110,18 +110,4 @@ class NotificationsListApi(generics.ListAPIView):
             'created': notification.created
         }
 
-    def get_obj_context(self, notification):
-        target = self.get_target(notification)
-        return {
-            'type': notification.nf_type,
-            'actor': {
-                'username': notification.actor.username,
-                'name': '{0} {1}'.format(notification.actor.first_name, notification.actor.last_name),
-                'profile_picture': get_profile_url(user=notification.actor)
-            },
-            'verb': notification.verb,
-            'description': notification.description,
-            'target': target,
-            'created': notification.created,
-            'read': notification.read
-        }
+

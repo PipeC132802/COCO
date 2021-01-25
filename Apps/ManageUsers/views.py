@@ -293,11 +293,19 @@ class UserAboutApi(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user_about = UserAbout.objects.get(user__username=self.request.GET["username"])
+            user_about = UserAbout.objects.get(user__username=request.GET["username"])
             return Response(user_about.serializer(), status=200)
         except:
-            # Loggin error
-            return Response('User info not found', status=404)
+            user = User.objects.get(username=request.GET["username"])
+            user_about_json = {
+                'user':user.username,
+                'name': '{0} {1}'.format(user.first_name, user.last_name),
+                'profile_picture': get_profile_url(user),
+                'bio': '',
+                'birthday': '',
+                'gender': ''
+            }
+            return Response(user_about_json, status=200)
 
 
 class UserContactAndAreasApi(generics.RetrieveAPIView):
@@ -375,6 +383,7 @@ class FollowUserApi(generics.GenericAPIView):
             notify.send(request.user,
                         recipient=follow_status.user_to,
                         actor=request.user,
+                        obj=follow_status,
                         target=follow_status.user_to,
                         verb='Te siguió',
                         nf_type='followed_by_user')

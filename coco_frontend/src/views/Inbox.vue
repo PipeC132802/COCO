@@ -5,7 +5,7 @@
         <InboxComponent />
       </v-col>
       <v-col tile class="chatlist" sm="12" md="8">
-        <router-view />
+        <router-view v-if="!change" />
       </v-col>
     </v-row>
   </v-container>
@@ -13,18 +13,36 @@
 
 <script>
 import InboxComponent from "../components/Inbox.vue";
+import { mapState } from "vuex";
+import { decript } from "../functions.js";
 export default {
   components: {
     InboxComponent,
   },
   data: () => ({
     chat: null,
+    change: false,
   }),
   created() {
     document.title = "Inbox | COCO";
   },
-  mounted() {
-    
+  computed: {
+    ...mapState(["user"]),
+  },
+  watch: {
+    $route(to, from) {
+      try {
+        if (
+          decript(this.user.username, to.params.id) !=
+          decript(this.user.username, from.params.id)
+        ) {
+          this.change = true;
+          this.sleep(5).then(() => {
+            this.change = false;
+          });
+        }
+      } catch (error) {}
+    },
   },
   methods: {
     sleep(ms) {
@@ -35,7 +53,7 @@ export default {
 </script>
 
 <style>
-.chatlist{
+.chatlist {
   border-left: 1px solid rgb(211, 211, 211);
   margin: 0%;
 }

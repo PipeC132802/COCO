@@ -29,7 +29,6 @@ class ChatConsumer(WebsocketConsumer):
     # Receive message from WebSocket
     def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print(text_data_json)
         if text_data_json["type"] == "chat_message":
             text_data_json = self.save_message(text_data_json)
             text_data_json["unread_messages"] = self.unread_msgs(text_data_json)
