@@ -52,7 +52,7 @@
             {{ decriptText(message.sender_username, message.text) }}
             <small
               :title="formatDate(message.created) | capitalize"
-              class="msg-footer"
+              class="msg-footer mr-1"
             >
               {{ getHour(message.created) }}
             </small>
@@ -157,14 +157,13 @@ export default {
     change: false,
   }),
   mounted() {
-    
     this.getMessages();
     this.setColors2Divs();
   },
-  beforeDestroy(){
+  beforeDestroy() {
     this.websocket.close();
     this.websocket = null;
-    console.log("destuyendo", this.room)
+    console.log("destuyendo", this.room);
   },
   computed: {
     ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
@@ -312,21 +311,20 @@ export default {
 
     setColors2Divs() {
       var messagesDiv = document.getElementById("msgs-list");
-        let outgoing = localStorage.getItem("outgoing-msgs");
-        let incoming = localStorage.getItem("incoming-msgs");
-        let bg = localStorage.getItem("bg-color");
-        if (outgoing != null && (incoming != null) & (bg != null)) {
-          messagesDiv.style.setProperty("--outgoing-msg-bg", outgoing);
-          messagesDiv.style.setProperty("--incoming-msg-bg", incoming);
-          messagesDiv.style.setProperty("--background-color", bg);
-          this.colors = {
-            incoming: incoming,
-            outgoing: outgoing,
-            bg: bg,
-          };
-          console.log(this.colors)
-
-        }
+      let outgoing = localStorage.getItem("outgoing-msgs");
+      let incoming = localStorage.getItem("incoming-msgs");
+      let bg = localStorage.getItem("bg-color");
+      if (outgoing != null && (incoming != null) & (bg != null)) {
+        messagesDiv.style.setProperty("--outgoing-msg-bg", outgoing);
+        messagesDiv.style.setProperty("--incoming-msg-bg", incoming);
+        messagesDiv.style.setProperty("--background-color", bg);
+        this.colors = {
+          incoming: incoming,
+          outgoing: outgoing,
+          bg: bg,
+        };
+        console.log(this.colors);
+      }
     },
     getHour(dateTime) {
       let getHour = moment(dateTime).locale("es").format("hh:mm a");
@@ -413,13 +411,14 @@ body {
   position: relative;
   margin: 7px 0;
   padding: 10px 10% 2% 10px;
-  border-radius: 0px 8px 8px 8px;
+  border-radius: 0px 13px 13px 13px;
   max-width: 80%;
   width: auto;
   background: var(--incoming-msg-bg);
   color: white;
+  -webkit-text-stroke: 0.3px  rgb(136, 136, 136);
 }
-.incoming-msg::before {
+/*.incoming-msg::before {
   display: block;
   position: absolute;
   top: -10px;
@@ -433,19 +432,21 @@ body {
   border-bottom: 10px solid var(--incoming-msg-bg);
   transform: rotate(45deg);
   border-radius: 5px;
-}
+}*/
 .outgoing-msg {
   display: inline-block;
   position: relative;
   margin: 7px 0;
   padding: 10px 12% 2% 10px;
-  border-radius: 8px 0px 8px 8px;
+  border-radius: 13px 0px 13px 13px;
   max-width: 80%;
   width: auto;
   color: white;
   background: var(--outgoing-msg-bg);
+    -webkit-text-stroke: 0.3px rgb(136, 136, 136);
+
 }
-.outgoing-msg::before {
+/*.outgoing-msg::before {
   display: block;
   position: absolute;
   top: -10px;
@@ -460,13 +461,15 @@ body {
   border-bottom: 10px solid transparent;
   transform: rotate(-135deg);
   border-radius: 5px;
-}
+}*/
 .msg-footer {
   position: absolute;
   right: 8px;
   bottom: 0px;
   color: white;
   font-size: 7pt;
+    -webkit-text-stroke: 0.1px  rgb(136, 136, 136);
+
 }
 .typing-avatar {
   position: absolute;

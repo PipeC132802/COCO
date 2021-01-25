@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from Apps.ManageChats.models import Message
 from Apps.ManageUsers.models import UserProfilePhoto, VerifyUser, Area, Place, UserContact, UserAbout, UserSkill, \
     UserInterest, UserRelationship, UserCoverPhoto
 from Apps.ManageUsers.serializer import AreaSerializer, UserAboutSerializer, UserSerializer
@@ -32,14 +33,13 @@ class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
                 user_id=user.pk).profile_picture.url
         except:
             profile_picture = ''
-        """unread_messages = Message.objects.filter(
+        unread_messages = Message.objects.filter(
             (Q(conversation__owner_id=request.user.pk) |
              Q(conversation__opponent_id=request.user.pk)),
             read=False
-        ).count()
-        unread_notifications = 3"""
+        ).exclude(sender=request.user).count()
+
         unread_notifications = Notification.objects.filter(recipient_id=request.user.pk, read=False).count()
-        unread_messages = 3
         return JsonResponse({
             'id': user.pk,
             'username': user.username,
@@ -200,7 +200,7 @@ class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
             return JsonResponse({'profile_picture_created': True,
                                  'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url})
         except:
-            return Response({'profile_picture_created': False}, status=500)
+            return Response({'Detail': 'An server error have ocurred'}, status=500)
 
     def put(self, request, *args, **kwargs):
         profile_picture = request.FILES.get("profile_picture")

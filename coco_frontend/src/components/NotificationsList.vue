@@ -7,6 +7,9 @@
         type="list-item-avatar-two-line"
       ></v-skeleton-loader>
     </div>
+    <p class="pl-5 display-1" v-if="!notifications[0].length">
+      Nada por aquí 
+    </p>
     <v-card
       class="ma-2"
       v-for="notification in notifications"
@@ -66,6 +69,7 @@ export default {
           return response.json();
         })
         .then((response) => {
+          
           this.notifications = response;
           this.$root.$emit("notificationsReaded");
         })
