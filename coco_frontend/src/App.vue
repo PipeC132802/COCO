@@ -4,7 +4,6 @@
     <div
       @mouseenter="changeContainerSizes(255)"
       @mouseleave="changeContainerSizes(55)"
-      style="background: black"
       v-if="authentication.userIsAuthenticated"
     >
       <LeftAside id="leftAside" />
@@ -65,6 +64,17 @@ export default {
 </script>
 
 <style>
+@media (max-width: 920px) {
+  #leftAside {
+    display: none;
+  }
+  #content{
+    padding: 0px 0px !important;
+  }
+  p, span{
+    font-size: 10pt;
+  }
+}
 body {
   background: rgb(211, 211, 211);
 }

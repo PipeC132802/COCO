@@ -152,13 +152,13 @@
           </v-chip>
           <v-chip
             :title="'Quiero aprender ' + barter.interest"
-            class="ml-3"
+            class="mx-3"
             color="accent darken-1"
           >
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
             {{ barter.interest }}
           </v-chip>
-          <v-chip :title="'🌎' + barter.about.place" class="ml-3" label>
+          <v-chip class="mt-1" :title="'🌎' + barter.about.place"  label>
             <v-icon small left>mdi-map-marker</v-icon>
             {{ barter.about.place }}
           </v-chip>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app color="white">
+    <v-app-bar id="nav-bar" app color="white">
       <v-toolbar-title>
         <v-list-item
           id="logo-btn"
@@ -9,13 +9,13 @@
           :to="{path:'/'}"
         >
           <v-list-item-avatar>
-            <v-img src="@/assets/logo.png" max-height="35" max-width="35">
+            <v-img src="@/assets/logo.svg" max-height="35" max-width="35">
             </v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title >
-              <h2 class="primary--text">COCO</h2>
+              <h2 id="company-name" class="primary--text">COCO</h2>
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
@@ -23,7 +23,7 @@
       <v-spacer></v-spacer>
       <v-text-field
         dense
-        class="pt-7"
+        class="pt-7 search-field"
         v-model="searchValue"
         @click:append="go2search"
         @keydown.enter="go2search"
@@ -106,6 +106,20 @@ export default {
 </script>
 
 <style>
+@media (max-width: 920px) {
+  .search-field {
+    display: none;
+  }
+  #nav-bar{
+    left: 0% !important;
+    position: sticky;
+    background: #307ABD  !important;
+  }
+
+  #company-name{
+    color: white  !important;
+  }
+}
 #logo-btn {
   max-height: 30px;
 }

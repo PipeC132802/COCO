@@ -9,13 +9,15 @@
             type="list-item-avatar-two-line"
           ></v-skeleton-loader>
         </div>
-        <MessageInInbox
-          v-for="(chat, index) in chats"
-          :key="chat.id"
-          :chatObj="chat"
-          :index="index"
-          v-on:reloadChats="getChatList()"
-        />
+        <div v-else>
+          <MessageInInbox
+            v-for="(chat, index) in chats"
+            :key="chat.id"
+            :chatObj="chat"
+            :index="index"
+            v-on:reloadChats="getChatList()"
+          />
+        </div>
       </v-card-text>
     </v-card>
   </div>
@@ -49,7 +51,9 @@ export default {
         },
       })
         .then((response) => response.json())
-        .then((response) => {this.setChats(response);})
+        .then((response) => {
+          this.setChats(response);
+        })
         .catch((err) => console.error(err))
         .finally(() => {
           this.loading = false;
@@ -65,7 +69,7 @@ export default {
   height: 85vh;
   overflow: auto;
 }
-.chat{
+.chat {
   border-radius: 5px;
 }
 .chat:hover {

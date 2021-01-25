@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card elevation="3" width="100%">
+    <v-card outlined elevation="3" width="100%">
       <v-card-title>
         <v-row dense>
           <v-avatar class="mt-1" color="secondary">
@@ -16,7 +16,7 @@
           <v-col>
             <input
               @click="dialog = true"
-              class="ml-2"
+              class="ml-1"
               type="text"
               :placeholder="`¿Quieres aprender algo nuevo, ${user.name}?`"
             />
@@ -27,11 +27,15 @@
       <v-card-actions>
         <v-btn @click="dialog = true" rounded text color="secondary">
           <v-icon left>mdi-school</v-icon>
+          <span class="btn-text">
           Quiero aprender
+          </span>
         </v-btn>
         <v-btn @click="dialog = true" rounded text color="secondary">
           <v-icon left>mdi-teach</v-icon>
+          <span class="btn-text">
           Voy a enseñar
+          </span>
         </v-btn>
         <v-btn @click="dialog = true" class="ml-auto" color="primary darken-2">
           Publicar
@@ -264,6 +268,11 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 920px) {
+  .btn-text {
+    display: none;
+  }
+}
 input {
   outline: none;
   width: 100%;
