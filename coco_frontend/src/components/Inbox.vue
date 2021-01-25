@@ -12,7 +12,7 @@
         <MessageInInbox
           v-for="chat in chats"
           :key="chat.id"
-          :chat="chat"
+          :chatObj="chat"
         />
       </v-card-text>
     </v-card>
@@ -60,8 +60,8 @@ export default {
 
 <style>
 .card-text {
-  max-height: 83vh;
-  height: 83vh;
+  max-height: 85vh;
+  height: 85vh;
   overflow: auto;
 }
 .chat{

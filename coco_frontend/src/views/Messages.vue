@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card flat>
+    <v-card id="chat" class="chat-body" flat>
       <v-list two-line>
         <v-list-item>
           <v-list-item-avatar color="secondary">
@@ -49,7 +49,7 @@
             v-if="message.sender_username != user.username"
             class="incoming-msg"
           >
-            {{ decriptText(message.text) }}
+            {{ decriptText(message.sender_username, message.text) }}
             <small
               :title="formatDate(message.created) | capitalize"
               class="msg-footer"
@@ -58,7 +58,7 @@
             </small>
           </div>
           <div v-else class="outgoing-msg ml-auto">
-            {{ decriptText(message.text) }}
+            {{ decriptText(user.username, message.text) }}
             <small class="msg-footer">
               <span :title="formatDate(message.created) | capitalize">
                 {{ getHour(message.created) }}
@@ -100,12 +100,14 @@
             <v-text-field
               @keyup="typingMessage"
               @keyup.enter="sendMessage"
+              @focus="seenMsg"
               rounded
               outlined
               dense
               v-model="msg"
               label="Escribe tu mensaje"
               solo
+              @click:append-outer="sendMessage"
               :append-outer-icon="msg ? 'mdi-send' : ''"
             ></v-text-field>
           </v-row>
@@ -156,23 +158,32 @@ export default {
   mounted() {
     this.getMessages();
     this.setColors2Divs();
+    this.gotoBottom();
   },
   computed: {
     ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
   },
   methods: {
-    decriptText(dataEncrypted) {
-      var text = decript(this.user.username, dataEncrypted);
+    decriptText(dataKey, dataEncrypted) {
+      var text = decript(dataKey, dataEncrypted);
       if (this.room == null) this.room = text;
       return text;
     },
     getMessages() {
-      fetch(this.baseUrl + this.apiDir + `?conversation=${this.decriptText(this.$route.params.id.toString())}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      })
+      fetch(
+        this.baseUrl +
+          this.apiDir +
+          `?conversation=${this.decriptText(
+            this.user.username,
+            this.$route.params.id.toString()
+          )}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Token ${this.authentication.accessToken}`,
+          },
+        }
+      )
         .then((response) => response.json())
         .then((response) => {
           this.messages = response;
@@ -219,8 +230,21 @@ export default {
         );
       }
     },
-    seenText() {
-      if (
+    seenMsg() {
+      if (this.chat.sender_username != this.user.username) {
+        let sender = this.user.username;
+        this.websocket.send(
+          JSON.stringify({
+            type: "seen_message",
+            sender: sender,
+            receiver: this.chat.sender_username,
+            seen: true,
+            room: this.room,
+          })
+        );
+      }
+
+      /* if (
         this.messages.length &&
         this.messages[0].sender !== this.user.username &&
         !this.messages[0].read
@@ -236,7 +260,7 @@ export default {
               room: this.room,
             })
           );
-      }
+      } */
     },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
@@ -254,15 +278,27 @@ export default {
           ) {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
-            socketData.text = decript(this.user.username, socketData.text);
             this.messages.push(socketData);
-            this.date_send = socketData.send.split("-")[0];
+            this.typing = false;
+            if (socketData.sender_username == this.user.username) {
+              this.seenMsg();
+            }
           } else if (socketData.type === "seen_message") {
             this.checkSeen();
           }
         };
       };
       this.websocket.onclose = () => {};
+    },
+    checkSeen() {
+      this.messages.forEach((message) => {
+        if (
+          message.sender_username == this.user.username &&
+          message.read == false
+        ) {
+          message.read = true;
+        }
+      });
     },
     closeChat() {
       this.websocket.close();
@@ -314,17 +350,28 @@ export default {
       localStorage.setItem("bg-color", color);
       this.colors.bg = color;
     },
+    gotoBottom() {
+      var elem = document.getElementById("chat");
+      var container = document.getElementById("msgs-list");
+      container.scrollTop = Math.floor(elem.offsetHeight);
+    },
   },
 };
 </script>
 
 <style>
+body {
+  background: white;
+}
 :root {
   --incoming-msg-bg: #09243df5;
   --outgoing-msg-bg: #3079bdfa;
   --background-color: #3636362a;
 }
-
+.chat-body {
+  height: 85vh;
+  background: red;
+}
 .link-msgs {
   font-size: 14pt;
   font-weight: bold;
@@ -333,20 +380,34 @@ export default {
 .link-msgs:hover {
   text-decoration: underline;
 }
-.messages {
-  position: relative;
-  max-height: 65vh;
-  height: 70vh;
-  padding: 10px 30px;
-  overflow: auto;
-  background: var(--background-color);
-  border-radius: 15px 15px 0 0;
+@media (min-width: 1800px) {
+  .messages {
+    position: relative;
+    max-height: 93%;
+    height: 100%;
+    padding: 10px 30px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
 }
+@media (max-width: 1800px) {
+  .messages {
+    position: relative;
+    max-height: 75%;
+    height: 100%;
+    padding: 10px 30px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
+}
+
 .incoming-msg {
   display: inline-block;
   position: relative;
   margin: 7px 0;
-  padding: 10px 70px 10px 10px;
+  padding: 10px 10% 2% 10px;
   border-radius: 0px 8px 8px 8px;
   max-width: 80%;
   width: auto;
@@ -372,7 +433,7 @@ export default {
   display: inline-block;
   position: relative;
   margin: 7px 0;
-  padding: 10px 70px 15px 10px;
+  padding: 10px 12% 2% 10px;
   border-radius: 8px 0px 8px 8px;
   max-width: 80%;
   width: auto;
@@ -400,6 +461,7 @@ export default {
   right: 8px;
   bottom: 0px;
   color: white;
+  font-size: 7pt;
 }
 .typing-avatar {
   position: absolute;
@@ -437,7 +499,7 @@ export default {
   }
 }
 .typing-container {
-  position: absolute;
-  bottom: 30px;
+  position: relative;
+  margin: 25px 0%;
 }
 </style>

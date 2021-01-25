@@ -1,11 +1,11 @@
 <template>
   <v-container fluid>
     <v-row justify="center" class="px-0">
-      <v-col cols="12" sm="12" md="4">
+      <v-col class="ma-0" cols="12" sm="12" md="4">
         <InboxComponent />
       </v-col>
-      <v-col class="chatlist" sm="12" md="8">
-                <router-view />
+      <v-col tile class="chatlist" sm="12" md="8">
+        <router-view />
       </v-col>
     </v-row>
   </v-container>
@@ -37,5 +37,6 @@ export default {
 <style>
 .chatlist{
   border-left: 1px solid rgb(211, 211, 211);
+  margin: 0%;
 }
 </style>

@@ -25,8 +25,10 @@ class Message(SoftDeletableModel):
         return {
             "type": "chat_message",
             "conversation": self.conversation.pk,
-            "sender": self.sender.username,
+            "sender_username": self.sender.username,
             "text": self.text,
             "read": self.read,
-            "send": str(self.created)
+            "created": str(self.created)
         }
+
+

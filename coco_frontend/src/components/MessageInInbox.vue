@@ -47,7 +47,7 @@
                 >
               </span>
               <span :title="chat.text">
-                {{ msgDecrypted }}
+                {{ msgDecrypted(chat.sender_username) }}
               </span>
             </div>
           </v-list-item-subtitle>
@@ -85,7 +85,7 @@ import { mapMutations, mapState } from "vuex";
 import { encrypt, decript } from "../functions.js";
 export default {
   name: "MessageInInbox",
-  props: ["chat"],
+  props: ["chatObj"],
   data: () => ({
     menu: false,
     typing: false,
@@ -94,7 +94,14 @@ export default {
   }),
   computed: {
     ...mapState(["wsBase", "user", "secretKey"]),
-      
+    chat:{
+      get: function(){
+        return this.chatObj
+      },
+      set: function(val){
+
+      }
+    },
     getUnreadMsgs() {
       if (this.chat.unread_messages > 10) {
         return "+10";
@@ -102,33 +109,33 @@ export default {
         return this.chat.unread_messages;
       }
     },
-      getHour() {
+    getHour() {
       let getHour = moment(this.chat.created).locale("es").format("hh:mm a");
       return getHour;
     },
-    msgDecrypted(){
-      return decript(this.user.username, this.chat.text);
-    }
+  },
+  mounted() {
+    this.connect();
   },
   methods: {
     ...mapMutations(["setChat"]),
+    msgDecrypted(dataKey) {
+      return decript(dataKey, this.chat.text);
+    },
     encryptId(id) {
       return encrypt(id, this.user.username);
     },
     chatSelected() {
       this.setChat(this.chat);
     },
-    
+
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
         protocol + this.wsBase + "/ws/chat/" + this.chat.conversation + "/"
       );
       this.websocket.onopen = () => {
-        console.info(
-          "conectado exitosamente inbox!",
-          this.conversation.conversation
-        );
+        console.info("conectado exitosamente inbox!", this.chat.conversation);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
@@ -139,13 +146,15 @@ export default {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
             this.chat.text = socketData.text;
-            this.chat.send = socketData.send;
-            this.chat.sender = socketData.sender;
+            this.chat.sender_username = socketData.sender_username;
+            this.chat.created = socketData.created;
+            if(socketData.sender_username != this.user.username) this.chat.unread_messages = socketData.unread_messages;
+            else this.chat.unread_messages = 0;
+            this.setChat(this.chat);
+            this.typing = false;
           } else if (
-            socketData.type == "seen_message" &&
-            socketData.receiver == this.user.username
-          ) {
-            this.conversation.unread_messages = socketData.unread_messages;
+            socketData.type == "seen_message" ) {
+            this.chat.unread_messages = socketData.unread_messages;
           }
         };
       };
