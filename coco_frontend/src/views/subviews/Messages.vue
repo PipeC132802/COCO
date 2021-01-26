@@ -132,8 +132,8 @@
 
 <script>
 import { mapState } from "vuex";
-import { decript, encrypt } from "../functions.js";
-import ColorPicker from "../components/subcomponents/ColorPicker.vue";
+import { decript, encrypt } from "@/functions.js";
+import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
 import moment from "moment";
 
 export default {

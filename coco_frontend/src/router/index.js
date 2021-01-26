@@ -66,7 +66,7 @@ const routes = [
       requiresLogin: true
     },
     children: [
-      { path: 'messages/:id', name: 'Messages', component: () => import('../views/Messages.vue') },
+      { path: 'messages/:id', name: 'Messages', component: () => import('../views/subviews/Messages.vue') },
     ]
   },
   {
@@ -79,7 +79,14 @@ const routes = [
     meta: {
       requiresLogin: true
     },
-    
+    children: [
+      { path: 'account', name: 'Account', component: () => import('../views/subviews/Account.vue') },
+      { path: 'account/your-info', name: 'YourInfo', component: () => import('../views/subviews/AccountInfo.vue') },
+      { path: 'account/password', name: 'Password', component: () => import('../views/subviews/Password.vue') },
+      { path: 'security', name: 'Security', component: () => import('../views/subviews/Security.vue') },
+      { path: 'notifications', name: 'NotificationsSettings', component: () => import('../views/subviews/Notifications.vue') },
+      { path: 'more', name: 'Resources', component: () => import('../views/subviews/More.vue') },
+    ]
   },
   {
     path: '/:username',
@@ -89,9 +96,11 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Profile.vue'),
     children: [
-      { path: 'followers', name: 'Followers', component: () => import('../views/Followers.vue') },
-      { path: 'following', name: 'Following', component: () => import('../views/Following.vue') },
-      { path: 'edit', name: 'Edit', component: () => import('../views/EditProfile.vue') },
+      {
+        path: 'followers', name: 'Followers', component: () => import('../views/subviews/Followers.vue')
+      },
+      { path: 'following', name: 'Following', component: () => import('../views/subviews/Following.vue') },
+      { path: 'edit', name: 'Edit', component: () => import('../views/subviews/EditProfile.vue') },
     ]
 
   },

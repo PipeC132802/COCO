@@ -298,7 +298,7 @@ class UserAboutApi(generics.RetrieveAPIView):
         except:
             user = User.objects.get(username=request.GET["username"])
             user_about_json = {
-                'user':user.username,
+                'user': user.username,
                 'name': '{0} {1}'.format(user.first_name, user.last_name),
                 'profile_picture': get_profile_url(user),
                 'bio': '',
@@ -535,23 +535,46 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_contact = UserContact.objects.get(user=user)
-        user_about = UserAbout.objects.get(user=user)
+        user_contact = UserContact.objects.filter(user=user)
+        user_about = UserAbout.objects.filter(user=user)
         user_skills = UserSkill.objects.filter(user=user)
         user_interests = UserInterest.objects.filter(user=user)
+
+        user_contact = user_contact.first()
+        user_about = user_about.first()
+
         try:
             cellphone = user_contact.cellphone.split(' ')[1]
             prefix = user_contact.cellphone.split(' ')[0]
         except:
             cellphone, prefix = '', ''
+
+        if user_contact:
+            country = user_contact.place.country
+            city = user_contact.place.city
+        else:
+            country = ''
+            city = ''
+
+        if user_about:
+            gender = user_about.gender
+            birthday = user_about.birthday
+            bio = user_about.bio
+        else:
+            gender = ''
+            birthday = ''
+            bio = ''
+
         response = {
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'country': user_contact.place.country,
-            'city': user_contact.place.city,
+            'country': country,
+            'city': city,
             'cellphone': cellphone,
             'prefix': prefix,
-            'bio': user_about.bio,
+            'gender': gender,
+            'birthday': birthday,
+            'bio': bio,
             'skills': [user_skill.area.area for user_skill in user_skills],
             'interests': [user_interest.area.area for user_interest in user_interests]
         }
