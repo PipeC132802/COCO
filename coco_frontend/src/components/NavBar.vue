@@ -9,7 +9,7 @@
           :to="{path:'/'}"
         >
           <v-list-item-avatar>
-            <v-img src="@/assets/logo.svg" max-height="35" max-width="35">
+            <v-img color="primary" src="@/assets/logo.svg" max-height="35" max-width="35">
             </v-img>
           </v-list-item-avatar>
 
@@ -112,7 +112,7 @@ export default {
   }
   #nav-bar{
     left: 0% !important;
-    position: sticky;
+    position: fixed;
     background: #307ABD  !important;
   }
 
@@ -123,4 +123,5 @@ export default {
 #logo-btn {
   max-height: 30px;
 }
+
 </style>

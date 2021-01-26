@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row justify="center" class="px-0">
-      <v-col class="ma-0" cols="12" sm="12" md="4">
+      <v-col  class="ma-0 inbox-chats" cols="12" sm="12" md="4">
         <InboxComponent />
       </v-col>
       <v-col tile class="chatlist" sm="12" md="8">

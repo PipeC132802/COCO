@@ -383,6 +383,27 @@ body {
 .link-msgs:hover {
   text-decoration: underline;
 }
+@media (max-width: 920px) {
+  .inbox-chats{
+    display: none;
+  }
+  .messages {
+    position: relative;
+    max-height: 80%;
+    margin: 20px 0px;
+    height: 100%;
+    padding: 10px 5px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
+  .incoming-msg{
+      padding: 10px 20% 3% 10px;
+  }
+  .outgoing-msg{
+      padding: 10px 20% 3% 10px;
+  }
+}
 @media (min-width: 1800px) {
   .messages {
     position: relative;
