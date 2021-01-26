@@ -4,10 +4,16 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
+  
   {
     path: '/',
     name: 'Welcome',
     component: () => import('../views/Welcome.vue')
+  },
+  {
+    path: '/page-not-found',
+    name: 'NotFound',
+    component: () => import('../views/error/NotFound.vue')
   },
   {
     path: '/about',
@@ -83,6 +89,7 @@ const routes = [
       { path: 'account', name: 'Account', component: () => import('../views/subviews/Account.vue') },
       { path: 'account/your-info', name: 'YourInfo', component: () => import('../views/subviews/AccountInfo.vue') },
       { path: 'account/password', name: 'Password', component: () => import('../views/subviews/Password.vue') },
+      { path: 'account/deactivate', name: 'Deactivate', component: () => import('../views/subviews/DeactivateAccount.vue') },
       { path: 'security', name: 'Security', component: () => import('../views/subviews/Security.vue') },
       { path: 'notifications', name: 'NotificationsSettings', component: () => import('../views/subviews/Notifications.vue') },
       { path: 'more', name: 'Resources', component: () => import('../views/subviews/More.vue') },
@@ -111,7 +118,8 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/Barter.vue'),
-  }
+  },
+  
 
 ]
 

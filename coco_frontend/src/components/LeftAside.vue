@@ -153,16 +153,7 @@ export default {
       removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
-    },
-    deleteToken() {
-      fetch(this.baseUrl + this.logOutApi, {
-        method: "POST",
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      });
-    },
-    
+    },    
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(

@@ -14,7 +14,9 @@ class ReviewsListApi(generics.RetrieveAPIView):
     model = Review
 
     def get(self, request, *args, **kwargs):
-        reviews = Review.objects.filter(user_to__username=self.request.GET['user']).order_by('-created')
+        reviews = Review.objects.filter(user_to__username=self.request.GET['user'], user_to__is_active=True).order_by(
+            '-created')
+
         reviews_list = [self.review_serializer(review=review) for review in reviews]
         return Response(reviews_list, status=200)
 
@@ -38,7 +40,7 @@ class ReviewsListApi(generics.RetrieveAPIView):
 class ReviewsOverview(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
-        reviews = Review.objects.filter(user_to__username=self.request.GET['user']).aggregate(
+        reviews = Review.objects.filter(user_to__username=self.request.GET['user'], user_to__is_active=True).aggregate(
             responsibility=Avg('responsibility'), respect=Avg('respect'), communication=Avg('communication'),
             total=Count('id'))
         reviews['average'] = (reviews['responsibility'] + reviews['respect'] + reviews['communication']) / 3

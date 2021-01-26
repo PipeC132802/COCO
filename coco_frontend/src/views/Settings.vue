@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="4">
-          <h2 class="px-3 title--text">Ajustes</h2>
+          <h2 class="px-3 mb-0 title--text">Ajustes</h2>
           <p>
 
           <v-divider></v-divider>

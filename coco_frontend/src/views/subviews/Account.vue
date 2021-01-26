@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <v-row>
-        <v-col class="pb-0 pt-0" cols="12">
+        <v-col class="pb-0 pt-0 mb-0" cols="12">
           <h2 class="title--text">Tu cuenta</h2>
           <p>
             <v-divider></v-divider>
@@ -35,7 +35,6 @@
                 <v-icon>mdi-chevron-right</v-icon>
               </v-list-item-action>
             </v-list-item>
-            
           </v-list>
         </v-col>
       </v-row>
@@ -63,7 +62,7 @@ export default {
       {
         title: "Desactiva tu cuenta",
         subtitle: "Mira cómo puedes desactivar tu cuenta.",
-        link: "NotificationsSettings",
+        link: "Deactivate",
         icon: "mdi-heart-broken",
       },
     ],
