@@ -1,20 +1,21 @@
 <template>
   <div>
-      <v-container v-if="reviews.length" fluid>
+    <v-container v-if="reviews.length" fluid>
       <ReviewsOverview />
-      </v-container>
-    <p
-      class="ml-3 mt-3"
-      v-if="!reviews.length && user.username == $route.params.username"
-    >
-      Aún no tienes reseñas 🤨
-    </p>
-    <p
-      class="ml-3 mt-3"
-      v-else-if="!reviews.length && user.username != $route.params.username"
-    >
-      @{{ $route.params.username }} aún no tiene reseñas 🤨
-    </p>
+    </v-container>
+    <v-alert class="mt-3" color="primary darken-3" v-if="!reviews.length" dark icon="mdi-star-off" dense>
+      <span
+        v-if="user.username == $route.params.username"
+      >
+        Aún no tienes reseñas 🤨
+      </span>
+      <span
+        v-else-if="!reviews.length && user.username != $route.params.username"
+      >
+        @{{ $route.params.username }} aún no tiene reseñas 🤨
+      </span>
+    </v-alert>
+
     <v-container fluid>
       <v-progress-circular
         v-if="loading"
@@ -23,7 +24,14 @@
         color="primary"
         indeterminate
       ></v-progress-circular>
-      <v-card elevation="3" class="mb-2" outlined v-else v-for="review in reviews" :key="review.id">
+      <v-card
+        elevation="3"
+        class="mb-2"
+        outlined
+        v-else
+        v-for="review in reviews"
+        :key="review.id"
+      >
         <v-list class="pb-0 mb-0" subheader two-line>
           <v-list-item class="px-2 mb-0">
             <v-list-item-avatar size="30" color="secondary">
@@ -61,7 +69,11 @@
             </v-list-item-content>
           </v-list-item>
           <v-card-text class="pa-0 ma-0 ml-2 pl-12 pr-5">
-            <v-row align="center" class="px-3" :title="review.responsibility + ' estrellas'">
+            <v-row
+              align="center"
+              class="px-3"
+              :title="review.responsibility + ' estrellas'"
+            >
               <span class="grey--text mr-1"> Responsabilidad </span>
               <v-icon
                 v-for="i in review.responsibility"
@@ -71,13 +83,21 @@
                 >mdi-star</v-icon
               >
             </v-row>
-            <v-row align="center" class="px-3" :title="review.respect + ' estrellas'">
+            <v-row
+              align="center"
+              class="px-3"
+              :title="review.respect + ' estrellas'"
+            >
               <span class="grey--text mr-1"> Respeto </span>
               <v-icon v-for="i in review.respect" :key="i" small color="warning"
                 >mdi-star</v-icon
               >
             </v-row>
-            <v-row align="center" class="px-3" :title="review.communication + ' estrellas'">
+            <v-row
+              align="center"
+              class="px-3"
+              :title="review.communication + ' estrellas'"
+            >
               <span class="grey--text mr-1"> Comunicación </span>
               <v-icon
                 v-for="i in review.communication"
@@ -105,7 +125,7 @@ import { mapState } from "vuex";
 export default {
   name: "ReviewsList",
   components: {
-      ReviewsOverview
+    ReviewsOverview,
   },
   data: () => ({
     reviews: [],
@@ -148,8 +168,8 @@ p {
 .link:hover {
   text-decoration: underline;
 }
-.review-opinion{
-    font-size: 16pt;
-    color: rgb(73, 73, 73);
+.review-opinion {
+  font-size: 16pt;
+  color: rgb(73, 73, 73);
 }
 </style>
