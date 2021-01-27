@@ -1,23 +1,16 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12" class="pt-0 pb-0">
-        <v-row class="px-3" align="center">
-          <v-btn
+          
+          <div class="display-1"><v-btn
             @click="$router.push({ name: 'Account' })"
             class="mr-3"
             icon
             color="primary"
           >
             <v-icon> mdi-arrow-left </v-icon>
-          </v-btn>
-          <h2>Desactiva tu cuenta</h2>
-        </v-row>
-
-        <p class="mb-0">
+          </v-btn>Desactiva tu cuenta</div>
           <v-divider></v-divider>
-        </p>
-      </v-col>
+    <v-row>
       <v-col cols="12">
         <v-list>
           <v-list-item
@@ -46,7 +39,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <h3 class="mx-3 title--text">Esta acción desactivará la cuenta</h3>
+        <h3 class="mx-3 title--text">Esta acción desactivará tu cuenta</h3>
         <p class="mx-3">
           Al desactivar tu cuenta, ningún usuario de
           <span
@@ -61,24 +54,31 @@
           cuenta que después de 30 días de haber desactivado tu cuenta no podrás
           recuperarla.
         </p>
-        <v-btn @click="dialog = true" block color="error">Desactivar</v-btn>
+        <v-btn outlined @click="dialog = true" block color="error">Desactivar</v-btn>
       </v-col>
     </v-row>
     <v-dialog v-model="dialog" max-width="500">
       <v-card class="pa-5">
-        <v-card-title> ¿Estás segur@? 🥺 </v-card-title>
+        <v-row justify="center">
+
+        <v-card-title class="text-center"> ¿Estás segur@? 🥺 </v-card-title>
+        </v-row>
         <v-card-actions>
+          <v-row justify="center">
+
           <v-btn
             :loading="loading"
             @click="deactivateAccount"
             text
             color="error"
+            class="mx-1"
           >
-            Sí
+            Desactivar
           </v-btn>
           <v-btn @click="dialog = false" color="primary">
-            No, seguir usando COCO
+            Seguir usando COCO
           </v-btn>
+          </v-row>
         </v-card-actions>
       </v-card>
     </v-dialog>

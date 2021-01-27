@@ -1,17 +1,13 @@
 <template>
   <div>
     <v-container fluid>
-      <v-row>
-        <v-col class="pb-0 pt-0 mb-0" cols="12">
-          <h2 class="title--text">Tu cuenta</h2>
-          <p>
+          <div class="title--text display-1 px-3">Tu cuenta</div>
             <v-divider></v-divider>
-          </p>
-          <p class="grey--text">
+          <p class="grey--text px-4  mb-0">
             Navega entre las diferentes opciones que tenemos para que
             administres tu cuenta.
           </p>
-        </v-col>
+      <v-row>
         <v-col class="pt-0" cols="12">
           <v-list subheader one-line>
             <v-list-item

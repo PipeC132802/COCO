@@ -212,7 +212,7 @@ class BarterListApi(generics.ListAPIView):
 
     @staticmethod
     def get_barters_recommendations(interests, request):
-        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__user_is_active=True,
+        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__user__is_active=True,
                                                    barter__deleted=False).exclude(
             barter__user__username=request.GET['user'])
         barter_list = []

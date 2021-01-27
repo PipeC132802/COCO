@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="4">
-          <h2 class="px-3 mb-0 title--text">Ajustes</h2>
+          <div class="px-3 mb-0 title--text display-1">Ajustes</div>
           <p>
 
           <v-divider></v-divider>
@@ -53,4 +53,8 @@ export default {
 </script>
 
 <style>
+*{
+  padding: 0%;
+  margin: 0%;
+}
 </style>

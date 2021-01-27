@@ -1,25 +1,20 @@
 <template>
   <div>
     <v-container fluid>
+      <div class="display-1">
+        <v-btn
+          @click="$router.push({ name: 'Account' })"
+          class="mr-3"
+          icon
+          color="primary"
+        >
+          <v-icon> mdi-arrow-left </v-icon> </v-btn
+        >Cambia tu contraseña
+      </div>
+
+      <v-divider></v-divider>
       <form @submit.prevent="resetPassword">
         <v-row align="center">
-          <v-col cols="12" class="pt-0 pb-0">
-            <v-row class="px-3" align="center">
-              <v-btn
-                @click="$router.push({ name: 'Account' })"
-                class="mr-3"
-                icon
-                color="primary"
-              >
-                <v-icon> mdi-arrow-left </v-icon>
-              </v-btn>
-              <h2>Cambia tu contraseña</h2>
-            </v-row>
-
-            <p class="mb-0">
-              <v-divider></v-divider>
-            </p>
-          </v-col>
           <v-col cols="12" class="pb-0">
             <v-text-field
               v-model="oldPassword"
@@ -50,7 +45,7 @@
             ></v-text-field>
           </v-col>
           <v-btn
-          class="ml-3"
+            class="ml-3"
             :loading="loading"
             :disabled="!(valid1 && valid2 && oldPassword.length) ? true : false"
             color="primary darken-3"
@@ -140,17 +135,17 @@ export default {
           },
           body: JSON.stringify(formData),
         })
-        .then((response)=>{
-            if (response.ok){
-                this.snackbar = true;
-                this.message = "Contraseña actualizada exitosamente";
-                this.oldPassword = '';
-                this.newPassword = '';
-                this.newPassword2 = '';
-            } else{
-                throw new Error()
+          .then((response) => {
+            if (response.ok) {
+              this.snackbar = true;
+              this.message = "Contraseña actualizada exitosamente";
+              this.oldPassword = "";
+              this.newPassword = "";
+              this.newPassword2 = "";
+            } else {
+              throw new Error();
             }
-        })
+          })
           .catch(() => {
             this.snackbar = true;
             this.message = "Tu contraseña actual no es correcta.";

@@ -1,25 +1,18 @@
 <template>
   <div>
     <v-container fluid>
+      <div class="display-1">
+        <v-btn
+          @click="$router.push({ name: 'Account' })"
+          class="mr-3"
+          icon
+          color="primary"
+        >
+          <v-icon> mdi-arrow-left </v-icon> </v-btn
+        >Información de la cuenta
+      </div>
+      <v-divider></v-divider>
       <v-row align="center">
-        <v-col cols="12" class="pt-0 pb-0">
-          <v-row class="px-3" align="center">
-            <v-btn
-              @click="$router.push({ name: 'Account' })"
-              class="mr-3"
-              icon
-              color="primary"
-            >
-              <v-icon> mdi-arrow-left </v-icon>
-            </v-btn>
-            <h2>Información de la cuenta</h2>
-          </v-row>
-
-          <p class="mb-0">
-            <v-divider></v-divider>
-          </p>
-        </v-col>
-
         <v-col cols="12" class="pt-0">
           <v-list subheader one-line>
             <v-list-item
