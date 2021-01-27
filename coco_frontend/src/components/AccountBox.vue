@@ -17,7 +17,6 @@
             class="title--text link"
             :title="account.name"
             :to="{ name: 'Profile', params: { username: account.user } }"
-            style="font-size: 16pt;"
           >
             {{ account.name }}
           </router-link>

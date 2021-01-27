@@ -69,7 +69,7 @@ export default {
     display: none;
   }
   #content{
-    padding: 0px 0px !important;
+    padding: 40px 0px 0px !important;
   }
   p, span{
     font-size: 10pt;

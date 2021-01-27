@@ -9,7 +9,7 @@
           :to="{path:'/'}"
         >
           <v-list-item-avatar>
-            <v-img color="primary" src="@/assets/logo.svg" max-height="35" max-width="35">
+            <v-img color="primary" src="@/assets/logo.png" max-height="35" max-width="35">
             </v-img>
           </v-list-item-avatar>
 
@@ -52,7 +52,7 @@
         <SignUp v-if="forms.signUpDialog"  />
       </div>
 
-      <v-btn v-else icon class="mr-3">
+      <v-btn v-else icon>
         <v-icon>mdi-help-circle-outline</v-icon>
       </v-btn>
     </v-app-bar>

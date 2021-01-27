@@ -243,11 +243,6 @@ export default {
     barter2Delete: "",
     updateDialog: false,
   }),
-  watch: {
-    user: () => {
-      this.fetchBarterList();
-    },
-  },
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
   },
@@ -258,6 +253,9 @@ export default {
       }
     });
     this.$root.$on("newBarterPosted", () => {
+      this.fetchBarterList();
+    });
+    this.$root.$on("userSetted", () => {
       this.fetchBarterList();
     });
     this.fetchBarterList();

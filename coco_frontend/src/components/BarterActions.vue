@@ -1,6 +1,6 @@
     <template>
-  <v-container class="ma-0 pt-0" fluid>
-    <v-row>
+  <v-container class="pl-1 ma-0 pt-0" fluid>
+    <v-row class="btn-actions">
       <v-hover v-slot="{ hover }">
         <v-btn
           :color="getColor"
@@ -12,7 +12,10 @@
           <v-icon left small style="font-style: normal" v-else>
             {{ reactionMsg.split(" ")[0] }}
           </v-icon>
+          <span class="btn-text">
+
           {{ reactionMsg.split(" ")[1] }}
+          </span>
           <v-expand-transition>
             <v-card
               v-if="hover"
@@ -43,7 +46,7 @@
                 >
                   🤔
                 </span>
-                <div>
+                <div >
                   {{ title }}
                 </div>
               </v-row>
@@ -54,11 +57,16 @@
 
       <v-btn @click="showComments" text class="mr-1 action">
         <v-icon left small> mdi-comment-text-multiple </v-icon>
+        <span class="btn-text">
+
         Proponer
+        </span>
       </v-btn>
       <v-btn class="action" text>
         <v-icon left small> mdi-share-variant </v-icon>
+        <span class="btn-text">
         Compartir
+        </span>
       </v-btn>
     </v-row>
   </v-container>
@@ -115,9 +123,11 @@ export default {
         });
     },
     reac2Barter(reaction) {
+      
+      var className = event.target.className;
       if (
-        (event.srcElement.className == "reaction" && reaction) ||
-        (event.srcElement.className == "v-btn__content" && reaction == 0)
+        (className == "reaction" && reaction) ||
+        ((className.indexOf("v-btn") > -1 || className.indexOf("v-icon") > -1 )  && reaction == 0)
       ) {
         let formData = {
           barter_id: this.barterId,
@@ -230,5 +240,16 @@ export default {
 }
 .action {
   text-transform: capitalize;
+  font-size: calc(1em + 1vw);
+}
+@media (max-width: 920px) {
+  .btn-actions{
+    justify-content: start;
+    align-items: center;
+    padding: 0%;
+  }
+  .btn-text{
+    display: none;
+  }
 }
 </style>
