@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list two-line>
+    <v-list class="pt-0 pb-0 chat-element" two-line>
       <v-list-item
         :class="
           chatElement.conversation == msgDecrypted(user.username, $route.params.id)
@@ -195,5 +195,8 @@ export default {
 .active-chatElement {
   border-radius: 5px;
   background: rgb(206, 206, 206);
+}
+.chat-element:hover{
+  background: rgb(231, 231, 231);
 }
 </style>

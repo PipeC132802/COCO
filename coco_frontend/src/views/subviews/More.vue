@@ -1,6 +1,6 @@
 <template>
   <div>
-      More settings
+      Mas info
   </div>
 </template>
 

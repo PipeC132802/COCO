@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card flat>
-      <v-card-text class="card-text">
+      <v-card-text class="card-text pa-0">
         <div v-if="loading">
           <v-skeleton-loader
             v-for="index in 7"

@@ -11,14 +11,16 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Apps.ManageNotifications.serializer import NotificationSerializer
+from Apps.ManageNotifications.models import NotificationsPreference
+from Apps.ManageNotifications.serializer import NotificationSerializer, NotificationPreferenceSerializer
 from COCO.functions import get_profile_url
 
 
 class NotificationsListApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     model = Notification
-    #serializer_class = NotificationSerializer
+
+    # serializer_class = NotificationSerializer
 
     def get(self, request, *args, **kwargs):
 
@@ -112,3 +114,23 @@ class NotificationsListApi(generics.ListAPIView):
         }
 
 
+class NotificationPreferenceApi(generics.RetrieveAPIView, generics.UpdateAPIView):
+    model = NotificationsPreference
+    serializer_class = NotificationPreferenceSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        notification = NotificationsPreference.objects.filter(user=self.request.user, user__is_active=True).first()
+        response_json = {
+            'push': notification.push,
+            'email': notification.email,
+            'sms': notification.sms
+        }
+        return Response(response_json, status=200)
+
+    def put(self, request, *args, **kwargs):
+        push = request.data['push']
+        sms = request.data['sms']
+        email = request.data['email']
+        NotificationsPreference.objects.filter(user=request.user).update(push=push, sms=sms, email=email)
+        return Response({'Detail': 'Notifications preferences updated'})

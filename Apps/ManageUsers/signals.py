@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 from django.contrib.auth.models import User
 
+from Apps.ManageNotifications.models import NotificationsPreference
 from Apps.ManageUsers.models import UserOnline, UserPasswordChanged, UserSettings, UserSession
 
 
@@ -20,7 +21,7 @@ def create_user_status(sender, instance, created, **kwargs):
         UserOnline.objects.create(user=instance)
         UserPasswordChanged.objects.create(user=instance)
         UserSettings.objects.create(user=instance)
-
+        NotificationsPreference.objects.create(user=instance)
 
 def user_reload_page(sender, session, **kwargs):
     print(session.session_key)

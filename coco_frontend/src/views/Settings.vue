@@ -41,7 +41,7 @@ export default {
   data: () => ({
     menu: [
       { title: "Tu cuenta", link: "Account" },
-      { title: "Seguridad", link: "Security" },
+      { title: "Privacidad y Seguridad", link: "Security" },
       { title: "Notificaciones", link: "NotificationsSettings" },
       { title: "Recursos", link: "Resources" },
     ],
