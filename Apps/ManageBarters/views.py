@@ -131,6 +131,9 @@ class BarterListApi(generics.ListAPIView):
         elif field == 'detail' or field == 'search':
             query = Q(id=request.GET['id'])
             barters_json = self.get_barter_list(query)
+        elif field == 'search':
+            query = Q(id=request.GET['id'])
+            barters_json = self.get_barter_list(query)
         else:
             query = Q(user_id__in=self.get_following_users(user.first()), deleted=False)
             barters_json = self.get_barter_list(query)

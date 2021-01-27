@@ -187,6 +187,11 @@ export default {
 </script>
 
 <style>
+.link{
+  text-decoration: none;
+}.link:hover{
+  text-decoration: underline;
+}
 .active-chatElement {
   border-radius: 5px;
   background: rgb(206, 206, 206);

@@ -35,6 +35,7 @@ class NotificationsListApi(generics.ListAPIView):
             elif notification.nf_type == 'accepted_by_user':
                 notification_dictionary = self.get_accept_notification_json(notification)
             elif notification.nf_type == 'followed_by_user' and notification.obj.status == 1:
+
                 notification_dictionary = self.get_follow_notification_json(notification)
             else:
                 notification_dictionary = {}

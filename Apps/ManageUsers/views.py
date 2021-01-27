@@ -412,6 +412,7 @@ class FollowUserApi(generics.GenericAPIView):
                             nf_type='followed_by_user')
             else:
                 return Response({'Detail': 'User unavailable'}, status=406)
+
         if target == 'self':
             following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
             followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()

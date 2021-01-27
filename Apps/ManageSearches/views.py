@@ -27,6 +27,7 @@ def get_barters(request):
             barter__user__last_name__icontains=query), barter__user__is_active=True, barter__deleted=False).distinct(
         'barter')
 
+
     return serialize_barters(barters)
 
 
