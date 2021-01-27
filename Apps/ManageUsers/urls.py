@@ -19,4 +19,5 @@ urlpatterns = [
     path('suggest-users/', SuggestUserApi.as_view(), name='suggest_users'),
     path('follow-list/', FollowApi.as_view(), name='follow_list'),
     path('user-info-update/', UpdateUserAccountInfoApi.as_view(), name='update_info'),
+    path('user-account-deactivated/', DeactivateAccountApi.as_view(), name='deactivate_account'),
 ]

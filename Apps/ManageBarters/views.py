@@ -116,7 +116,9 @@ class BarterListApi(generics.ListAPIView):
             return UserInterest.objects.filter(user__username=request.GET['username']).values_list('area__area',
                                                                                                    flat=True).distinct()
 
-        user = User.objects.filter(username=request.GET['username'])
+        user = User.objects.filter(username=request.GET['username'], is_active=True)
+        if not user.first():
+            return Response({'Detail': 'User not found'}, status=404)
         field = request.GET['field']
         if field == 'profile':
             query = Q(user=user.first(), deleted=False)
@@ -129,6 +131,9 @@ class BarterListApi(generics.ListAPIView):
         elif field == 'detail' or field == 'search':
             query = Q(id=request.GET['id'])
             barters_json = self.get_barter_list(query)
+        elif field == 'search':
+            query = Q(id=request.GET['id'])
+            barters_json = self.get_barter_list(query)
         else:
             query = Q(user_id__in=self.get_following_users(user.first()), deleted=False)
             barters_json = self.get_barter_list(query)
@@ -138,7 +143,8 @@ class BarterListApi(generics.ListAPIView):
     @staticmethod
     def get_following_users(user):
         following = list(
-            UserRelationship.objects.filter(user_from=user, status=1).values_list('user_to_id', flat=True).distinct())
+            UserRelationship.objects.filter(user_from=user, user_from__is_active=True, status=1).values_list(
+                'user_to_id', flat=True).distinct())
         if user:
             following.append(user.pk)
         return following
@@ -180,6 +186,7 @@ class BarterListApi(generics.ListAPIView):
     @staticmethod
     def get_barters_reacted(request):
         barters_reacted = BarterReaction.objects.filter(user_from__username=request.GET['user'],
+                                                        user_from__is_active=True,
                                                         barter__deleted=False).exclude(
             barter__user__username=request.GET['user']).exclude(reaction=0).order_by('-barter__created')
         barter_list = []
@@ -208,7 +215,8 @@ class BarterListApi(generics.ListAPIView):
 
     @staticmethod
     def get_barters_recommendations(interests, request):
-        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__deleted=False).exclude(
+        barters_skill = BarterSkill.objects.filter(area__area__in=interests, barter__user__is_active=True,
+                                                   barter__deleted=False).exclude(
             barter__user__username=request.GET['user'])
         barter_list = []
         for barter_skill in barters_skill:
@@ -238,7 +246,7 @@ class BarterReactionsApi(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         barter_id = request.GET['barter_id']
 
-        reactions = BarterReaction.objects.filter(barter_id=barter_id).exclude(reaction=0)
+        reactions = BarterReaction.objects.filter(barter_id=barter_id, barter__user__is_active=True).exclude(reaction=0)
         reaction_response = {
             'reactions': reactions.count(),
             'types': reactions.values_list('reaction', flat=True).distinct(),
@@ -252,7 +260,8 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         barter_id = request.GET['barter_id']
-        reaction = BarterReaction.objects.filter(barter_id=barter_id, user_from=request.user).exclude(reaction=0)
+        reaction = BarterReaction.objects.filter(barter_id=barter_id, user_from=request.user,
+                                                 user_from__is_active=True).exclude(reaction=0)
         if reaction.exists():
             return Response({'reaction': reaction[0].reaction})
         else:

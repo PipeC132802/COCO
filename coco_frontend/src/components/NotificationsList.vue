@@ -7,9 +7,18 @@
         type="list-item-avatar-two-line"
       ></v-skeleton-loader>
     </div>
-    <p class="pl-5 display-1" v-if="!notifications[0].length">
-      Nada por aquí 
+    <p class="pl-5 " >
+      
     </p>
+    <v-alert
+    v-if="!notifications[0].length"
+      color="warning"
+      dark
+      icon="mdi-bell-remove"
+      dense
+    >
+Aún no tienes notificaciones
+    </v-alert>
     <v-card
       class="ma-2"
       v-for="notification in notifications"

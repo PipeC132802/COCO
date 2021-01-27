@@ -123,7 +123,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     ]
 }
-
+LOGOUT_ON_PASSWORD_CHANGE = False
+OLD_PASSWORD_FIELD_ENABLED = True
 ASGI_APPLICATION = "COCO.asgi.application"
 CHANNEL_LAYERS = {
     'default': {

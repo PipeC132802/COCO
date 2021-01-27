@@ -13,26 +13,33 @@
         type="list-item-avatar-two-line, article"
       ></v-skeleton-loader>
     </div>
-    <div class="ml-3 mt-2" v-if="!barters.length">
-      <p v-if="field == 'profile'">
-        <span v-if="$route.params.username !== user.username">
-          @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
-        </span>
-        <span v-else> No has publicado ningún trueque 🙄 </span>
-      </p>
-      <p v-else-if="field == 'reactions'">
-        <span v-if="$route.params.username !== user.username">
-          @{{ $route.params.username }} no ha reaccionado a ningún trueque 😒
-        </span>
-        <span v-else> No has reaccionado a ningún trueque 😒 </span>
-      </p>
-      <p v-else-if="field == 'recommendations'">
-        No hemos encontrado sugerencias para ti 😔
-      </p>
-      <p v-else-if="field == 'newsfeed'">
-        Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
-        comunidad! 🤗
-      </p>
+    <div class="mt-2" v-if="!barters.length">
+      <v-alert
+        color="primary darken-3"
+        dark
+        icon="mdi-alert"
+        dense
+      >
+        <div v-if="field == 'profile'">
+          <span v-if="$route.params.username !== user.username">
+            @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
+          </span>
+          <span v-else> No has publicado ningún trueque 🙄 </span>
+        </div>
+        <div v-else-if="field == 'reactions'">
+          <span v-if="$route.params.username !== user.username">
+            @{{ $route.params.username }} no ha reaccionado a ningún trueque 😒
+          </span>
+          <span v-else> No has reaccionado a ningún trueque 😒 </span>
+        </div>
+        <div v-else-if="field == 'recommendations'">
+          No hemos encontrado sugerencias para ti 😔
+        </div>
+        <div v-else-if="field == 'newsfeed'">
+          Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
+          comunidad! 🤗
+        </div>
+      </v-alert>
     </div>
     <v-card
       elevation="3"
@@ -236,19 +243,22 @@ export default {
     barter2Delete: "",
     updateDialog: false,
   }),
+  watch: {
+    user: () => {
+      this.fetchBarterList();
+    },
+  },
   computed: {
     ...mapState(["baseUrl", "user", "authentication"]),
-  },
-  mounted() {
-    this.$root.$on("newBarterPosted", () => {
-      this.fetchBarterList();
-    });
   },
   mounted() {
     this.$root.$on("comments", (data) => {
       if (data.barter === this.barterId) {
         this.getReactions();
       }
+    });
+    this.$root.$on("newBarterPosted", () => {
+      this.fetchBarterList();
     });
     this.fetchBarterList();
   },
@@ -277,9 +287,6 @@ export default {
       username = this.$route.params.username;
       if (username == undefined) {
         username = this.user.username;
-        if (username == undefined) {
-          this.getUsername()
-        }
       }
       return username;
     },

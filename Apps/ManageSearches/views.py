@@ -24,7 +24,9 @@ def get_barters(request):
     barters = BarterAbout.objects.filter(
         Q(barter__barter_title__icontains=query) | Q(barter__user__username__icontains=query) |
         Q(description__icontains=query) | Q(barter__user__first_name__icontains=query) | Q(
-            barter__user__last_name__icontains=query), barter__deleted=False).distinct('barter')
+            barter__user__last_name__icontains=query), barter__user__is_active=True, barter__deleted=False).distinct(
+        'barter')
+
 
     return serialize_barters(barters)
 
@@ -33,7 +35,7 @@ def get_users(request):
     query = request.GET['q']
     users_abouts = UserAbout.objects.filter(Q(bio__icontains=query) | Q(user__username__icontains=query) |
                                             Q(user__first_name__icontains=query) | Q(
-        user__last_name__icontains=query)).distinct('user_id')
+        user__last_name__icontains=query), user__is_active=True).distinct('user_id')
     users_json = [user_about.serializer() for user_about in users_abouts]
     return users_json
 

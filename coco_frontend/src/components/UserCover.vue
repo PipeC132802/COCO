@@ -260,6 +260,9 @@ export default {
           `&username_request=${this.user.username}`
       )
         .then((response) => {
+          if (response.status == 404) {
+            throw new Error();
+          }
           return response.json();
         })
         .then((response) => {
@@ -277,7 +280,7 @@ export default {
           if (!response.cover_photo) this.searchCover();
         })
         .catch((err) => {
-          console.error(err);
+          this.$router.push({ name: "NotFound" });
         });
     },
     searchCover() {

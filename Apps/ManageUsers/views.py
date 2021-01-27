@@ -89,11 +89,11 @@ class UserVerificationApi(APIView):
         email = request.data["email"]
         aim = request.data["aim"]
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(email=email, is_active=True)
             token_generator = PasswordResetTokenGenerator()
             token = token_generator.make_token(user)
             try:
-                token_in_db = VerifyUser.objects.get(user=user)
+                token_in_db = VerifyUser.objects.get(user=user, is_active=True)
                 if token_in_db.token != token:
                     token_in_db.token = token
                     token_in_db.save()
@@ -266,25 +266,40 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
         username = request.GET["username"]
         username_request = request.GET["username_request"]
 
-        user = User.objects.get(username=username)
-        user_json = {
-            'name': "{0} {1}".format(user.first_name, user.last_name),
-            'profile_picture': get_profile_url(user),
-            'cover_photo': get_img_url_from_model(UserCoverPhoto, Q(user=user)),
-            'skills': [user_skill.area.area for user_skill in
-                       UserSkill.objects.filter(user__username=username)],
-            'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
-            'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
-            'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
-            'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
-                                                                user_to__username=username,
-                                                                status=1).exists(),
-            'follow_you': UserRelationship.objects.filter(user_from__username=username,
-                                                          user_to__username=username_request,
-                                                          status=1).exists()
-        }
+        user = User.objects.filter(username=username, is_active=True)
+        user = user.first()
+        if user:
+            user_json = {
+                'name': "{0} {1}".format(user.first_name, user.last_name),
+                'profile_picture': get_profile_url(user),
+                'cover_photo': get_img_url_from_model(UserCoverPhoto, Q(user=user)),
+                'skills': [user_skill.area.area for user_skill in
+                           UserSkill.objects.filter(user__username=username, user__is_active=True)],
+                'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
+                'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
+                'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
+                'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
+                                                                    user_to__username=username,
+                                                                    status=1).exists(),
+                'follow_you': UserRelationship.objects.filter(user_from__username=username,
+                                                              user_to__username=username_request,
+                                                              status=1).exists()
+            }
+        else:
+            user_json = {
+                'name': "Cuenta inactiva",
+                'profile_picture': '',
+                'cover_photo': '',
+                'skills': [],
+                'date_joined': '',
+                'followers': 0,
+                'following': 0,
+                'follow_this_user': False,
+                'follow_you': False
+            }
 
-        return JsonResponse(user_json)
+            return Response(user_json, status=404)
+        return Response(user_json, status=200)
 
 
 class UserAboutApi(generics.RetrieveAPIView):
@@ -293,12 +308,16 @@ class UserAboutApi(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user_about = UserAbout.objects.get(user__username=request.GET["username"])
+            user_about = UserAbout.objects.get(user__username=request.GET["username"], user__is_active=True)
             return Response(user_about.serializer(), status=200)
         except:
-            user = User.objects.get(username=request.GET["username"])
+            user = User.objects.filter(username=request.GET["username"], is_active=True)
+            user = user.first()
+            if not user:
+                return Response({'Detail': 'User not found'}, status=404)
+
             user_about_json = {
-                'user':user.username,
+                'user': user.username,
                 'name': '{0} {1}'.format(user.first_name, user.last_name),
                 'profile_picture': get_profile_url(user),
                 'bio': '',
@@ -314,12 +333,14 @@ class UserContactAndAreasApi(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             username = self.request.GET["username"]
-            user_contact = UserContact.objects.get(user__username=username)
+            user_contact = UserContact.objects.get(user__username=username, user__is_active=True)
             user_json = user_contact.serializer()
             user_json["interests"] = ", ".join(
-                [user_interest.area.area for user_interest in UserInterest.objects.filter(user__username=username)])
+                [user_interest.area.area for user_interest in
+                 UserInterest.objects.filter(user__username=username, user__is_active=True)])
             user_json["skills"] = ", ".join(
-                [user_skill.area.area for user_skill in UserSkill.objects.filter(user__username=username)])
+                [user_skill.area.area for user_skill in
+                 UserSkill.objects.filter(user__username=username, user__is_active=True)])
             return Response(user_json, status=200)
         except:
             # Loggin error
@@ -377,16 +398,21 @@ class FollowUserApi(generics.GenericAPIView):
 
                 follow_status.save()
         except:
-            user_from = User.objects.get(username=username_from)
-            user_to = User.objects.get(username=username_to)
-            follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
-            notify.send(request.user,
-                        recipient=follow_status.user_to,
-                        actor=request.user,
-                        obj=follow_status,
-                        target=follow_status.user_to,
-                        verb='Te siguió',
-                        nf_type='followed_by_user')
+            user_from = User.objects.filter(username=username_from, is_active=True)
+            user_to = User.objects.filter(username=username_to, is_active=True)
+            user_from, user_to = user_from.first(), user_to.first()
+            if user_to and user_from:
+                follow_status = UserRelationship.objects.create(user_from=user_from, user_to=user_to, status=1)
+                notify.send(request.user,
+                            recipient=follow_status.user_to,
+                            actor=request.user,
+                            obj=follow_status,
+                            target=follow_status.user_to,
+                            verb='Te siguió',
+                            nf_type='followed_by_user')
+            else:
+                return Response({'Detail': 'User unavailable'}, status=406)
+
         if target == 'self':
             following = UserRelationship.objects.filter(user_from__username=username_from, status=1).count()
             followers = UserRelationship.objects.filter(user_to__username=username_from, status=1).count()
@@ -411,11 +437,12 @@ class SuggestUserApi(generics.ListAPIView):
         id_users_following = [user_relationship.user_to.pk for user_relationship in
                               UserRelationship.objects.filter(user_from=user, status=1)]
         try:
-            id_users_following.append(User.objects.get(username=request.GET["user_except"]).pk)
+            id_users_following.append(User.objects.get(username=request.GET["user_except"], is_active=True).pk)
         except:
             pass
         user_interests = [user_interest.area.area for user_interest in
-                          UserInterest.objects.filter(user__username=user.username).distinct('user')]
+                          UserInterest.objects.filter(user__username=user.username, user__is_active=True).distinct(
+                              'user')]
         users = [user_skill.user for user_skill in UserSkill.objects.filter(area__area__in=user_interests).exclude(
             user__in=id_users_following).distinct()[:5]]
         json_response = []
@@ -535,24 +562,58 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        user_contact = UserContact.objects.get(user=user)
-        user_about = UserAbout.objects.get(user=user)
+        user_contact = UserContact.objects.filter(user=user)
+        user_about = UserAbout.objects.filter(user=user)
         user_skills = UserSkill.objects.filter(user=user)
         user_interests = UserInterest.objects.filter(user=user)
+
+        user_contact = user_contact.first()
+        user_about = user_about.first()
+
         try:
             cellphone = user_contact.cellphone.split(' ')[1]
             prefix = user_contact.cellphone.split(' ')[0]
         except:
             cellphone, prefix = '', ''
+
+        if user_contact:
+            country = user_contact.place.country
+            city = user_contact.place.city
+        else:
+            country = ''
+            city = ''
+
+        if user_about:
+            gender = user_about.gender
+            birthday = user_about.birthday
+            bio = user_about.bio
+        else:
+            gender = ''
+            birthday = ''
+            bio = ''
+
         response = {
             'first_name': user.first_name,
             'last_name': user.last_name,
-            'country': user_contact.place.country,
-            'city': user_contact.place.city,
+            'country': country,
+            'city': city,
             'cellphone': cellphone,
             'prefix': prefix,
-            'bio': user_about.bio,
+            'gender': gender,
+            'birthday': birthday,
+            'bio': bio,
             'skills': [user_skill.area.area for user_skill in user_skills],
             'interests': [user_interest.area.area for user_interest in user_interests]
         }
         return Response(response, status=200)
+
+
+class DeactivateAccountApi(generics.UpdateAPIView):
+    model = User
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request, *args, **kwargs):
+        user = request.user
+        user.is_active = False
+        user.save()
+        return Response({'Detail': 'user account deactivated'})

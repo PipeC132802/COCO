@@ -141,6 +141,7 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
           this.setUser(respose);
+          this.$root.$emit("userSetted")
           this.connect();
         });
     },
@@ -153,16 +154,7 @@ export default {
       removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
-    },
-    deleteToken() {
-      fetch(this.baseUrl + this.logOutApi, {
-        method: "POST",
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      });
-    },
-    
+    },    
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(

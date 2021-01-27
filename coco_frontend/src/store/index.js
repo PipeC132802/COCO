@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 Vue.use(Vuex)
+import { readCookie } from "@/js/cookiesfunctions.js";
 
 export default new Vuex.Store({
   state: {
@@ -70,7 +71,7 @@ export default new Vuex.Store({
   },
   getters: {
     loggedIn(state) {
-      return state.authentication.accessToken != null
+      return !!state.authentication.accessToken || readCookie("token")
     }
   }
 })

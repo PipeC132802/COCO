@@ -132,8 +132,8 @@
 
 <script>
 import { mapState } from "vuex";
-import { decript, encrypt } from "../functions.js";
-import ColorPicker from "../components/subcomponents/ColorPicker.vue";
+import { decript, encrypt } from "@/functions.js";
+import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
 import moment from "moment";
 
 export default {
@@ -437,7 +437,7 @@ body {
   width: auto;
   background: var(--incoming-msg-bg);
   color: white;
-  -webkit-text-stroke: 0.3px  rgb(136, 136, 136);
+ text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 /*.incoming-msg::before {
   display: block;
@@ -464,7 +464,7 @@ body {
   width: auto;
   color: white;
   background: var(--outgoing-msg-bg);
-    -webkit-text-stroke: 0.3px rgb(136, 136, 136);
+ text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 
 }
 /*.outgoing-msg::before {
@@ -489,8 +489,7 @@ body {
   bottom: 0px;
   color: white;
   font-size: 7pt;
-    -webkit-text-stroke: 0.1px  rgb(136, 136, 136);
-
+ text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 .typing-avatar {
   position: absolute;
