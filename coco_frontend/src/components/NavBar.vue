@@ -1,17 +1,26 @@
 <template>
   <div>
-    <v-app-bar dense color="primary" class="user-menu">
+    <v-app-bar
+      dense
+      app
+      elevation="3"
+      elevate-on-scroll
+      color="primary"
+      class="user-menu"
+    >
       <v-toolbar-title class="mr-3">
-        <v-btn dark icon>
+        <v-btn @click="$root.$emit('menu')" dark icon>
           <v-icon>mdi-menu</v-icon>
         </v-btn>
       </v-toolbar-title>
-        <span v-if="!showSearchBar" class="nav-bar-title white--text">{{title}}</span>
+      <span v-if="!showSearchBar" class="nav-bar-title white--text">{{
+        title
+      }}</span>
 
       <v-text-field
         v-if="showSearchBar"
         dense
-        class="pt-7"
+        class="pt-6"
         v-model="searchValue"
         @click:prepend="go2search"
         @keydown.enter="go2search"
@@ -19,12 +28,15 @@
         solo
         prepend-inner-icon="mdi-magnify"
       ></v-text-field>
-      <v-spacer v-if="!showSearchBar"></v-spacer>
-      <v-btn class="ml-1" color="default" icon>
-        <v-icon>mdi-help-circle-outline</v-icon>
-      </v-btn>
+     
     </v-app-bar>
-    <v-app-bar id="nav-bar" class="company" app color="white">
+    <v-app-bar
+      elevate-on-scroll
+      id="nav-bar"
+      class="company"
+      app
+      color="white"
+    >
       <v-toolbar-title>
         <v-list-item
           dense
@@ -96,7 +108,7 @@ export default {
     signUpDialog: false,
     searchValue: "",
     showSearchBar: false,
-    title: ''
+    title: "",
   }),
   components: {
     Login,
@@ -107,12 +119,16 @@ export default {
       if (this.$route.name != "Explore") {
         this.searchValue = "";
         this.showSearchBar = false;
-        if(this.$route.name == "Home"){
-          this.title = "Inicio"
-        } else if(this.$route.name == "Notifications"){
-          this.title = "Notificaciones"
-        } else if(this.$route.name == "Inbox"){
-          this.title = "Mensajes"
+        if (this.$route.name == "Home") {
+          this.title = "Inicio";
+        } else if (this.$route.name == "Notifications") {
+          this.title = "Notificaciones";
+        } else if (this.$route.name == "Inbox") {
+          this.title = "Mensajes";
+        } else if(this.$route.name == 'Profile'){
+          this.title = this.user.name
+        } else if(this.$route.name == 'Barter'){
+          this.title = 'Trueque';
         }
       } else {
         this.showSearchBar = true;
@@ -157,8 +173,9 @@ export default {
   }
   .user-menu {
     display: block;
+    left: 0px !important;
   }
-  .nav-bar-title{
+  .nav-bar-title {
     font-size: 16pt;
     color: rgb(226, 226, 226);
   }

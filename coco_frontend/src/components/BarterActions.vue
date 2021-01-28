@@ -13,7 +13,6 @@
             {{ reactionMsg.split(" ")[0] }}
           </v-icon>
           <span class="btn-text">
-
           {{ reactionMsg.split(" ")[1] }}
           </span>
           <v-expand-transition>

@@ -19,7 +19,7 @@
         >
         <v-col class="pa-0">
           <v-btn icon class="pa-2" block exact :to="{ name: 'Inbox' }">
-            <v-icon>mdi-message</v-icon>
+            <v-icon>mdi-comment-text</v-icon>
           </v-btn></v-col
         >
       </v-row>

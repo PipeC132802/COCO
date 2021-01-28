@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
           
-          <div class="display-1"><v-btn
+          <div class="settings-title"><v-btn
             @click="$router.push({ name: 'Account' })"
             class="mr-3"
             icon

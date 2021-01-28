@@ -65,6 +65,7 @@ export default {
 
 <style>
 .card-text {
+  display: block;
   max-height: 85vh;
   height: 85vh;
   overflow: auto;

@@ -2,11 +2,10 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="4">
-          <div class="px-3 mb-0 title--text display-1">Ajustes</div>
+        <v-col cols="12" sm="12" md="4">
+          <div class="px-3 mb-0 title--text settings-title"><strong>Ajustes</strong></div>
           <p>
-
-          <v-divider></v-divider>
+            <v-divider></v-divider>
           </p>
           <v-list subheader one-line>
             <v-list-item
@@ -27,7 +26,7 @@
           </v-list>
         </v-col>
         <v-divider vertical></v-divider>
-        <v-col class="ma-0 pa-0" cols="7">
+        <v-col class="ma-0 pa-0" cols="12" sm="12" md="7">
           <router-view />
         </v-col>
       </v-row>
@@ -53,8 +52,19 @@ export default {
 </script>
 
 <style>
-*{
+* {
   padding: 0%;
   margin: 0%;
+}
+.arrow-back {
+  display: none;
+}
+.settings-title{
+  font-size: calc(1em + 1vw);
+}
+@media (max-width: 920px) {
+  .arrow-back {
+    display: block;
+  }
 }
 </style>

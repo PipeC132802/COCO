@@ -74,7 +74,83 @@
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
-    
+
+    <v-navigation-drawer class="navigation-small-devices" v-model="drawerSmall" absolute left temporary>
+      <v-list nav dense>
+        <v-list-item-group active-class="primary--text text--accent-4">
+          <v-list-item
+            :to="{ name: 'Profile', params: { username: user.username } }"
+            class="pa-0 pl-2 ma-0"
+            two-line
+          >
+            <v-list-item-avatar size="30" color="secondary" class="mt-4 ml-1">
+              <img
+                v-if="user.profile_picture"
+                :alt="'perfil de ' + user.name"
+                :src="user.profile_picture"
+              />
+              <span v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="primary--text" :title="user.name">
+                <strong>{{ user.name }}</strong>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                :title="'@' + user.username"
+                class="secondary--text"
+                >@{{ user.username }}</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+        <v-list-item
+          title="Perfil"
+          class="mt-2"
+          active-class="primary white--text"
+          :to="{ name: 'Profile', params: { username: user.username } }"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Perfil</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          title="Ajustes"
+          active-class="primary white--text"
+          :to="{ name: 'Settings' }"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cogs</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Ajustes</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          title="Cerrar sesión"
+          @click="closeSession()"
+          class="error darken-1"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon color="white">mdi-logout-variant</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title class="white--text">Cerrar sesión</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -92,6 +168,8 @@ export default {
     apiDir: "user-status/",
     logOutApi: "user-auth/logout/",
     drawer: true,
+    drawerSmall: true,
+    group: null,
     items: [
       { title: "Inicio", icon: "mdi-home", link: "/home", value: "" },
       { title: "Explorar", icon: "mdi-magnify", link: "/search", value: "" },
@@ -113,18 +191,26 @@ export default {
     notifications_box: [],
     mini: true,
   }),
+  watch: {
+    group() {
+      this.drawer = false;
+    },
+  },
   computed: {
-    ...mapState(["baseUrl", "authentication","wsBase"]),
+    ...mapState(["baseUrl", "authentication", "wsBase"]),
   },
   mounted() {
     this.getUserInfo();
     this.$root.$on("notificationsReaded", () => {
       this.items[2].value = 0;
     });
+    this.$root.$on("menu", () => {
+      this.drawerSmall = !this.drawerSmall;
+    });
   },
- 
+
   methods: {
-    ...mapMutations(["setUser", "updateAuthInfo", "addNotification" ]),
+    ...mapMutations(["setUser", "updateAuthInfo", "addNotification"]),
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
         method: "GET",
@@ -141,7 +227,7 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
           this.setUser(respose);
-          this.$root.$emit("userSetted")
+          this.$root.$emit("userSetted");
           this.connect();
         });
     },
@@ -154,7 +240,7 @@ export default {
       removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
-    },    
+    },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
@@ -164,11 +250,10 @@ export default {
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
-          if(socketData.type == 'new_notification'){
+          if (socketData.type == "new_notification") {
             this.items[2].value = socketData.unread_notifications;
           }
           this.addNotification(socketData);
-
         };
       };
       this.websocket.onclose = () => {};
@@ -191,5 +276,20 @@ export default {
   width: 100%;
   border-radius: 10px 10px 0px 0;
 }
-
+@media (max-width: 920px) {
+  .navigation {
+    display: none;
+  }
+  .navigation-small-devices {
+    display: block;
+  }
+}
+@media (min-width: 920px) {
+  .navigation {
+    display: block;
+  }
+  .navigation-small-devices {
+    display: none;
+  }
+}
 </style>

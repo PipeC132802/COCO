@@ -1,6 +1,6 @@
 
   <template>
-  <div>
+  <div id="barters">
     <div v-if="!loaded && field != 'detail'">
       <v-skeleton-loader
         v-for="index in 10"

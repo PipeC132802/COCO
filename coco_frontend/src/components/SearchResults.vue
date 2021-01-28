@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0">
-    <p class="display-1 title--text text-center ma-0">
+    <p class="settings-title title--text text-center ma-0">
       Resultados para
       <span :title="$route.query.q" class="primary--text">
         {{ $route.query.q }}

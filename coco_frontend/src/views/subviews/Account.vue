@@ -1,12 +1,24 @@
 <template>
   <div>
     <v-container fluid>
-          <div class="title--text display-1 px-3">Tu cuenta</div>
-            <v-divider></v-divider>
-          <p class="grey--text px-4  mb-0">
-            Navega entre las diferentes opciones que tenemos para que
-            administres tu cuenta.
-          </p>
+      <div class="title--text settings-title px-3">
+        <v-row align="center" class="pl-3">
+          <v-btn
+            @click="$router.push({ name: 'Settings' })"
+            class="mr-3 arrow-back"
+            icon
+            color="primary"
+          >
+            <v-icon> mdi-arrow-left </v-icon>
+          </v-btn>
+          Tu cuenta
+        </v-row>
+      </div>
+      <v-divider></v-divider>
+      <p class="grey--text px-4 mb-0">
+        Navega entre las diferentes opciones que tenemos para que administres tu
+        cuenta.
+      </p>
       <v-row>
         <v-col class="pt-0" cols="12">
           <v-list subheader one-line>

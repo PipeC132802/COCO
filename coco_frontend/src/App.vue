@@ -89,11 +89,9 @@ export default {
 
 <style>
 @media (max-width: 920px) {
-  #leftAside {
-    display: none;
-  }
+
   #content {
-    padding: 0px 0px 0px 0px !important;
+    padding: 40px 0px 0px 0px !important;
   }
   p,
   span {
@@ -114,7 +112,7 @@ export default {
   #content {
     min-height: 100vh;
     width: 100%;
-    padding-top: 0% !important;
+    padding-top: 60px !important;
   }
   #btn-create{
     display: none;

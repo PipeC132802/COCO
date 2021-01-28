@@ -1,7 +1,19 @@
 <template>
   <div>
     <v-container fluid>
-      <div class="title--text display-1 px-3">Notificaciones</div>
+      <div class="title--text settings-title px-3">
+        <v-row align="center" class="pl-3">
+          <v-btn
+            @click="$router.push({ name: 'Settings' })"
+            class="mr-3 arrow-back"
+            icon
+            color="primary"
+          >
+            <v-icon> mdi-arrow-left </v-icon>
+          </v-btn>
+          Notificaciones
+        </v-row>
+      </div>
       <v-divider></v-divider>
       <p class="grey--text px-4 mb-0">
         Establece las preferencias para tus notificationes.

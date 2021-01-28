@@ -5,6 +5,8 @@
         <v-col class="pt-0" tile cols="12" sm="12" md="8" lg="9" xl="10">
           <NewBarter class="new-barter mb-5" />
           <BarterList :field="'newsfeed'" />
+          <BarterList :field="'newsfeed'" />
+          <BarterList :field="'newsfeed'" />
         </v-col>
         <v-col sm="12" md="4" lg="3" xl="2" class="pt-0 mt-0">
           <User2FollowSuggestion class="mt-2" />

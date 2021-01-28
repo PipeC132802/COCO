@@ -162,8 +162,7 @@ export default {
   },
   beforeDestroy() {
     this.websocket.close();
-    this.websocket = null;
-    console.log("destuyendo", this.room);
+    this.websocket = null;    
   },
   computed: {
     ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
@@ -383,6 +382,9 @@ body {
 .link-msgs:hover {
   text-decoration: underline;
 }
+.inbox-chats-active{
+    display: block;
+  }
 @media (max-width: 920px) {
   .inbox-chats{
     display: none;

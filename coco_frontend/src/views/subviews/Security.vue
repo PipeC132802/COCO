@@ -1,7 +1,19 @@
 <template>
   <div>
     <v-container fluid>
-      <div class="title--text display-1 px-3">Privacidad y Seguridad</div>
+      <div class="title--text settings-title px-3">
+        <v-row align="center" class="pl-3">
+          <v-btn
+            @click="$router.push({ name: 'Settings' })"
+            class="mr-3 arrow-back"
+            icon
+            color="primary"
+          >
+            <v-icon> mdi-arrow-left </v-icon>
+          </v-btn>
+          Privacidad y seguridad
+        </v-row>
+      </div>
       <v-divider></v-divider>
       <p class="grey--text px-4 mb-0">
         Establece qué información ves y compartes en COCO y administra la
@@ -55,7 +67,6 @@ export default {
         link: "#",
         icon: "mdi-cellphone-link",
       },
-    
     ],
   }),
 };
