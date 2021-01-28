@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-bottom-navigation grow id="bottom-nav" class="pt-3" color="primary">
+    <v-bottom-navigation grow id="bottom-nav" class="pt-1" color="primary">
       <v-row class="px-3 pt-0">
         <v-col class="pa-0">
           <v-btn icon class="pa-2" block exact :to="{ name: 'Home' }">
@@ -38,9 +38,12 @@ export default {
   #bottom-nav {
     display: block;
     position: fixed;
-    bottom: 0%;
+    bottom: -8px;
     z-index: 100;
     max-width: 100%;
+    -webkit-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.3);
   }
 }
 @media (min-width: 1264px) {

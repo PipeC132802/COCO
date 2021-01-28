@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar color="primary" class="user-menu">
+    <v-app-bar dense color="primary" class="user-menu">
       <v-toolbar-title class="mr-3">
         <v-btn dark icon>
           <v-icon>mdi-menu</v-icon>

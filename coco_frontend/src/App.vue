@@ -30,7 +30,7 @@
         
         fixed
       >
-        <v-icon>mdi-pencil</v-icon>
+        <v-icon>{{floatingIcon}}</v-icon>
       </v-btn>
     </v-fab-transition>
     <FooterNav class="footer-nav" />
@@ -56,9 +56,14 @@ export default {
   },
 
   data: () => ({
-    list: ["Hola"],
+    floatingIcon: 'mdi-pencil'
   }),
-  watch: {},
+  watch: {
+    $route(from,to){
+      if(this.$route.name == "Inbox") this.floatingIcon = 'mdi-message-plus';
+      else this.floatingIcon = "mdi-pencil"
+    }
+  },
   beforeUpdate() {},
   beforeMount() {
     let aside = document.getElementById("leftAside");
