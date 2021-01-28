@@ -268,16 +268,16 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 920px) {
-  .btn-text {
-    display: none;
-  }
-}
+
 input {
   outline: none;
   width: 100%;
-  background: #f3f3f3;
-  padding: 10px 20px;
+  height: 45px;
+  padding: 0 15px;
+  background: #d6d6d6;
   border-radius: 50px;
+}
+input::placeholder{
+  font-size: calc(0.6em + 0.8vw) ;
 }
 </style>

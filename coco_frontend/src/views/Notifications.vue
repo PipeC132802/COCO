@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
       <v-row wrap>
-        <v-col class="px-4" tile sm="12" md="8" lg="8" xl="9">
+        <v-col class="pt-0 pb-0" tile sm="12" md="8" lg="8" xl="9">
           <NotificationsList />
         </v-col>
-        <v-col sm="12" md="4" lg="4" xl="3" class="pt-0 mt-0">
+        <v-col cols="12" sm="12" md="4" lg="4" xl="3" class="pt-0 mt-0">
           <User2FollowSuggestion class="mt-2" />
           <CompanyInfo class="mx-1" />
         </v-col>

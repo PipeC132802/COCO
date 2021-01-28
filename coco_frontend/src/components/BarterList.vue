@@ -43,7 +43,7 @@
     </div>
     <v-card
       elevation="3"
-      class="mb-4"
+      class="mb-4 pt-0"
       v-for="barter in barters"
       :key="barter.id"
     >
@@ -153,13 +153,13 @@
           >
         </v-card-title>
         <v-card-subtitle class="pa-0 pt-0 mx-4">
-          <v-chip :title="'Enseñaré ' + barter.skill" color="primary darken-1">
+          <v-chip class="mr-1 mt-1" :title="'Enseñaré ' + barter.skill" color="primary darken-1">
             <v-icon class="pl-1" small pill left> mdi-teach </v-icon>
             {{ barter.skill }}
           </v-chip>
           <v-chip
             :title="'Quiero aprender ' + barter.interest"
-            class="mx-3"
+            class="mt-1"
             color="accent darken-1"
           >
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>

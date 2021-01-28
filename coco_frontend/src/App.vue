@@ -12,8 +12,28 @@
       <router-view />
     </v-main>
     <div class="notifications">
-        <NotificationBox v-for="(notification, index) in notifications" :key="index" :notification="notification" />
+      <NotificationBox
+        v-for="(notification, index) in notifications"
+        :key="index"
+        :notification="notification"
+      />
     </div>
+    <v-fab-transition>
+      <v-btn
+        color="primary"
+        fab
+        dark
+        right
+        elevation="3"
+        id="btn-create"
+        bottom
+        
+        fixed
+      >
+        <v-icon>mdi-pencil</v-icon>
+      </v-btn>
+    </v-fab-transition>
+    <FooterNav class="footer-nav" />
   </v-app>
 </template>
 
@@ -23,6 +43,7 @@ import { readCookie } from "@/js/cookiesfunctions.js";
 import LeftAside from "@/components/LeftAside.vue";
 import NavBar from "@/components/NavBar.vue";
 import NotificationBox from "@/components/NotificationBox.vue";
+import FooterNav from "@/components/FooterNav.vue";
 
 export default {
   name: "App",
@@ -30,11 +51,12 @@ export default {
   components: {
     NavBar,
     LeftAside,
-    NotificationBox
+    NotificationBox,
+    FooterNav,
   },
 
   data: () => ({
-    list: ['Hola']
+    list: ["Hola"],
   }),
   watch: {},
   beforeUpdate() {},
@@ -48,7 +70,7 @@ export default {
     this.updateAuthInfo(responseObj);
   },
   computed: {
-    ...mapState(["authentication","notifications"]),
+    ...mapState(["authentication", "notifications"]),
   },
   methods: {
     ...mapMutations(["updateAuthInfo"]),
@@ -56,9 +78,6 @@ export default {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
-    listMela(val){
-      this.list.pop(val)
-    }
   },
 };
 </script>
@@ -68,20 +87,38 @@ export default {
   #leftAside {
     display: none;
   }
-  #content{
-    padding: 40px 0px 0px !important;
+  #content {
+    padding: 0px 0px 0px 0px !important;
   }
-  p, span{
+  p,
+  span {
     font-size: 10pt;
+  }
+  .footer-nav {
+    display: block;
+  }
+  #btn-create{
+    bottom: 60px;
+    z-index: 1000;
+  }
+}
+@media (min-width: 920px) {
+  .footer-nav {
+    display: none;
+  }
+  #content {
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 0% !important;
+  }
+  #btn-create{
+    display: none;
   }
 }
 body {
   background: rgb(211, 211, 211);
 }
-#content {
-  min-height: 100vh;
-  width: 100%;
-}
+
 #container-body {
   margin: 20px auto;
 }
@@ -91,7 +128,7 @@ link {
 link:hover {
   text-decoration: underline;
 }
-.notifications{
+.notifications {
   position: fixed;
   right: 10px;
   bottom: 10px;

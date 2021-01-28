@@ -1,20 +1,50 @@
 <template>
   <div>
-    <v-app-bar id="nav-bar" app color="white">
+    <v-app-bar color="primary" class="user-menu">
+      <v-toolbar-title class="mr-3">
+        <v-btn dark icon>
+          <v-icon>mdi-menu</v-icon>
+        </v-btn>
+      </v-toolbar-title>
+        <span v-if="!showSearchBar" class="nav-bar-title white--text">{{title}}</span>
+
+      <v-text-field
+        v-if="showSearchBar"
+        dense
+        class="pt-7"
+        v-model="searchValue"
+        @click:prepend="go2search"
+        @keydown.enter="go2search"
+        placeholder="Buscar trueques"
+        solo
+        prepend-inner-icon="mdi-magnify"
+      ></v-text-field>
+      <v-spacer v-if="!showSearchBar"></v-spacer>
+      <v-btn class="ml-1" color="default" icon>
+        <v-icon>mdi-help-circle-outline</v-icon>
+      </v-btn>
+    </v-app-bar>
+    <v-app-bar id="nav-bar" class="company" app color="white">
       <v-toolbar-title>
         <v-list-item
+          dense
           id="logo-btn"
-          class="mt-2 mb-2 pl-3 primary--text"
+          class="mt-2 mb-2 pl-0 primary--text"
           one-line
-          :to="{path:'/'}"
+          :to="{ path: '/' }"
         >
           <v-list-item-avatar>
-            <v-img color="primary" src="@/assets/logo.png" max-height="35" max-width="35">
+            <v-img
+              color="primary"
+              src="@/assets/logo.png"
+              max-height="35"
+              max-width="35"
+            >
             </v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title >
+            <v-list-item-title>
               <h2 id="company-name" class="primary--text">COCO</h2>
             </v-list-item-title>
           </v-list-item-content>
@@ -35,25 +65,22 @@
       <v-spacer></v-spacer>
       <div v-if="!authentication.userIsAuthenticated && userRequireMoreInfo">
         <v-btn
-          @click="updateFormsDialog(true,false)"
+          @click="updateFormsDialog(true, false)"
           class="mr-2"
           text
           color="primary darken-1"
         >
           Inicia sesión
         </v-btn>
-        <v-btn
-          @click="updateFormsDialog(false,true)"
-          color="primary darken-1"
-        >
+        <v-btn @click="updateFormsDialog(false, true)" color="primary darken-1">
           Regístrate
         </v-btn>
-        <Login v-if="forms.loginDialog"  />
-        <SignUp v-if="forms.signUpDialog"  />
+        <Login v-if="forms.loginDialog" />
+        <SignUp v-if="forms.signUpDialog" />
       </div>
 
       <v-btn v-else icon>
-        <v-icon>mdi-help-circle-outline</v-icon>
+        <v-icon class="help-icon">mdi-help-circle-outline</v-icon>
       </v-btn>
     </v-app-bar>
   </div>
@@ -67,40 +94,55 @@ export default {
   data: () => ({
     loginDialog: false,
     signUpDialog: false,
-    searchValue: '',
+    searchValue: "",
+    showSearchBar: false,
+    title: ''
   }),
   components: {
     Login,
-    SignUp
+    SignUp,
   },
   watch: {
     $route(to, from) {
-      if(this.$route.name != 'Explore') this.searchValue = '';
+      if (this.$route.name != "Explore") {
+        this.searchValue = "";
+        this.showSearchBar = false;
+        if(this.$route.name == "Home"){
+          this.title = "Inicio"
+        } else if(this.$route.name == "Notifications"){
+          this.title = "Notificaciones"
+        } else if(this.$route.name == "Inbox"){
+          this.title = "Mensajes"
+        }
+      } else {
+        this.showSearchBar = true;
+      }
     },
   },
-  created(){
-    if(this.$route.query.q) this.searchValue = this.$route.query.q;
+  created() {
+    if (this.$route.query.q) this.searchValue = this.$route.query.q;
   },
+
   methods: {
     ...mapMutations(["updateFormsInfo"]),
     searchPubs() {
       console.log("searching..");
     },
-    
-    updateFormsDialog(login,signup){
+
+    updateFormsDialog(login, signup) {
       let formDialog = {
         loginDialog: login,
-        signUpDialog: signup
-      }
-      
-      this.updateFormsInfo(formDialog)
+        signUpDialog: signup,
+      };
+
+      this.updateFormsInfo(formDialog);
     },
-    go2search(){
-      this.$router.push({name:'Explore',query:{q:this.searchValue}});
+    go2search() {
+      this.$router.push({ name: "Explore", query: { q: this.searchValue } });
     },
   },
   computed: {
-    ...mapState(["authentication", "forms","userRequireMoreInfo"]),
+    ...mapState(["authentication", "forms", "userRequireMoreInfo", "user"]),
   },
 };
 </script>
@@ -110,18 +152,26 @@ export default {
   .search-field {
     display: none;
   }
-  #nav-bar{
-    left: 0% !important;
-    position: fixed;
-    background: #307ABD  !important;
+  #nav-bar {
+    display: none;
   }
-
-  #company-name{
-    color: white  !important;
+  .user-menu {
+    display: block;
+  }
+  .nav-bar-title{
+    font-size: 16pt;
+    color: rgb(226, 226, 226);
+  }
+}
+@media (min-width: 920px) {
+  .user-menu {
+    display: none;
+  }
+  .company {
+    display: block;
   }
 }
 #logo-btn {
   max-height: 30px;
 }
-
 </style>
