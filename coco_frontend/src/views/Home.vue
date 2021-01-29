@@ -10,10 +10,13 @@
         </v-col>
         <v-col sm="12" md="4" lg="3" xl="2" class="pt-0 mt-0">
           <User2FollowSuggestion class="mt-2" />
-          <CompanyInfo class="mx-1" />
+          <CompanyInfo class="mx-1 big-devices" />
         </v-col>
       </v-row>
     </v-container>
+    <v-footer>
+      <CompanyInfo class="small-devices" />
+    </v-footer>
   </div>
 </template>
 
