@@ -2,7 +2,7 @@
   <div>
     <v-card id="chat" class="chat-body" flat>
       <v-row class="px-1" align="center">
-        <v-btn color="primary" class="mx-2" :to="{ name: 'Inbox' }" icon>
+        <v-btn small color="primary" class="ml-2" :to="{ name: 'Inbox' }" icon>
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-col class="pt-0 pb-0">
@@ -66,7 +66,7 @@
           <div v-else class="outgoing-msg ml-auto">
             {{ decriptText(user.username, message.text) }}
             <small class="msg-footer">
-                {{ getHour(message.created) }}
+              {{ getHour(message.created) }}
               <span>
                 <v-icon class="ml-1" v-if="!message.read" small
                   >mdi-check</v-icon
@@ -95,42 +95,37 @@
           </div>
         </div>
       </v-card-text>
-      <v-card-actions>
-        <v-container fluid>
-          <v-row>
-            <v-btn class="mt-1 mr-1" icon>
-              <v-icon>mdi-emoticon-outline</v-icon>
-            </v-btn>
-            <v-text-field
-              @keyup="typingMessage"
-              @keyup.enter="sendMessage"
-              @focus="seenMsg"
-              rounded
-              outlined
-              dense
-              v-model="msg"
-              label="Escribe tu mensaje"
-              solo
-              @click:append-outer="sendMessage"
-              :append-outer-icon="msg ? 'mdi-send' : ''"
-            ></v-text-field>
-          </v-row>
-        </v-container>
-      </v-card-actions>
+      <v-container class="px-3 pt-3 pb-0" fluid>
+        <v-row>
+          <v-btn class="mt-1 mr-1" icon>
+            <v-icon>mdi-emoticon-outline</v-icon>
+          </v-btn>
+          <v-text-field
+            @keyup="typingMessage"
+            @keyup.enter="sendMessage"
+            @focus="seenMsg"
+            rounded
+            outlined
+            dense
+            v-model="msg"
+            label="Escribe tu mensaje"
+            solo
+            @click:append-outer="sendMessage"
+            :append-outer-icon="msg ? 'mdi-send' : ''"
+          ></v-text-field>
+        </v-row>
+      </v-container>
     </v-card>
-    <v-bottom-sheet v-model="sheet">
-      <v-sheet class="text-center" height="220px">
-        <ColorPicker
-          v-if="sheet"
-          :incoming="colors.incoming"
-          :outgoing="colors.outgoing"
-          :bg="colors.bg"
-          v-on:outgoingColor="outgoingColorSet"
-          v-on:incomingColor="incomingColorSet"
-          v-on:bgColor="bgColorSet"
-        />
-      </v-sheet>
-    </v-bottom-sheet>
+    <ColorPicker
+      v-if="sheet"
+      v-on:sheetStatus="updateSheetStatus"
+      :incoming="colors.incoming"
+      :outgoing="colors.outgoing"
+      :bg="colors.bg"
+      v-on:outgoingColor="outgoingColorSet"
+      v-on:incomingColor="incomingColorSet"
+      v-on:bgColor="bgColorSet"
+    />
   </div>
 </template>
 
@@ -163,12 +158,12 @@ export default {
   mounted() {
     this.getMessages();
     this.setColors2Divs();
-     let screenWidth = window.screen.width;
-      if(this.breakpoints.xs > screenWidth){
-        this.$emit("main", false)
-      } else {
-        this.$emit("main", true)
-      }
+    let screenWidth = window.screen.width;
+    if (this.breakpoints.xs > screenWidth) {
+      this.$emit("main", false);
+    } else {
+      this.$emit("main", true);
+    }
   },
   beforeDestroy() {
     this.websocket.close();
@@ -182,7 +177,7 @@ export default {
       "wsBase",
       "chat",
       "notification",
-      "breakpoints"
+      "breakpoints",
     ]),
   },
   methods: {
@@ -330,7 +325,9 @@ export default {
         }
       });
     },
-
+    updateSheetStatus(status) {
+      this.sheet = status;
+    },
     setColors2Divs() {
       var messagesDiv = document.getElementById("msgs-list");
       let outgoing = localStorage.getItem("outgoing-msgs");
@@ -462,21 +459,22 @@ body {
   transform: rotate(-135deg);
   border-radius: 5px;
 }*/
+.messages {
+  position: relative;
+
+  margin: 20px 0px;
+  height: calc(100vh - 190px);
+  width: 100%;
+  padding: 10px 6%;
+  overflow: auto;
+  background: var(--background-color);
+  border-radius: 15px 15px 0 0;
+}
 @media (max-width: 920px) {
   .inbox-chats {
     display: none;
   }
-  .messages {
-    position: relative;
-    max-height: 80%;
-    margin: 20px 0px;
-    height: 100%;
-    width: 100%;
-    padding: 10px 2px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
-  }
+
   .incoming-msg {
     padding: 10px 20% 8% 10px;
   }
@@ -485,26 +483,9 @@ body {
     padding: 10px 20% 8% 10px;
   }
 }
-@media (min-width: 1800px) {
+@media (min-width: 920px) {
   .messages {
-    position: relative;
-    max-height: 93%;
-    height: 100%;
-    padding: 10px 30px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
-  }
-}
-@media (max-width: 1800px) {
-  .messages {
-    position: relative;
-    max-height: 75%;
-    height: 100%;
-    padding: 10px 30px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
+    height: calc(100vh - 230px);
   }
 }
 
