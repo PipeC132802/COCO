@@ -18,7 +18,7 @@
       Aún no tienes notificaciones
     </v-alert>
     <v-card
-      class="ma-2"
+      class="ma-2 px-0 mx-0"
       v-for="notification in notifications"
       :key="notification.id"
     >

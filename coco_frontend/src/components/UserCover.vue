@@ -1,185 +1,315 @@
 <template>
-  <v-card>
-    <v-img
-      lazy-src="https://cdn.pixabay.com/photo/2018/03/29/19/34/northern-lights-3273425_1280.jpg"
-      aspect-ratio="1.7"
-      max-height="300"
-      :src="userP.coverPhoto"
-    >
-      <template v-slot:placeholder>
-        <v-row class="fill-height ma-0" align="center" justify="center">
-          <v-progress-circular
-            indeterminate
-            color="grey lighten-5"
-          ></v-progress-circular>
-        </v-row>
-      </template>
-      <v-row
-        v-if="user.username == $route.params.username"
-        class="px-5 pt-2"
-        justify="end"
-      >
-        <div class="cover-btn">
-          <v-file-input
-            @change="addCoverPhoto"
-            class="cover-input"
-            accept="image/png, image/jpeg, image/bmp"
-          ></v-file-input>
-          <v-btn>
-            <v-icon left>mdi-camera-outline</v-icon>
-            <span class="text-btn">Subir portada</span>
-          </v-btn>
-        </div>
-      </v-row>
-    </v-img>
-    <v-card-title class="pb-0">
-      <v-hover v-slot="{ hover }">
-        <v-avatar
-          :color="userP.profilePicture ? 'white' : 'secondary'"
-          size="150"
-          class="profile-picture"
-        >
-          <img v-if="userP.profilePicture" :src="userP.profilePicture" />
-          <span v-else>{{ userP.name.slice(0, 1) }}</span>
-          <div
-            class="upload-profile"
-            v-if="user.username == $route.params.username"
-          >
-            <v-file-input
-              class="file-upload"
-              accept="image/png, image/jpeg, image/bmp"
-              @change="addProfilePicture"
-            ></v-file-input>
-            <div class="align-self-center">
-              <v-icon class="mt-12 mx-auto" x-large v-if="hover">
-                mdi-upload
-              </v-icon>
-            </div>
-          </div>
-        </v-avatar>
-      </v-hover>
-      <h2 class="mb-2 title--text" :title="userP.name">
-        {{ userP.name }}
-        <span :title="'@' + userP.username" class="text"
-          >(@{{ userP.username }})</span
-        >
-        <span
-          v-if="userP.username == user.username"
-          @click="go2Edit"
-          class="route ml-3"
-          title="Editar información de la cuenta"
-          >Editar</span
-        >
-      </h2>
-    </v-card-title>
-    <v-card-text>
-      <v-row justify="center">
-        <span class="skills">
-          <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
-          Se unió en
-          {{ dateJoined | capitalize }}
-        </span>
-      </v-row>
-      <v-row class="mt-2" justify="center">
-        <v-btn
-          class="mr-3"
-          active-class="primary"
-          text
-          :to="{ name: 'Followers', params: { username: userP.username } }"
-        >
-          <strong class="mr-2">{{ userP.followers }}</strong
-          >Seguidores
-        </v-btn>
-        <v-btn
-          class="ml-3"
-          active-class="primary"
-          text
-          :to="{ name: 'Following', params: { username: userP.username } }"
-        >
-          <strong class="mr-2">{{ userP.following }}</strong
-          >Seguidos
-        </v-btn>
-      </v-row>
-      <v-card-actions v-if="userP.username != user.username" class="actions">
-        <v-chip
-          class="mr-5"
-          v-if="userP.followYou"
-          color="info darken-5"
-          text-color="white"
-          title="Te sigue"
-        >
-          <v-avatar left>
-            <v-icon>mdi-account-circle</v-icon>
-          </v-avatar>
-          Te sigue
-        </v-chip>
-        <FollowButton
-          :from="user.username"
-          :to="userP.username"
-          v-on:followObj="followInfo"
-          :text="true"
-          :target="$route.params.username == user.username ? 'self' : 'other'"
-        />
-      </v-card-actions>
-    </v-card-text>
-    <v-dialog width="450" persistent v-model="profileDialog">
-      <v-card class="px-3">
-        <v-card-title class="pl-3">Subir foto de perfil </v-card-title>
-        <v-img class="mx-auto" :src="profilePicture.url" max-width="400">
-        </v-img>
-        <v-card-actions>
-          <v-btn
-            :loading="loadingProfileBtn"
-            class="mt-2 ml-3 mb-5"
-            color="primary darken-3"
-            @click="uploadProfilePicture"
-          >
-            Subir
-          </v-btn>
-          <v-btn
-            @click="profileDialog = false"
-            outlined
-            class="mt-2 ml-3 mb-5"
-            color="error darken-3"
-            :disabled="loadingProfileBtn"
-          >
-            Cancelar
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-    <v-dialog width="600" persistent v-model="coverPhotoDialog">
-      <v-card class="px-3">
-        <v-card-title class="pl-9">Subir foto de portada </v-card-title>
+  <div>
+    <v-container class="small-device pa-0" fluid>
+      <div class="cover">
         <v-img
-          class="mx-auto"
-          :src="coverPhoto.url"
+          lazy-src="https://cdn.pixabay.com/photo/2018/03/29/19/34/northern-lights-3273425_1280.jpg"
           aspect-ratio="1.7"
-          max-width="500"
+          max-height="250"
+          :src="userP.coverPhoto"
         >
+          <template v-slot:placeholder>
+            <v-row class="fill-height ma-0" align="center" justify="center">
+              <v-progress-circular
+                indeterminate
+                color="grey lighten-5"
+              ></v-progress-circular>
+            </v-row>
+          </template>
+          <v-row
+            v-if="user.username == $route.params.username"
+            class="px-8 pt-5"
+            justify="end"
+          >
+            <div class="cover-btn">
+              <v-file-input
+                @change="addCoverPhoto"
+                class="cover-input"
+                accept="image/png, image/jpeg, image/bmp"
+              ></v-file-input>
+              <v-btn small>
+                <v-icon left>mdi-camera-outline</v-icon>
+                <span class="text-btn">Subir portada</span>
+              </v-btn>
+            </div>
+          </v-row>
         </v-img>
-        <v-card-actions class="ml-5">
-          <v-btn
-            :loading="loadingCoverBtn"
-            class="mt-2 ml-3 mb-5"
-            color="primary darken-3"
-            @click="uploadCoverPhoto"
+        <v-hover v-slot="{ hover }">
+          <v-avatar
+            :color="userP.profilePicture ? 'white' : 'secondary'"
+            size="60"
+            class="profile-picture"
           >
-            Subir
+            <img v-if="userP.profilePicture" :src="userP.profilePicture" />
+            <span v-else>{{ userP.name.slice(0, 1) }}</span>
+            <div
+              class="upload-profile"
+              v-if="user.username == $route.params.username"
+            >
+              <v-file-input
+                class="file-upload"
+                accept="image/png, image/jpeg, image/bmp"
+                @change="addProfilePicture"
+              ></v-file-input>
+              <div class="align-self-center">
+                <v-icon class="mt-12 mx-auto" x-large v-if="hover">
+                  mdi-upload
+                </v-icon>
+              </div>
+            </div>
+          </v-avatar>
+        </v-hover>
+      </div>
+      <v-row justify="center" class="container-small">
+        <v-col cols="12" class="pl-6 pb-1">
+          <div class="profile-name pt-5">
+            {{ userP.name
+            }}<span class="grey--text ml-1">@{{ userP.username }}</span
+            ><span
+              v-if="userP.username == user.username"
+              @click="go2Edit"
+              class="route ml-3"
+              title="Editar información de la cuenta"
+              ><small>Editar</small></span
+            >
+          </div>
+        </v-col>
+        <v-col cols="12" class="pa-0 pl-6">
+          <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
+          Se unió el
+          {{ dateJoined | capitalize }}
+        </v-col>
+        <v-col
+          cols="12"
+          class="pa-0 pt-1 pl-6"
+          v-if="userP.username != user.username"
+        >
+          <FollowButton
+            :from="user.username"
+            :to="userP.username"
+            v-on:followObj="followInfo"
+            :text="true"
+            :target="$route.params.username == user.username ? 'self' : 'other'"
+          />
+          <v-chip
+            class="ml-5"
+            v-if="userP.followYou"
+            color="info darken-5"
+            text-color="white"
+            title="Te sigue"
+          >
+            <v-avatar left>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+            Te sigue
+          </v-chip>
+        </v-col>
+        <v-col class="pl-6" cols="12">
+          <v-btn
+            class="mr-2"
+            active-class="primary"
+            text
+            small
+            :to="{ name: 'Followers', params: { username: userP.username } }"
+          >
+            <strong class="mr-2">{{ userP.followers }}</strong
+            >Seguidores
           </v-btn>
           <v-btn
-            @click="loadingCoverBtn = false"
-            outlined
-            class="mt-2 ml-3 mb-5"
-            color="error darken-3"
-            :disabled="loadingCoverBtn"
+            small
+            class="ml-2"
+            active-class="primary"
+            text
+            :to="{ name: 'Following', params: { username: userP.username } }"
           >
-            Cancelar
+            <strong class="mr-2">{{ userP.following }}</strong
+            >Seguidos
           </v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-card flat class="big-devices">
+      <v-img
+        lazy-src="https://cdn.pixabay.com/photo/2018/03/29/19/34/northern-lights-3273425_1280.jpg"
+        aspect-ratio="1.7"
+        max-height="300"
+        :src="userP.coverPhoto"
+      >
+        <template v-slot:placeholder>
+          <v-row class="fill-height ma-0" align="center" justify="center">
+            <v-progress-circular
+              indeterminate
+              color="grey lighten-5"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+        <v-row
+          v-if="user.username == $route.params.username"
+          class="px-5 pt-2"
+          justify="end"
+        >
+          <div class="cover-btn">
+            <v-file-input
+              @change="addCoverPhoto"
+              class="cover-input"
+              accept="image/png, image/jpeg, image/bmp"
+            ></v-file-input>
+            <v-btn>
+              <v-icon left>mdi-camera-outline</v-icon>
+              <span class="text-btn">Subir portada</span>
+            </v-btn>
+          </div>
+        </v-row>
+      </v-img>
+      <v-card-title class="pb-0">
+        <v-hover v-slot="{ hover }">
+          <v-avatar
+            :color="userP.profilePicture ? 'white' : 'secondary'"
+            size="150"
+            class="profile-picture"
+          >
+            <img v-if="userP.profilePicture" :src="userP.profilePicture" />
+            <span v-else>{{ userP.name.slice(0, 1) }}</span>
+            <div
+              class="upload-profile"
+              v-if="user.username == $route.params.username"
+            >
+              <v-file-input
+                class="file-upload"
+                accept="image/png, image/jpeg, image/bmp"
+                @change="addProfilePicture"
+              ></v-file-input>
+              <div class="align-self-center">
+                <v-icon class="mt-12 mx-auto" x-large v-if="hover">
+                  mdi-upload
+                </v-icon>
+              </div>
+            </div>
+          </v-avatar>
+        </v-hover>
+        <h2 class="mb-2 title--text" :title="userP.name">
+          {{ userP.name }}
+          <span :title="'@' + userP.username" class="text"
+            >(@{{ userP.username }})</span
+          >
+          <span
+            v-if="userP.username == user.username"
+            @click="go2Edit"
+            class="route ml-3"
+            title="Editar información de la cuenta"
+            >Editar</span
+          >
+        </h2>
+      </v-card-title>
+      <v-card-text>
+        <v-row justify="center">
+          <span class="skills">
+            <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
+            Se unió en
+            {{ dateJoined | capitalize }}
+          </span>
+        </v-row>
+        <v-row class="mt-2" justify="center">
+          <v-btn
+            class="mr-3"
+            active-class="primary"
+            text
+            :to="{ name: 'Followers', params: { username: userP.username } }"
+          >
+            <strong class="mr-2">{{ userP.followers }}</strong
+            >Seguidores
+          </v-btn>
+          <v-btn
+            class="ml-3"
+            active-class="primary"
+            text
+            :to="{ name: 'Following', params: { username: userP.username } }"
+          >
+            <strong class="mr-2">{{ userP.following }}</strong
+            >Seguidos
+          </v-btn>
+        </v-row>
+        <v-card-actions v-if="userP.username != user.username" class="actions">
+          <v-chip
+            class="mr-5"
+            v-if="userP.followYou"
+            color="info darken-5"
+            text-color="white"
+            title="Te sigue"
+          >
+            <v-avatar left>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+            Te sigue
+          </v-chip>
+          <FollowButton
+            :from="user.username"
+            :to="userP.username"
+            v-on:followObj="followInfo"
+            :text="true"
+            :target="$route.params.username == user.username ? 'self' : 'other'"
+          />
         </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-card>
+      </v-card-text>
+      <v-dialog width="450" persistent v-model="profileDialog">
+        <v-card class="px-3">
+          <v-card-title class="pl-3">Subir foto de perfil </v-card-title>
+          <v-img class="mx-auto" :src="profilePicture.url" max-width="400">
+          </v-img>
+          <v-card-actions>
+            <v-btn
+              :loading="loadingProfileBtn"
+              class="mt-2 ml-3 mb-5"
+              color="primary darken-3"
+              @click="uploadProfilePicture"
+            >
+              Subir
+            </v-btn>
+            <v-btn
+              @click="profileDialog = false"
+              outlined
+              class="mt-2 ml-3 mb-5"
+              color="error darken-3"
+              :disabled="loadingProfileBtn"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <v-dialog width="600" persistent v-model="coverPhotoDialog">
+        <v-card class="px-3">
+          <v-card-title class="pl-9">Subir foto de portada </v-card-title>
+          <v-img
+            class="mx-auto"
+            :src="coverPhoto.url"
+            aspect-ratio="1.7"
+            max-width="500"
+          >
+          </v-img>
+          <v-card-actions class="ml-5">
+            <v-btn
+              :loading="loadingCoverBtn"
+              class="mt-2 ml-3 mb-5"
+              color="primary darken-3"
+              @click="uploadCoverPhoto"
+            >
+              Subir
+            </v-btn>
+            <v-btn
+              @click="loadingCoverBtn = false"
+              outlined
+              class="mt-2 ml-3 mb-5"
+              color="error darken-3"
+              :disabled="loadingCoverBtn"
+            >
+              Cancelar
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -236,7 +366,7 @@ export default {
     dateJoined: function () {
       return moment(this.userP.dateJoined)
         .locale("es")
-        .format("MMMM D [de] YYYY");
+        .format("D [de] MMMM [de] YYYY");
     },
   },
   watch: {
@@ -251,7 +381,7 @@ export default {
     this.getUserCoverInfo();
   },
   methods: {
-    ...mapMutations(['setProfile']),
+    ...mapMutations(["setProfile"]),
     getUserCoverInfo() {
       fetch(
         this.baseUrl +
@@ -267,7 +397,6 @@ export default {
           return response.json();
         })
         .then((response) => {
-          
           this.userP.name = response.name;
           this.userP.profilePicture = response.profile_picture;
           this.userP.skills = response.skills.join(", ");
@@ -276,11 +405,12 @@ export default {
           this.userP.following = response.following;
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
-          this.userP.coverPhoto = response.cover_photo;
+
           document.title =
             this.userP.name + ` (@${this.userP.username}) | COCO`;
           if (!response.cover_photo) this.searchCover();
-          this.setProfile({name: this.userP.name})
+          else this.userP.coverPhoto = response.cover_photo;
+          this.setProfile({ name: this.userP.name });
         })
         .catch((err) => {
           this.$router.push({ name: "NotFound" });
@@ -302,7 +432,6 @@ export default {
         })
         .then((response) => {
           let hits = response.hits;
-          let total = hits.length;
           let img_slected = hits[Math.floor(Math.random() * hits.length)];
           this.userP.coverPhoto = img_slected.largeImageURL;
         });
@@ -477,5 +606,24 @@ h2 {
 .v-file-input__text {
   cursor: pointer;
   min-width: 300px !important;
+}
+.container-small {
+  position: relative;
+}
+@media (max-width: 920px) {
+  .cover {
+    position: relative;
+  }
+  .profile-picture {
+    top: calc(100% - 40px);
+    left: 10px;
+    z-index: 1;
+  }
+  .profile-name {
+    font-size: calc(1vw + 1em);
+    font-weight: 500;
+  }
+}
+@media (min-width: 920px) {
 }
 </style>

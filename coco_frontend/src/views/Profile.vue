@@ -1,41 +1,14 @@
 <template>
-  <div v-if="username == currentUsernamePath" class="pl-8 pr-8 pt-6">
+  <div class="pa-0" v-if="username == currentUsernamePath">
     <UserCover :user2Follow="user2Follow" />
 
     <v-container fluid class="pa-0 mt-0">
-      <v-row wrap>
-        <v-col tyle="background: red;" tile sm="12" md="8">
+      <v-row class="pa-0 ma-0" wrap>
+        <v-col tile class="pa-0" cols="12" sm="12" md="8">
           <router-view class="mt-2" />
-          <div v-if="pathName == 'Profile'">
-            <v-tabs v-model="tab" class="mt-1">
-              <v-tab> <v-icon left>mdi-comment</v-icon>Trueques </v-tab>
-              <v-tab><v-icon left>mdi-star</v-icon>Reseñas</v-tab>
-              <v-tab><v-icon left>mdi-heart</v-icon>Reacciones</v-tab>
-            </v-tabs>
-            <v-tabs-items v-model="tab">
-              <v-tab-item>
-                <div class="pa-1">
-                  <NewBarter
-                    class="mt-5"
-                    v-if="username == user.username"
-                  />
-                  <BarterList class="mt-3" :field="'profile'" />
-                </div>
-              </v-tab-item>
-              <v-tab-item>
-                <div>
-                  <ReviewsList />
-                </div>
-              </v-tab-item>
-              <v-tab-item>
-                <div class="ma-0">
-                  <BarterList class="mt-3" :field="'reactions'" />
-                </div>
-              </v-tab-item>
-            </v-tabs-items>
-          </div>
+          
         </v-col>
-        <v-col cols="4" tile>
+        <v-col cols="12" md="4" tile>
           <UserAbout />
           <UserContact />
           <User2FollowSuggestion
@@ -66,7 +39,7 @@ export default {
     UserContact,
     User2FollowSuggestion,
     BarterList,
-    ReviewsList
+    ReviewsList,
   },
   data: () => ({
     username: "",
@@ -102,7 +75,6 @@ export default {
     followUser(followUserObj) {
       this.user2Follow = followUserObj;
     },
-    
   },
 };
 </script>

@@ -88,6 +88,12 @@ export default {
 </script>
 
 <style>
+.big-devices{
+  display: block;
+}
+.small-device{
+    display: none;
+  }
 @media (max-width: 920px) {
 
   #content {
@@ -103,6 +109,12 @@ export default {
   #btn-create{
     bottom: 60px;
     z-index: 1000;
+  }
+  .big-devices{
+    display: none;
+  }
+  .small-device{
+    display: block;
   }
 }
 @media (min-width: 920px) {
@@ -139,5 +151,8 @@ link:hover {
   z-index: 100;
   display: flex;
   flex-direction: column-reverse;
+}
+#app{
+  overflow-x: hidden;
 }
 </style>
