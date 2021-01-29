@@ -7,17 +7,15 @@
         type="list-item-avatar-two-line"
       ></v-skeleton-loader>
     </div>
-    <p class="pl-5 " >
-      
-    </p>
+    <p class="pl-5"></p>
     <v-alert
-    v-if="!notifications[0].length"
+      v-if="!notifications[0]"
       color="warning"
       dark
       icon="mdi-bell-remove"
       dense
     >
-Aún no tienes notificaciones
+      Aún no tienes notificaciones
     </v-alert>
     <v-card
       class="ma-2"
@@ -44,7 +42,7 @@ Aún no tienes notificaciones
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import ReactionNotification from "../components/subcomponents/ReactionNotification.vue";
 import CommentNotification from "../components/subcomponents/CommentNotification.vue";
 import FollowUserNotification from "../components/subcomponents/FollowUserNotification.vue";
@@ -61,13 +59,13 @@ export default {
     loading: true,
   }),
   computed: {
-    ...mapState(["baseUrl", "authentication"]),
+    ...mapState(["baseUrl", "authentication", "notification"]),
   },
   mounted() {
     this.retrieveNotifications();
   },
   methods: {
-    // TO-DO Find why this overload the server
+    ...mapMutations(["notificationStatus"]),
     retrieveNotifications() {
       fetch(this.baseUrl + this.apiDir, {
         headers: {
@@ -78,9 +76,12 @@ export default {
           return response.json();
         })
         .then((response) => {
-          
           this.notifications = response;
           this.$root.$emit("notificationsReaded");
+          this.notificationStatus({
+            unread_notifications: 0,
+            unread_messages: this.notification.unread_messages,
+          });
         })
         .catch((err) => {
           console.error(err);

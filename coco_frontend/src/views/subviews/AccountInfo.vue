@@ -46,7 +46,6 @@
 
 <script>
 import { mapState } from "vuex";
-import moment from "moment";
 export default {
   name: "AccountInfo",
   data: () => ({
@@ -61,11 +60,18 @@ export default {
     apiDir: "user-info-update/",
   }),
   computed: {
-    ...mapState(["user", "baseUrl", "authentication"]),
+    ...mapState(["user", "baseUrl", "authentication", "breakpoints"]),
   },
   mounted() {
     this.getUserInfo();
+     let screenWidth = window.screen.width;
+      if(this.breakpoints.xs > screenWidth){
+        this.$emit("main", false)
+      } else {
+        this.$emit("main", true)
+      }
   },
+  
   methods: {
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {

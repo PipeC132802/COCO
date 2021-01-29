@@ -129,6 +129,8 @@ export default {
           this.title = this.user.name
         } else if(this.$route.name == 'Barter'){
           this.title = 'Trueque';
+        } else if(this.$route.name == "Settings"){
+          this.title = "Ajustes"
         }
       } else {
         this.showSearchBar = true;

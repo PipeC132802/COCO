@@ -1,15 +1,16 @@
 <template>
   <v-container fluid>
-          
-          <div class="settings-title"><v-btn
-            @click="$router.push({ name: 'Account' })"
-            class="mr-3"
-            icon
-            color="primary"
-          >
-            <v-icon> mdi-arrow-left </v-icon>
-          </v-btn>Desactiva tu cuenta</div>
-          <v-divider></v-divider>
+    <div class="settings-title">
+      <v-btn
+        @click="$router.push({ name: 'Account' })"
+        class="mr-3"
+        icon
+        color="primary"
+      >
+        <v-icon> mdi-arrow-left </v-icon> </v-btn
+      >Desactiva tu cuenta
+    </div>
+    <v-divider></v-divider>
     <v-row>
       <v-col cols="12">
         <v-list>
@@ -54,30 +55,30 @@
           cuenta que después de 30 días de haber desactivado tu cuenta no podrás
           recuperarla.
         </p>
-        <v-btn outlined @click="dialog = true" block color="error">Desactivar</v-btn>
+        <v-btn outlined @click="dialog = true" block color="error"
+          >Desactivar</v-btn
+        >
       </v-col>
     </v-row>
     <v-dialog v-model="dialog" max-width="500">
       <v-card class="pa-5">
         <v-row justify="center">
-
-        <v-card-title class="text-center"> ¿Estás segur@? 🥺 </v-card-title>
+          <v-card-title class="text-center"> ¿Estás segur@? 🥺 </v-card-title>
         </v-row>
         <v-card-actions>
           <v-row justify="center">
-
-          <v-btn
-            :loading="loading"
-            @click="deactivateAccount"
-            text
-            color="error"
-            class="mx-1"
-          >
-            Desactivar
-          </v-btn>
-          <v-btn @click="dialog = false" color="primary">
-            Seguir usando COCO
-          </v-btn>
+            <v-btn
+              :loading="loading"
+              @click="deactivateAccount"
+              text
+              color="error"
+              class="mx-1"
+            >
+              Desactivar
+            </v-btn>
+            <v-btn @click="dialog = false" color="primary">
+              Seguir usando COCO
+            </v-btn>
           </v-row>
         </v-card-actions>
       </v-card>
@@ -98,7 +99,15 @@ export default {
     loading: false,
   }),
   computed: {
-    ...mapState(["user", "authentication", "baseUrl"]),
+    ...mapState(["user", "authentication", "baseUrl", "breakpoints"]),
+  },
+  mounted() {
+    let screenWidth = window.screen.width;
+    if (this.breakpoints.xs > screenWidth) {
+      this.$emit("main", false);
+    } else {
+      this.$emit("main", true);
+    }
   },
   methods: {
     ...mapMutations(["updateAuthInfo"]),

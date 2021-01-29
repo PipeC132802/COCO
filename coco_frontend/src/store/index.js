@@ -26,6 +26,17 @@ export default new Vuex.Store({
     notifications: [],
     chat: '',
     chats: [],
+    notification: {
+      unread_messages: 0,
+      unread_notifications: 0,
+    },
+    breakpoints: {
+      xs: 600,
+      sm: 960,
+      md: 1264,
+      lg: 1904,
+      xl: 1904, //greater than this value
+    }
   },
   mutations: {
     setUser(state, user) {
@@ -42,6 +53,9 @@ export default new Vuex.Store({
     },
     updateProfileFollowStatus(state, profileFollowStatus) {
       state.profileFollowStatus = profileFollowStatus;
+    },
+    notificationStatus(state, notification){
+      state.notification = notification;
     },
     addNotification(state, notification){
       state.notifications.unshift(notification)

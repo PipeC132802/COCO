@@ -18,7 +18,7 @@
         :notification="notification"
       />
     </div>
-    <v-fab-transition>
+    <v-fab-transition v-if="floatingIcon">
       <v-btn
         color="primary"
         fab
@@ -27,7 +27,6 @@
         elevation="3"
         id="btn-create"
         bottom
-        
         fixed
       >
         <v-icon>{{floatingIcon}}</v-icon>
@@ -61,6 +60,7 @@ export default {
   watch: {
     $route(from,to){
       if(this.$route.name == "Inbox") this.floatingIcon = 'mdi-message-plus';
+      else if(this.$route.name == "Messages") this.floatingIcon = false;
       else this.floatingIcon = "mdi-pencil"
     }
   },

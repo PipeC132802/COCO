@@ -25,8 +25,6 @@
             <v-list-item
               v-for="item in menu"
               :key="item.title"
-              :to="{ name: item.link }"
-              exact
               active-class="primary white--text"
               class="pa-1 px-3"
             >
@@ -51,6 +49,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Security",
   data: () => ({
@@ -69,6 +68,17 @@ export default {
       },
     ],
   }),
+  mounted() {
+    let screenWidth = window.screen.width;
+    if (this.breakpoints.xs > screenWidth) {
+      this.$emit("main", false);
+    } else {
+      this.$emit("main", true);
+    }
+  },
+  computed: {
+    ...mapState(["breakpoints"]),
+  },
 };
 </script>
 

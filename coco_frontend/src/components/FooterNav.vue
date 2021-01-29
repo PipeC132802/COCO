@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="visible">
     <v-bottom-navigation grow id="bottom-nav" class="pt-1" color="primary">
       <v-row class="px-3 pt-0">
         <v-col class="pa-0">
@@ -14,22 +14,51 @@
         >
         <v-col class="pa-0">
           <v-btn icon class="pa-2" block exact :to="{ name: 'Notifications' }">
-            <v-icon>mdi-bell</v-icon>
+            <v-badge
+              :content="notification.unread_notifications"
+              :value="notification.unread_notifications"
+              color="accent"
+              overlap
+            >
+              <v-icon>mdi-bell</v-icon>
+            </v-badge>
+            
           </v-btn></v-col
         >
         <v-col class="pa-0">
           <v-btn icon class="pa-2" block exact :to="{ name: 'Inbox' }">
-            <v-icon>mdi-comment-text</v-icon>
-          </v-btn></v-col
-        >
+            <v-badge
+              :content="notification.unread_messages"
+              :value="notification.unread_messages"
+              color="accent"
+              overlap
+            >
+              <v-icon>mdi-comment-text</v-icon>
+            </v-badge>
+          </v-btn>
+        </v-col>
       </v-row>
     </v-bottom-navigation>
   </div>
 </template>
 
 <script>
+import {mapState} from "vuex";
 export default {
   name: "FooterNav",
+  data:()=>({
+    visible: true,
+  }),
+  computed: {
+    ...mapState(['notification'])
+  }, 
+  watch:{
+    $route(to, from){
+      if(this.$route.name == "Messages"){
+        this.visible = false;
+      } else this.visible = true;
+    }
+  }
 };
 </script>
 

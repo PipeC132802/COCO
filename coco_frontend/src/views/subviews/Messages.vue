@@ -1,45 +1,51 @@
 <template>
   <div>
     <v-card id="chat" class="chat-body" flat>
-      <v-list two-line>
-        <v-list-item>
-          <v-list-item-avatar color="secondary">
-            <v-img
-              v-if="chat.opponent.profile_picture"
-              :src="chat.opponent.profile_picture"
-            ></v-img>
-            <span class="white--text" v-else>{{
-              chat.opponent.name.slice(0, 1).toUpperCase()
-            }}</span>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              <router-link
-                class="title--text link-msgs"
-                :title="chat.opponent.name"
-                :to="{
-                  name: 'Profile',
-                  params: { username: chat.opponent.username },
-                }"
-                >{{ chat.opponent.name }}</router-link
-              >
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              <span class="grey--text" :title="'@' + chat.opponent.username"
-                >@{{ chat.opponent.username }}</span
-              >
-            </v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn @click="sheet = !sheet" icon>
-              <v-icon>mdi-palette</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider></v-divider>
-      </v-list>
-
-      <v-card-text id="msgs-list" class="messages">
+      <v-row class="px-1" align="center">
+        <v-btn color="primary" class="mx-2" :to="{ name: 'Inbox' }" icon>
+          <v-icon>mdi-arrow-left</v-icon>
+        </v-btn>
+        <v-col class="pt-0 pb-0">
+          <v-list class="pt-0 pb-0" dense two-line>
+            <v-list-item dense class="px-0">
+              <v-list-item-avatar color="secondary">
+                <v-img
+                  v-if="chat.opponent.profile_picture"
+                  :src="chat.opponent.profile_picture"
+                ></v-img>
+                <span class="white--text" v-else>{{
+                  chat.opponent.name.slice(0, 1).toUpperCase()
+                }}</span>
+              </v-list-item-avatar>
+              <v-list-item-content class="pt-0 pb-0">
+                <v-list-item-title>
+                  <router-link
+                    class="title--text link-msgs"
+                    :title="chat.opponent.name"
+                    :to="{
+                      name: 'Profile',
+                      params: { username: chat.opponent.username },
+                    }"
+                    >{{ chat.opponent.name }}</router-link
+                  >
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  <span class="grey--text" :title="'@' + chat.opponent.username"
+                    >@{{ chat.opponent.username }}</span
+                  >
+                </v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-btn @click="sheet = !sheet" icon>
+                  <v-icon>mdi-palette</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </v-list-item>
+            <v-divider></v-divider>
+          </v-list>
+        </v-col>
+      </v-row>
+      <v-card-text id="msgs-list" class="messages ma-0">
         <v-row
           v-for="message in messages"
           :key="message.id"
@@ -60,9 +66,7 @@
           <div v-else class="outgoing-msg ml-auto">
             {{ decriptText(user.username, message.text) }}
             <small class="msg-footer">
-              <span :title="formatDate(message.created) | capitalize">
                 {{ getHour(message.created) }}
-              </span>
               <span>
                 <v-icon class="ml-1" v-if="!message.read" small
                   >mdi-check</v-icon
@@ -131,7 +135,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import { decript, encrypt } from "@/functions.js";
 import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
 import moment from "moment";
@@ -159,15 +163,30 @@ export default {
   mounted() {
     this.getMessages();
     this.setColors2Divs();
+     let screenWidth = window.screen.width;
+      if(this.breakpoints.xs > screenWidth){
+        this.$emit("main", false)
+      } else {
+        this.$emit("main", true)
+      }
   },
   beforeDestroy() {
     this.websocket.close();
-    this.websocket = null;    
+    this.websocket = null;
   },
   computed: {
-    ...mapState(["user", "authentication", "baseUrl", "wsBase", "chat"]),
+    ...mapState([
+      "user",
+      "authentication",
+      "baseUrl",
+      "wsBase",
+      "chat",
+      "notification",
+      "breakpoints"
+    ]),
   },
   methods: {
+    ...mapMutations(["notificationStatus"]),
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
@@ -292,6 +311,10 @@ export default {
             }
           } else if (socketData.type === "seen_message") {
             this.checkSeen();
+            this.notificationStatus({
+              unread_notifications: this.notification.unread_notifications,
+              unread_messages: 0,
+            });
           }
         };
       };
@@ -322,7 +345,6 @@ export default {
           outgoing: outgoing,
           bg: bg,
         };
-        console.log(this.colors);
       }
     },
     getHour(dateTime) {
@@ -382,53 +404,9 @@ body {
 .link-msgs:hover {
   text-decoration: underline;
 }
-.inbox-chats-active{
-    display: block;
-  }
-@media (max-width: 920px) {
-  .inbox-chats{
-    display: none;
-  }
-  .messages {
-    position: relative;
-    max-height: 80%;
-    margin: 20px 0px;
-    height: 100%;
-    padding: 10px 5px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
-  }
-  .incoming-msg{
-      padding: 10px 20% 3% 10px;
-  }
-  .outgoing-msg{
-      padding: 10px 20% 3% 10px;
-  }
+.inbox-chats-active {
+  display: block;
 }
-@media (min-width: 1800px) {
-  .messages {
-    position: relative;
-    max-height: 93%;
-    height: 100%;
-    padding: 10px 30px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
-  }
-}
-@media (max-width: 1800px) {
-  .messages {
-    position: relative;
-    max-height: 75%;
-    height: 100%;
-    padding: 10px 30px;
-    overflow: auto;
-    background: var(--background-color);
-    border-radius: 15px 15px 0 0;
-  }
-}
-
 .incoming-msg {
   display: inline-block;
   position: relative;
@@ -439,7 +417,7 @@ body {
   width: auto;
   background: var(--incoming-msg-bg);
   color: white;
- text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 /*.incoming-msg::before {
   display: block;
@@ -466,8 +444,7 @@ body {
   width: auto;
   color: white;
   background: var(--outgoing-msg-bg);
- text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
-
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 /*.outgoing-msg::before {
   display: block;
@@ -485,13 +462,59 @@ body {
   transform: rotate(-135deg);
   border-radius: 5px;
 }*/
+@media (max-width: 920px) {
+  .inbox-chats {
+    display: none;
+  }
+  .messages {
+    position: relative;
+    max-height: 80%;
+    margin: 20px 0px;
+    height: 100%;
+    width: 100%;
+    padding: 10px 2px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
+  .incoming-msg {
+    padding: 10px 20% 8% 10px;
+  }
+  .outgoing-msg {
+    min-width: 80px;
+    padding: 10px 20% 8% 10px;
+  }
+}
+@media (min-width: 1800px) {
+  .messages {
+    position: relative;
+    max-height: 93%;
+    height: 100%;
+    padding: 10px 30px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
+}
+@media (max-width: 1800px) {
+  .messages {
+    position: relative;
+    max-height: 75%;
+    height: 100%;
+    padding: 10px 30px;
+    overflow: auto;
+    background: var(--background-color);
+    border-radius: 15px 15px 0 0;
+  }
+}
+
 .msg-footer {
   position: absolute;
   right: 8px;
   bottom: 0px;
   color: white;
   font-size: 7pt;
- text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
+  text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 .typing-avatar {
   position: absolute;

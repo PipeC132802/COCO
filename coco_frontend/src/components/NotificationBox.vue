@@ -51,4 +51,10 @@ export default {
 .notification {
   transition: all ease-in 2000ms;
 }
+
+@media (max-width: 930px) {
+  .notification{
+    display: none;
+  }
+}
 </style>

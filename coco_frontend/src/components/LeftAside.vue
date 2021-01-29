@@ -16,7 +16,7 @@
               :alt="'perfil de ' + user.name"
               :src="user.profile_picture"
             />
-            <span v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+            <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="white--text">
             <v-list-item-title :title="user.name">{{
@@ -75,7 +75,13 @@
       </v-list-item>
     </v-navigation-drawer>
 
-    <v-navigation-drawer class="navigation-small-devices" v-model="drawerSmall" absolute left temporary>
+    <v-navigation-drawer
+      class="navigation-small-devices"
+      v-model="drawerSmall"
+      absolute
+      left
+      temporary
+    >
       <v-list nav dense>
         <v-list-item-group active-class="primary--text text--accent-4">
           <v-list-item
@@ -89,7 +95,7 @@
                 :alt="'perfil de ' + user.name"
                 :src="user.profile_picture"
               />
-              <span v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+              <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title class="primary--text" :title="user.name">
@@ -146,7 +152,9 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title class="white--text">Cerrar sesión</v-list-item-title>
+            <v-list-item-title class="white--text"
+              >Cerrar sesión</v-list-item-title
+            >
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -210,7 +218,12 @@ export default {
   },
 
   methods: {
-    ...mapMutations(["setUser", "updateAuthInfo", "addNotification"]),
+    ...mapMutations([
+      "setUser",
+      "updateAuthInfo",
+      "addNotification",
+      "notificationStatus",
+    ]),
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
         method: "GET",
@@ -226,6 +239,10 @@ export default {
           this.items[2].value = respose.unread_notifications;
           this.items[3].value = respose.unread_messages;
           this.items[4].link = `/${respose.username}`;
+          this.notificationStatus({
+            unread_notifications: respose.unread_notifications,
+            unread_messages: respose.unread_messages,
+          });
           this.setUser(respose);
           this.$root.$emit("userSetted");
           this.connect();
@@ -252,6 +269,10 @@ export default {
           const socketData = JSON.parse(data);
           if (socketData.type == "new_notification") {
             this.items[2].value = socketData.unread_notifications;
+            this.notificationStatus({
+              unread_notifications: socketData.unread_notifications,
+              unread_messages: this.items[3].value,
+            });
           }
           this.addNotification(socketData);
         };
@@ -282,6 +303,7 @@ export default {
   }
   .navigation-small-devices {
     display: block;
+    top: 0px;
   }
 }
 @media (min-width: 920px) {

@@ -45,7 +45,7 @@ def get_img_url_from_model(model, query):
 
 
 def get_notification_and_mark_as_unread(query):
-    notification = Notification.objects.filter(query).first()
-    if notification:
+    notifications = Notification.objects.filter(query)
+    for notification in notifications:
         notification.created = datetime.now()
         notification.mark_as_unread()

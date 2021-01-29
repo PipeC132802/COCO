@@ -51,6 +51,7 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
 export default {
   name: "Account",
   data: () => ({
@@ -75,6 +76,17 @@ export default {
       },
     ],
   }),
+  computed: {
+    ...mapState(["breakpoints"])
+  },
+  mounted(){
+    let screenWidth = window.screen.width;
+      if(this.breakpoints.xs > screenWidth){
+        this.$emit("main", false)
+      } else {
+        this.$emit("main", true)
+      }
+  }
 };
 </script>
 

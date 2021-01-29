@@ -271,15 +271,16 @@ class CreateBarterReactionApi(generics.CreateAPIView, generics.RetrieveAPIView):
         def get_query():
             query = Q(recipient=barter_reaction.barter.user, actor_object_id=request.user.pk,
                       target_object_id=barter_reaction.barter.pk, obj_object_id=barter_reaction.pk,
-                      verb='Reaccionó a tu trueque', nf_type='reacted_by_one_user')
+                      verb__icontains='Reaccionó a tu trueque', nf_type__icontains='reacted_by_one_user')
             return query
 
-        try:
-            barter_reaction = BarterReaction.objects.get(barter_id=request.data["barter_id"], user_from=request.user)
+        barter_reaction = BarterReaction.objects.filter(barter_id=request.data["barter_id"],
+                                                        user_from=request.user).first()
+        if barter_reaction:
             barter_reaction.reaction = request.data["reaction"]
             barter_reaction.save()
             get_notification_and_mark_as_unread(get_query())
-        except:
+        else:
             barter = Barter.objects.get(id=request.data["barter_id"])
             barter_reaction = BarterReaction.objects.create(barter=barter, user_from=request.user,
                                                             reaction=request.data["reaction"])

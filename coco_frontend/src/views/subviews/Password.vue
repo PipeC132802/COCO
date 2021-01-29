@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-2">
     <v-container fluid>
       <div class="settings-title">
         <v-btn
@@ -92,8 +92,16 @@ export default {
     message: "",
     snackbar: false,
   }),
+  mounted() {
+    let screenWidth = window.screen.width;
+    if (this.breakpoints.xs > screenWidth) {
+      this.$emit("main", false);
+    } else {
+      this.$emit("main", true);
+    }
+  },
   computed: {
-    ...mapState(["user", "authentication", "baseUrl"]),
+    ...mapState(["user", "authentication", "baseUrl", "breakpoints"]),
     passwordStrong() {
       var regex = /^(?=\w*\d)(?=\w*[A-Z])(?=\w*[a-z])\S{8,16}$/;
       if (!regex.test(this.newPassword)) {

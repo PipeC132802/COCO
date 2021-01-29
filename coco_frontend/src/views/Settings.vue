@@ -2,8 +2,10 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="12" sm="12" md="4">
-          <div class="px-3 mb-0 title--text settings-title"><strong>Ajustes</strong></div>
+        <v-col v-if="mainMenu" cols="12" sm="12" md="4">
+          <div class="px-3 mb-0 title--text settings-title">
+            <strong>Ajustes</strong>
+          </div>
           <p>
             <v-divider></v-divider>
           </p>
@@ -25,9 +27,9 @@
             </v-list-item>
           </v-list>
         </v-col>
-        <v-divider vertical></v-divider>
+        <v-divider v-if="mainMenu" vertical></v-divider>
         <v-col class="ma-0 pa-0" cols="12" sm="12" md="7">
-          <router-view />
+          <router-view v-on:main="updateMenuVisibility" />
         </v-col>
       </v-row>
     </v-container>
@@ -35,6 +37,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Settings",
   data: () => ({
@@ -44,9 +47,29 @@ export default {
       { title: "Notificaciones", link: "NotificationsSettings" },
       { title: "Recursos", link: "Resources" },
     ],
+    mainMenu: true,
   }),
+  computed: {
+    ...mapState(["breakpoints"]),
+  },
   created() {
     document.title = "Ajustes | COCO";
+  },
+  watch: {
+    $route(from, to) {
+      let screenWidth = window.screen.width;
+      if (this.breakpoints.xs > screenWidth && this.$route.name != "Settings") {
+        this.mainMenu = false;
+      } else {
+        this.mainMenu = true;
+      }
+    },
+  },
+  methods: {
+    updateMenuVisibility(visibility) {
+      console.log("asd", visibility)
+      this.mainMenu = visibility;
+    },
   },
 };
 </script>
@@ -59,7 +82,7 @@ export default {
 .arrow-back {
   display: none;
 }
-.settings-title{
+.settings-title {
   font-size: calc(1em + 1vw);
 }
 @media (max-width: 920px) {

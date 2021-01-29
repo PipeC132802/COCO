@@ -29,7 +29,10 @@
                 <v-list-item-title v-html="menu[0].title"></v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
-                <v-switch @change="updateNotificationPreferences" v-model="notificationPush"></v-switch>
+                <v-switch
+                  @change="updateNotificationPreferences"
+                  v-model="notificationPush"
+                ></v-switch>
               </v-list-item-action>
             </v-list-item>
             <v-list-item active-class="primary white--text" class="pa-1 px-3">
@@ -40,7 +43,10 @@
                 <v-list-item-title v-html="menu[1].title"></v-list-item-title>
               </v-list-item-content>
               <v-list-item-action>
-                <v-switch @change="updateNotificationPreferences" v-model="notificationEmail"></v-switch>
+                <v-switch
+                  @change="updateNotificationPreferences"
+                  v-model="notificationEmail"
+                ></v-switch>
               </v-list-item-action>
             </v-list-item>
           </v-list>
@@ -70,10 +76,16 @@ export default {
     apiDir: "notifications-preferences/",
   }),
   computed: {
-    ...mapState(["user", "authentication", "baseUrl"]),
+    ...mapState(["user", "authentication", "baseUrl", "breakpoints"]),
   },
-  mounted(){
-    this.getNotificationsPreferences()
+  mounted() {
+    this.getNotificationsPreferences();
+    let screenWidth = window.screen.width;
+    if (this.breakpoints.xs > screenWidth) {
+      this.$emit("main", false);
+    } else {
+      this.$emit("main", true);
+    }
   },
   methods: {
     getNotificationsPreferences() {
@@ -83,11 +95,11 @@ export default {
           Authorization: `Token ${this.authentication.accessToken}`,
         },
       })
-      .then((response)=>(response.json()))
-      .then((response) => {
-        this.notificationPush = response.push;
-        this.notificationEmail = response.email;
-      })
+        .then((response) => response.json())
+        .then((response) => {
+          this.notificationPush = response.push;
+          this.notificationEmail = response.email;
+        });
     },
     updateNotificationPreferences() {
       let formData = {
@@ -104,7 +116,6 @@ export default {
         body: JSON.stringify(formData),
       });
     },
-
   },
 };
 </script>
