@@ -1,12 +1,17 @@
 <template>
   <div>
     <v-bottom-sheet v-model="sheet">
-      <v-sheet class="text-center" height="220px">
-        <v-container>
-          <v-row align="center">
-            <v-col>
+      <v-sheet
+        class="text-center"
+        :style="smallDevice ? 'overflow-y: auto' : ''"
+        max-height="200px"
+      >
+        <v-container class="pt-1 pb-0">
+          <v-row class="pt-0 mb-0" align="center">
+            <v-col class="pt-0" cols="12" sm="12" md="3">
               <p>Entrantes</p>
               <v-color-picker
+                width="100%"
                 v-model="incomingColor"
                 class="ma-2"
                 dot-size="24"
@@ -16,9 +21,10 @@
                 swatches-max-height="250"
               ></v-color-picker>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="12" md="3">
               <p>Salientes</p>
               <v-color-picker
+                width="100%"
                 v-model="outgoingColor"
                 class="ma-2"
                 dot-size="24"
@@ -28,9 +34,10 @@
                 swatches-max-height="250"
               ></v-color-picker>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="12" md="3">
               <p>Fondo</p>
               <v-color-picker
+                width="100%"
                 v-model="bgColor"
                 class="ma-2"
                 dot-size="24"
@@ -40,9 +47,14 @@
                 swatches-max-height="250"
               ></v-color-picker>
             </v-col>
-            <v-btn color="primary darken-3" @click="resetColors"
-              >Reestablecer</v-btn
-            >
+            <v-col cols="12" sm="12" md="3" class="text-center">
+              <v-btn
+                :block="smallDevice"
+                color="primary darken-3"
+                @click="resetColors"
+                >Reestablecer</v-btn
+              >
+            </v-col>
           </v-row>
           <v-col></v-col>
         </v-container>
@@ -55,19 +67,25 @@
 export default {
   name: "ColorPicker",
   props: ["incoming", "outgoing", "bg"],
-  data:()=>({
+  data: () => ({
     sheet: false,
+    smallDevice: false,
   }),
-  created(){
+  created() {
     this.sheet = true;
-  },
-  beforeDestroy(){
-    this.sheet = false;
-  },
-  watch:{
-    sheet(){
-      this.$emit("sheetStatus", this.sheet)
+    let width = window.screen.width;
+    if (width <= 920) {
+      this.smallDevice = true;
+    } else {
+      this.smallDevice = false;
     }
+  },
+  
+  beforeUpdate() {},
+  watch: {
+    sheet() {
+      this.$emit("sheetStatus", this.sheet);
+    },
   },
   computed: {
     incomingColor: {
@@ -106,4 +124,18 @@ export default {
 </script>
 
 <style>
+#bottom-sheet {
+  display: block;
+}
+#navigation-picker {
+  display: none;
+}
+@media (min-width: 920px) {
+  #navigation-picker {
+    display: block;
+  }
+  #bottom-sheet {
+    display: none;
+  }
+}
 </style>

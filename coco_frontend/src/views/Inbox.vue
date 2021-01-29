@@ -33,6 +33,7 @@ export default {
   }),
   created() {
     document.title = "Inbox | COCO";
+    
   },
   computed: {
     ...mapState(["user", "breakpoints"]),
