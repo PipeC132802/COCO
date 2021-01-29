@@ -46,4 +46,4 @@ class MessagesApi(generics.ListAPIView):
     serializer_class = MessageSerializer
 
     def get_queryset(self):
-        return Message.objects.filter(conversation_id=self.request.GET["conversation"]).order_by("created")
+        return Message.objects.filter(conversation_id=self.request.GET["conversation"]).order_by("-created")

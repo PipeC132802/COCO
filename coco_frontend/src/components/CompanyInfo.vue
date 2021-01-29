@@ -54,7 +54,7 @@
             <span class="primary--text mr-2 COCO"> COCO </span>
           </v-row>
           <v-row class="mt-0">
-            <v-col class="pt-0">
+            <v-col cols="6" sm="4" class="pt-0">
               <v-row class="mb-1" align="center">
                 <v-col sm="12" class="mt-2pt-0 pb-0">
                   <router-link
@@ -85,7 +85,7 @@
                 >
               </v-row>
             </v-col>
-            <v-col class="pt-0">
+            <v-col  cols="6" sm="4" class="pt-0">
               <v-row class="mb-1" align="center">
                 <v-col sm="12" class="mt-2pt-0 pb-0">
                   <v-icon>mdi-help-circle-outline</v-icon>
@@ -98,7 +98,7 @@
                 </v-col>
               </v-row>
             </v-col>
-            <v-col></v-col>
+            <v-col  cols="6" sm="4"></v-col>
           </v-row>
         </v-container>
       </v-sheet>

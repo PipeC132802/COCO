@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import moment from "moment";
 
 import FollowButton from "@/components/FollowButton.vue";
@@ -251,6 +251,7 @@ export default {
     this.getUserCoverInfo();
   },
   methods: {
+    ...mapMutations(['setProfile']),
     getUserCoverInfo() {
       fetch(
         this.baseUrl +
@@ -266,6 +267,7 @@ export default {
           return response.json();
         })
         .then((response) => {
+          
           this.userP.name = response.name;
           this.userP.profilePicture = response.profile_picture;
           this.userP.skills = response.skills.join(", ");
@@ -278,6 +280,7 @@ export default {
           document.title =
             this.userP.name + ` (@${this.userP.username}) | COCO`;
           if (!response.cover_photo) this.searchCover();
+          this.setProfile({name: this.userP.name})
         })
         .catch((err) => {
           this.$router.push({ name: "NotFound" });

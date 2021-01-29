@@ -164,6 +164,7 @@ export default {
     } else {
       this.$emit("main", true);
     }
+     
   },
   beforeDestroy() {
     this.websocket.close();
@@ -299,7 +300,7 @@ export default {
           ) {
             this.typing = socketData.typing;
           } else if (socketData.type === "chat_message") {
-            this.messages.push(socketData);
+            this.messages.unshift(socketData);
             this.typing = false;
             if (socketData.sender_username == this.user.username) {
               this.seenMsg();
@@ -460,6 +461,8 @@ body {
   border-radius: 5px;
 }*/
 .messages {
+  display: flex;
+  flex-direction: column-reverse;
   position: relative;
 
   margin: 20px 0px;
@@ -469,6 +472,7 @@ body {
   overflow: auto;
   background: var(--background-color);
   border-radius: 15px 15px 0 0;
+  scroll-snap-type: y proximity;
 }
 @media (max-width: 920px) {
   .inbox-chats {
@@ -535,5 +539,8 @@ body {
 .typing-container {
   position: relative;
   margin: 25px 0%;
+}
+.v-messages, .v-text-field__details{
+  display: none;
 }
 </style>

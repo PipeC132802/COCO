@@ -16,7 +16,8 @@
     <v-row v-if="results.loading" justify="center">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </v-row>
-    <v-tabs v-else v-model="tab">
+    <v-tabs       show-arrows
+ v-else v-model="tab">
       <v-tab
         ><v-icon left>mdi-clipboard-list</v-icon
         ><span class="tab-title">Todos</span>

@@ -8,35 +8,29 @@
       color="primary"
       class="user-menu"
     >
-      <v-toolbar-title class="mr-3">
-        <v-btn @click="$root.$emit('menu')" dark icon>
-          <v-icon>mdi-menu</v-icon>
-        </v-btn>
-      </v-toolbar-title>
-      <span v-if="!showSearchBar" class="nav-bar-title white--text">{{
-        title
-      }}</span>
+      <v-row align="center">
+        <v-toolbar-title class="mr-3">
+          <v-btn @click="$root.$emit('menu')" dark icon>
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </v-toolbar-title>
+        <span v-if="!showSearchBar" class="nav-bar-title white--text">{{
+          title
+        }}</span>
 
-      <v-text-field
-        v-if="showSearchBar"
-        dense
-        class="pt-6"
-        v-model="searchValue"
-        @click:prepend="go2search"
-        @keydown.enter="go2search"
-        placeholder="Buscar trueques"
-        solo
-        prepend-inner-icon="mdi-magnify"
-      ></v-text-field>
-     
+        <v-text-field
+          v-if="showSearchBar"
+          dense
+          v-model="searchValue"
+          @click:prepend="go2search"
+          @keydown.enter="go2search"
+          placeholder="Buscar trueques"
+          solo
+          prepend-inner-icon="mdi-magnify"
+        ></v-text-field>
+      </v-row>
     </v-app-bar>
-    <v-app-bar
-      elevate-on-scroll
-      id="nav-bar"
-      class="company"
-      app
-      color="white"
-    >
+    <v-app-bar elevate-on-scroll id="nav-bar" class="company" app color="white">
       <v-toolbar-title>
         <v-list-item
           dense
@@ -116,29 +110,16 @@ export default {
   },
   watch: {
     $route(to, from) {
-      if (this.$route.name != "Explore") {
-        this.searchValue = "";
-        this.showSearchBar = false;
-        if (this.$route.name == "Home") {
-          this.title = "Inicio";
-        } else if (this.$route.name == "Notifications") {
-          this.title = "Notificaciones";
-        } else if (this.$route.name == "Inbox") {
-          this.title = "Mensajes";
-        } else if(this.$route.name == 'Profile'){
-          this.title = this.user.name
-        } else if(this.$route.name == 'Barter'){
-          this.title = 'Trueque';
-        } else if(this.$route.name == "Settings"){
-          this.title = "Ajustes"
-        }
-      } else {
-        this.showSearchBar = true;
-      }
+      if (to.name != "Explore") this.searchValue = "";
+      this.setTitle();
     },
+    profile(){
+      this.setTitle();
+    }
   },
   created() {
     if (this.$route.query.q) this.searchValue = this.$route.query.q;
+    this.setTitle();
   },
 
   methods: {
@@ -146,7 +127,29 @@ export default {
     searchPubs() {
       console.log("searching..");
     },
-
+    setTitle() {
+      if (this.$route.name != "Explore") {
+        this.showSearchBar = false;
+        if (this.$route.name == "Home") {
+          this.title = "Inicio";
+        } else if (this.$route.name == "Notifications") {
+          this.title = "Notificaciones";
+        } else if (
+          this.$route.name == "Inbox" ||
+          this.$route.name == "Messages"
+        ) {
+          this.title = "Mensajes";
+        } else if (this.$route.name == "Profile") {
+          this.title = this.profile.name;
+        } else if (this.$route.name == "Barter") {
+          this.title = "Trueque";
+        } else if (this.$route.name == "Settings") {
+          this.title = "Ajustes";
+        }
+      } else {
+        this.showSearchBar = true;
+      }
+    },
     updateFormsDialog(login, signup) {
       let formDialog = {
         loginDialog: login,
@@ -160,7 +163,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(["authentication", "forms", "userRequireMoreInfo", "user"]),
+    ...mapState(["authentication", "forms", "userRequireMoreInfo", "user", "profile"]),
   },
 };
 </script>
@@ -180,6 +183,10 @@ export default {
   .nav-bar-title {
     font-size: 16pt;
     color: rgb(226, 226, 226);
+    width: calc(100vw - 100px);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 @media (min-width: 920px) {

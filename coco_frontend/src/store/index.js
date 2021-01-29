@@ -36,11 +36,15 @@ export default new Vuex.Store({
       md: 1264,
       lg: 1904,
       xl: 1904, //greater than this value
-    }
+    },
+    profile: ''
   },
   mutations: {
     setUser(state, user) {
       state.user = user;
+    },
+    setProfile(state, profile){
+      state.profile = profile
     },
     updateAuthInfo(state, authObj) {
       state.authentication = authObj;
