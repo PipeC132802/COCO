@@ -10,7 +10,7 @@
           :to="{ name: 'Profile', props: { username: $route.params.username } }"
           ><v-icon>mdi-arrow-left-thick</v-icon></v-btn
         >
-        Editar información de tu cuenta
+        Editar tu información
       </v-card-title>
     </v-card>
     <v-card elevation="3" class="mt-3">
