@@ -292,7 +292,6 @@ export default {
         protocol + this.wsBase + "/ws/chat/" + this.room + "/"
       );
       this.websocket.onopen = () => {
-        console.info("conectado exitosamente!", this.room);
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);

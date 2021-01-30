@@ -18,7 +18,7 @@
         Información del perfil
         <v-container class="header ma-0 pa-0"></v-container>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="mb-5">
         <v-form
           ref="form"
           v-model="valid"

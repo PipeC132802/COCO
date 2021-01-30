@@ -28,15 +28,7 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>
-            <router-link
-              class="title--text link"
-              :title="chatElement.opponent.name"
-              :to="{
-                name: 'Profile',
-                params: { username: chatElement.opponent.username },
-              }"
-              >{{ chatElement.opponent.name }}</router-link
-            ><span
+           {{ chatElement.opponent.name }}<span
               class="grey--text ml-2"
               :title="'@' + chatElement.opponent.username"
               >@{{ chatElement.opponent.username }}</span
@@ -109,7 +101,7 @@ export default {
     sound: require("../assets/sounds/notifications/newmessage.ogg"),
   }),
   computed: {
-    ...mapState(["wsBase", "user", "secretKey", "chats", "chat"]),
+    ...mapState(["wsBase", "user", "secretKey", "chats", "chat", "notification"]),
     chatElement: {
       get: function () {
         return this.chatObj;
@@ -135,7 +127,7 @@ export default {
   },
   beforeDestroy() {},
   methods: {
-    ...mapMutations(["setChat", "msgReceivedInbox"]),
+    ...mapMutations(["setChat", "msgReceivedInbox", 'notificationStatus']),
     getChatIndex() {
       let chatElement = this.chats.find(
         (chatElement) =>
@@ -172,10 +164,7 @@ export default {
           "/"
       );
       this.websocket.onopen = () => {
-        console.info(
-          "conectado exitosamente inbox!",
-          this.chatElement.conversation
-        );
+  
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
@@ -190,6 +179,7 @@ export default {
             this.chatElement.created = socketData.created;
             if (socketData.sender_username != this.user.username) {
               this.chatElement.unread_messages = socketData.unread_messages;
+              this.notificationStatus({unread_messages: socketData.unread_messages, unread_notifications: this.notification.unread_notifications});
               this.play();
             } else this.chatElement.unread_messages = 0;
             this.setChat(this.chatElement);

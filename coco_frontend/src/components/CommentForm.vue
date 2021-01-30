@@ -91,7 +91,6 @@ export default {
     setComment() {
       let commentDiv = document.getElementById("CommentDiv" + this.barterId);
       this.comment = commentDiv.innerText;
-      console.log(this.comment, commentDiv.innerText)
     },
     submitComment() {
       if (this.comment.trim().length || this.image) {

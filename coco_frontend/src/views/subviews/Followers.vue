@@ -88,7 +88,7 @@ export default {
       )
         .then((response) => response.json())
         .then((response) => (this.followers = response))
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     },
     toProfile(username) {
       this.$router.push({ name: "Profile", params: { username: username } });

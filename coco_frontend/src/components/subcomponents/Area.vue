@@ -66,7 +66,7 @@ export default {
           this.entries = response;
         })
         .catch((err) => {
-          console.log(err);
+          console.error(err);
         })
         .finally(() => (this.isLoading = false));
     },

@@ -14,8 +14,10 @@
     <v-divider></v-divider>
 
     <v-card-text class="pb-0" v-if="!following.length">
-      <p v-if="$route.params.username == user.username">Aún no sigues a nadie 🤔</p>
-      <p v-else>@{{$route.params.username}} aún no sigue a nadie 🤔</p>
+      <p v-if="$route.params.username == user.username">
+        Aún no sigues a nadie 🤔
+      </p>
+      <p v-else>@{{ $route.params.username }} aún no sigue a nadie 🤔</p>
     </v-card-text>
     <v-card-text v-else>
       <v-list-item
@@ -47,8 +49,13 @@
         <v-list-item-action
           v-if="user.username && followed.username != user.username"
         >
-          <FollowButton :followThisUser="false" :from="user.username" :to="followed.username" 
-              :target="$route.params.username == user.username?'self':'other'" :text="true"/>
+          <FollowButton
+            :followThisUser="false"
+            :from="user.username"
+            :to="followed.username"
+            :target="$route.params.username == user.username ? 'self' : 'other'"
+            :text="true"
+          />
         </v-list-item-action>
       </v-list-item>
     </v-card-text>
@@ -59,7 +66,7 @@
 import { mapState } from "vuex";
 import FollowButton from "@/components/FollowButton.vue";
 export default {
-  components:{
+  components: {
     FollowButton,
   },
   data: () => ({
@@ -83,7 +90,7 @@ export default {
       )
         .then((response) => response.json())
         .then((response) => (this.following = response))
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     },
     toProfile(username) {
       this.$router.push({ name: "Profile", params: { username: username } });
@@ -93,7 +100,7 @@ export default {
 </script>
 
 <style>
-p{
+p {
   font-size: 16pt;
 }
 </style>

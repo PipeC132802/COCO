@@ -14,12 +14,7 @@
       ></v-skeleton-loader>
     </div>
     <div class="mt-2" v-if="!barters.length">
-      <v-alert
-        color="primary darken-3"
-        dark
-        icon="mdi-alert"
-        dense
-      >
+      <v-alert color="primary darken-3" dark icon="mdi-alert" dense>
         <div v-if="field == 'profile'">
           <span v-if="$route.params.username !== user.username">
             @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
@@ -153,7 +148,11 @@
           >
         </v-card-title>
         <v-card-subtitle class="pa-0 pt-0 mx-4">
-          <v-chip class="mr-1 mt-1" :title="'Enseñaré ' + barter.skill" color="primary darken-1">
+          <v-chip
+            class="mr-1 mt-1"
+            :title="'Enseñaré ' + barter.skill"
+            color="primary darken-1"
+          >
             <v-icon class="pl-1" small pill left> mdi-teach </v-icon>
             {{ barter.skill }}
           </v-chip>
@@ -165,7 +164,7 @@
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
             {{ barter.interest }}
           </v-chip>
-          <v-chip class="mt-1" :title="'🌎' + barter.about.place"  label>
+          <v-chip class="mt-1" :title="'🌎' + barter.about.place" label>
             <v-icon small left>mdi-map-marker</v-icon>
             {{ barter.about.place }}
           </v-chip>
@@ -355,11 +354,11 @@ a {
 a:hover {
   text-decoration: underline;
 }
-.barter-title{
+.barter-title {
   max-width: 95%;
   font-weight: 540;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
 }
 </style>
 

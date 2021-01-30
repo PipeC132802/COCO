@@ -67,7 +67,6 @@ export default {
   },
   methods: {
     updateMenuVisibility(visibility) {
-      console.log("asd", visibility)
       this.mainMenu = visibility;
     },
   },

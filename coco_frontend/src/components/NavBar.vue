@@ -124,9 +124,6 @@ export default {
 
   methods: {
     ...mapMutations(["updateFormsInfo"]),
-    searchPubs() {
-      console.log("searching..");
-    },
     setTitle() {
       if (this.$route.name != "Explore") {
         this.showSearchBar = false;

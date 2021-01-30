@@ -95,7 +95,6 @@ export default {
       this.verbose = this.followed ? "Siguiendo" : "Seguir";
     },
     notifyUser(response) {
-      console.log('res', response)
       if (response) {
         let sockedData = {
           type: "new_notification",
