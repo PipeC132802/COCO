@@ -18,7 +18,7 @@
         :notification="notification"
       />
     </div>
-    <v-fab-transition v-if="floatingIcon">
+    <v-fab-transition v-if="floatingIcon && authentication.userIsAuthenticated"> 
       <v-btn
         color="primary"
         fab
@@ -33,8 +33,8 @@
         <v-icon>{{ floatingIcon }}</v-icon>
       </v-btn>
     </v-fab-transition>
-    <FooterNav class="footer-nav" />
-    <div id="notification"></div>
+    <FooterNav v-if="authentication.userIsAuthenticated" class="footer-nav" />
+    <div v-if="authentication.userIsAuthenticated" id="notification"></div>
   </v-app>
 </template>
 

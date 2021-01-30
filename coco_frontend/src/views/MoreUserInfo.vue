@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
-    <v-row justify="center">
-      <v-col sm="10">
+    <v-row  justify="center">
+      <v-col cols="12" sm="10">
         <v-stepper v-model="e1">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">
@@ -9,7 +9,6 @@
             </v-stepper-step>
 
             <v-divider></v-divider>
-
             <v-stepper-step :complete="e1 > 2" step="2">
               Sobre ti
             </v-stepper-step>
@@ -18,9 +17,8 @@
 
             <v-stepper-step step="3">Foto de perfil </v-stepper-step>
           </v-stepper-header>
-
           <v-stepper-items>
-            <v-stepper-content step="1">
+            <v-stepper-content flat step="1">
               <v-card class="ma-0 pa-0">
                 <v-container class="pa-0" fluid>
                   <v-row justify="center" class="pa-0" wrap>
@@ -28,7 +26,8 @@
                       <form @submit.prevent="signUpSubmit">
                         <v-row class="pa-0">
                           <v-col class="ma-0" xs="12" md="12">
-                            <Contact :contactObj="contact" v-on:contact="contactInfo" />
+                            <Contact2 v-on:contact="contactInfo" />
+
                             <Personal v-on:about="aboutInfo" />
                           </v-col>
                         </v-row>
@@ -55,8 +54,15 @@
                     <form @submit.prevent="signUpSubmit">
                       <v-row class="pa-0">
                         <v-col class="ma-0" xs="12" md="12">
-                          <Areas :areas="[]" v-on:skills="skillsInfo" subject="skills" />
-                          <Areas :areas="[]" v-on:learn="learnInfo" subject="learn" />
+                          <Areas
+                           :areas="areas.skills"
+                            v-on:skills="skillsInfo"
+                            subject="skills"
+                          />
+                          <Areas
+                            v-on:learn="learnInfo"
+                            subject="learn"
+                          />
                           <v-textarea
                             v-model="bio"
                             placeholder="Soy una persona amante de los libros..."
@@ -130,7 +136,7 @@
 
 
 <script>
-import Contact from "@/components/subcomponents/Contact.vue";
+import Contact2 from "@/components/subcomponents/Contact2.vue";
 import Areas from "@/components/subcomponents/Areas.vue";
 import Personal from "@/components/subcomponents/Personal.vue";
 import ProfilePicture from "@/components/subcomponents/ProfilePicture.vue";
@@ -139,7 +145,7 @@ import { readCookie } from "@/js/cookiesfunctions.js";
 
 export default {
   components: {
-    Contact,
+    Contact2,
     Areas,
     Personal,
     ProfilePicture,
@@ -150,7 +156,7 @@ export default {
         country: "",
         city: "",
         cellphone: "",
-        prefix:'',
+        prefix: "",
       },
       about: {
         birthday: "",
@@ -187,7 +193,8 @@ export default {
     this.token = readCookie("token");
 
     document.title = "Completa tu información | COCO";
-
+    let app = document.getElementById("app");
+    app.style = "background: #307ABD;"
     let authObj = this.authentication;
     authObj.userIsAuthenticated = false;
     this.updateAuthInfo(authObj);
@@ -199,6 +206,11 @@ export default {
   },
   computed: {
     ...mapState(["authentication", "baseUrl"]),
+  },
+  beforeDestroy(){
+    this.restoreCredentials();
+    let app = document.getElementById("app");
+    app.style = "background: white;"
   },
   methods: {
     ...mapMutations(["updateAuthInfo", "updateUserRequireMoreInfo"]),
@@ -228,12 +240,13 @@ export default {
         this.contact.city.trim().length &&
         this.about.birthday &&
         this.about.gender
-      ) {
+      ) { 
         let body = {
           country: this.contact.country.trim(),
           city: this.contact.city.trim(),
-          phone_number: this.contact.cellphone.trim(),
+          phone_number: this.contact.phone.trim(),
         };
+        console.log(body, "/");
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
           "Content-Type": "application/json",
@@ -274,7 +287,7 @@ export default {
       this.loadingBtn = true;
       if (this.profilePicture) {
         const formData = new FormData();
-        formdata.append("profile_picture", this.profilePicture);
+        formData.append("profile_picture", this.profilePicture);
 
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
@@ -316,15 +329,25 @@ export default {
           if (this.e1 < 3 && !this.error) {
             this.e1 += 1;
           } else if (!this.error) {
-            let authObj = this.authentication;
+            this.restoreCredentials();
+          }
+        });
+    },
+    restoreCredentials(){
+      let authObj = this.authentication;
             authObj.userIsAuthenticated = true;
             this.updateAuthInfo(authObj);
             this.updateUserRequireMoreInfo(true);
             localStorage.removeItem("more_info");
             this.goHome();
-          }
-        });
-    },
+    }
   },
 };
 </script>
+<style>
+#container{
+  width: 100vw;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+}
+</style>

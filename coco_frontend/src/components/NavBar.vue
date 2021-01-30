@@ -7,6 +7,7 @@
       elevate-on-scroll
       color="primary"
       class="user-menu"
+      v-if="authentication.userIsAuthenticated"
     >
       <v-row align="center">
         <v-toolbar-title>

@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-row align="center">
-      <v-col>
+      <v-col cols="12" md="6">
         <v-autocomplete
-          v-model="contactObj.country"
+          v-model="country"
           :items="items"
           :loading="isLoading"
           hide-no-data
@@ -49,10 +49,10 @@
           </template>
         </v-autocomplete>
       </v-col>
-      <v-col>
+      <v-col cols="12" md="6">
         <v-text-field
           class="pa-0"
-          v-model="contactObj.city"
+          v-model="city"
           label="Ciudad"
           :rules="[rules.required]"
           required
@@ -61,18 +61,18 @@
     </v-row>
 
     <v-row>
-      <v-col sm="2">
+      <v-col cols="4" md="2">
         <v-text-field
           class="mb-1 pa-0"
-          v-model="contactObj.prefix"
+          v-model="prefix"
           label="Prefijo"
           :rules="[rules.valid]"
         ></v-text-field>
       </v-col>
-      <v-col sm="10">
+      <v-col cols="8" sm="10">
         <v-text-field
           class="mb-1 pa-0"
-          v-model="contactObj.cellphone"
+          v-model="cellphone"
           label="Número de teléfono"
           :rules="[rules.cellValid]"
         ></v-text-field>
@@ -86,14 +86,16 @@
 import countries from "@/json/countriescodes.json";
 export default {
   name: "Contact",
-  props: ["contactObj"],
   data() {
     return {
       descriptionLimit: 60,
       entries: [],
       isLoading: false,
       search: null,
-      phone: "",
+      country: "",
+      city: "",
+      prefix: "",
+      cellphone: "",
       rules: {
         required: (value) => !!value || "Obligatorio",
         valid: (value) =>
@@ -104,38 +106,25 @@ export default {
     };
   },
   computed: {
-    country: function () {
-      if (this.contactObj.country) {
-        return this.contactObj.country;
-      }
-    },
-     items() {
+    items() {
       return countries.map((country) => {
         return country;
       });
     },
   },
-  beforeUpdate() {
-    if (this.contactObj !== null) {
-      this.contactObj.prefix =
-        this.contactObj.country.phone_code != undefined
-          ? "+" + this.contactObj.country.phone_code
-          : this.contactObj.prefix;
-      let contactObj = {
-        country:
-          this.contactObj.country.nombre != undefined
-            ? this.contactObj.country.nombre
-            : this.contactObj.country,
-        city: this.contactObj.city,
-        phone: this.contactObj.prefix + " " + this.contactObj.cellphone,
-      };
-
-      this.$emit("contact", contactObj);
-    }
+  watch: {
+    country() {
+      this.prefix = "+" + this.country.phone_code;
+    },
   },
- 
-
-  watch: {},
+  beforeUpdate() {
+    let contactObj = {
+      country: this.country.nombre,
+      city: this.city,
+      phone: this.prefix + " " + this.cellphone,
+    };
+    this.$emit("contact", contactObj);
+  },
 
   methods: {},
 };

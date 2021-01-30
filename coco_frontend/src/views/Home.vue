@@ -40,7 +40,7 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style>
 @media (max-width: 920px) {
   .new-barter {
     display: none;

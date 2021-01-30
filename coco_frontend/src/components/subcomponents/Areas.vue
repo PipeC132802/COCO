@@ -1,4 +1,5 @@
 <template>
+
   <div :id="subject"> 
     <v-autocomplete
       v-model="areasList"
@@ -68,7 +69,7 @@ export default {
     },
     areasList: {
       get: function(){
-        return this.areas
+        return this.areas? this.areas:[]
       },
       set: function(value){
         this.$emit(this.subject,  value)
@@ -85,8 +86,8 @@ export default {
       if (this.isLoading) return;
 
       this.isLoading = true;
-
-      fetch(this.baseUrl + this.apiDir + `?area=${val.trim()}`, {
+      let query = val != null? val.trim(): '';
+      fetch(this.baseUrl + this.apiDir + `?area=${query}`, {
         method: "GET",
         headers: {
           Authorization: `Token ${this.authentication.accessToken}  `,
@@ -105,8 +106,9 @@ export default {
 
   methods: {
     remove(item) {
-      const index = this.areas.indexOf(item.area);
-      if (index >= 0) this.areas.splice(index, 1);
+      console.log(item, "delete", this.areasList)
+      const index = this.areasList.indexOf(item.area);
+      if (index >= 0) this.areasList.splice(index, 1);
     },
     trimInput(){
       var parent = document.getElementById(this.subject);
