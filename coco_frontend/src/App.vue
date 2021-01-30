@@ -28,7 +28,7 @@
         id="btn-create"
         bottom
         fixed
-        :to="{ name: 'ComposeBarter' }"
+        @click="setFloatingBtnEvent"
       >
         <v-icon>{{ floatingIcon }}</v-icon>
       </v-btn>
@@ -73,7 +73,6 @@ export default {
   },
   beforeUpdate() {},
   beforeMount() {
-    let aside = document.getElementById("leftAside");
     let token = readCookie("token");
     let responseObj = {
       accessToken: token,
@@ -90,6 +89,13 @@ export default {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
+    setFloatingBtnEvent(){
+      if(this.floatingIcon && this.floatingIcon == "mdi-pencil"){
+        this.$router.push({name:'ComposeBarter'})
+      } else if(this.floatingIcon && this.floatingIcon == 'mdi-message-plus'){
+        this.$root.$emit("createChat")
+      }
+    }
   },
 };
 </script>

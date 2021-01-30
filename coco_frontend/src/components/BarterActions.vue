@@ -8,11 +8,11 @@
           text
           @click="reac2Barter(0)"
         >
-          <v-icon v-if="!reaction" left small> mdi-thumb-up</v-icon>
-          <v-icon left small style="font-style: normal" v-else>
+          <v-icon v-if="!reaction" small> mdi-thumb-up</v-icon>
+          <v-icon small style="font-style: normal" v-else>
             {{ reactionMsg.split(" ")[0] }}
           </v-icon>
-          <span class="btn-text">
+          <span class="btn-text ml-1">
           {{ reactionMsg.split(" ")[1] }}
           </span>
           <v-expand-transition>
@@ -55,15 +55,15 @@
       </v-hover>
 
       <v-btn @click="showComments" text class="mr-1 action">
-        <v-icon left small> mdi-comment-text-multiple </v-icon>
-        <span class="btn-text">
+        <v-icon small> mdi-comment-text-multiple </v-icon>
+        <span class="btn-text ml-1">
 
         Proponer
         </span>
       </v-btn>
       <v-btn class="action" text>
-        <v-icon left small> mdi-share-variant </v-icon>
-        <span class="btn-text">
+        <v-icon small> mdi-share-variant </v-icon>
+        <span class="btn-text ml-1">
         Compartir
         </span>
       </v-btn>

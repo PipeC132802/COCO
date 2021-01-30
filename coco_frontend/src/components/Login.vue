@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-dialog  v-model="loginDialog" max-width="600">
+    <v-dialog persistent  v-model="loginDialog" max-width="600">
       <v-card  id="v-dialog">
-        <v-card-title> Inicia sesión con </v-card-title>
+        <v-card-title class="pb-0 mb-0"> Inicia sesión con </v-card-title>
         
         <v-card-text class="pb-0 mb-0">
           <v-container fluid>
@@ -153,7 +153,7 @@ export default {
         })
         .finally(()=>{
            this.loading = false;
-           this.loginDialog = false;
+           
            
         })
 

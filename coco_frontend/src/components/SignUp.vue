@@ -1,14 +1,36 @@
 <template>
   <div>
-    <v-dialog v-model="signUpDialog" dense max-width="600">
+    <v-dialog persistent v-model="signUpDialog" dense max-width="600">
       <v-card id="v-dialog">
-        <v-card-title> Regístrate con </v-card-title>
-        
-        <v-card-text>
-          <v-container>
+        <v-card-title class="pl-8 pt-5 pb-0 mx-auto"> Regístrate con </v-card-title>
+        <v-container fluid class="pa-0">
+          <v-row justify="center">
+            <v-col cols="3" class="text-center">
+              <v-btn color="red darken-4" dark>
+                <v-icon>mdi-google</v-icon>
+                <span class="big-devices ml-1">Google</span>
+              </v-btn>
+            </v-col>
+            <v-col cols="3" sm="4" class="text-center">
+              <v-btn  color="blue darken-4" dark>
+                <v-icon>mdi-facebook</v-icon>
+                <span class="big-devices ml-1">Facebook</span>
+              </v-btn>
+            </v-col>
+            <v-col cols="3" class="text-center">
+              <v-btn color="blue"  dark>
+                <v-icon>mdi-twitter</v-icon>
+                <span class="big-devices ml-1">Twitter</span>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+        <v-card-text class="pt-0 mt-0 pb-0">
+        <div class="text-left pl-3 pt-2 pb-0 mb-0"><p class="ma-0">O ingresando tus datos</p></div>
+          <v-container class="pt-0">
             <form style="width: 100%" @submit.prevent="signUpSubmit">
-              <v-row>
-                <v-col xs="12" md="6">
+              <v-row align="center">
+                <v-col class="pt-0 pb-0" cols="12"  md="6">
                   <v-text-field
                     class="mb-1"
                     v-model="firstName"
@@ -17,7 +39,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col sm="12" md="6">
+                <v-col class="pb-0 pt-0" cols="12" sm="12" md="6">
                   <v-text-field
                     required
                     class="mb-1"
@@ -29,24 +51,24 @@
               </v-row>
               <v-text-field
                 required
-                class="mb-1"
+                class="mb-1 pt-0"
                 v-model="username"
                 label="Usuario"
                 :rules="[rules.required, rules.valid]"
               ></v-text-field>
               <v-text-field
                 required
-                class="mb-1"
+                class="mb-1 pt-1"
                 type="email"
                 v-model="email"
                 label="Correo"
                 :rules="[rules.required]"
               ></v-text-field>
-              <v-row>
-                <v-col sm="12" md="6">
+              <v-row align="center">
+                <v-col class="pt-0 pb-0" cols="12" sm="12" md="6">
                   <v-text-field
                     required
-                    class="mb-1"
+                    class="mb-1 pt-0"
                     v-model="password1"
                     label="Contraseña"
                     :type="view1 ? 'text' : 'password'"
@@ -55,10 +77,10 @@
                     @click:append="view1 = !view1"
                   ></v-text-field>
                 </v-col>
-                <v-col sm="12" md="6">
+                <v-col class="pt-0 pb-0" cols="12" sm="12" md="6">
                   <v-text-field
                     required
-                    class="mb-1"
+                    class="mb-1 pt-0 pb-0"
                     v-model="password2"
                     label="Repita la contraseña"
                     :type="view2 ? 'text' : 'password'"
@@ -88,13 +110,16 @@
               </v-btn>
             </form>
           </v-container>
-          <p align="center" >
-            ¿Ya tienes una cuenta? <a @click="updateFormsDialog(true, false)">Inicia sesión</a>
+          <p align="center">
+            ¿Ya tienes una cuenta?
+            <a @click="updateFormsDialog(true, false)">Inicia sesión</a>
           </p>
         </v-card-text>
-        <v-card-actions class="pt-0 mr-7 mb-2">
+        <v-card-actions class="mt-0 pt-0 mr-3">
           <v-spacer></v-spacer>
-          <v-btn  color="error" @click="signUpDialog = false" text> cerrar </v-btn>
+          <v-btn color="error" @click="signUpDialog = false" text>
+            cerrar
+          </v-btn>
         </v-card-actions>
       </v-card>
       <v-snackbar v-model="snackbar">
@@ -216,19 +241,18 @@ export default {
           };
           setCookie("token", response.key, 60);
           this.updateAuthInfo(responseObj);
-          
         })
         .catch((e) => {
           this.snackbar = true;
           this.message =
             "Ya existe una cuenta con este nombre de usuario o correo";
         })
-        .finally(()=>{
+        .finally(() => {
           this.signUpDialog = false;
           this.loading = false;
-          
+
           this.$router.push({ name: "MoreInfo" });
-        })
+        });
     },
     updateFormsDialog(login, signup) {
       let formDialog = {

@@ -52,8 +52,8 @@
                 @change="addProfilePicture"
               ></v-file-input>
               <div class="align-self-center">
-                <v-icon class="mt-12 mx-auto" x-large v-if="hover">
-                  mdi-upload
+                <v-icon  class="mt-14 mx-auto" x-large v-if="hover">
+                  mdi-camera-plus
                 </v-icon>
               </div>
             </div>
@@ -181,7 +181,7 @@
               ></v-file-input>
               <div class="align-self-center">
                 <v-icon class="mt-12 mx-auto" x-large v-if="hover">
-                  mdi-upload
+                  mdi-camera-plus
                 </v-icon>
               </div>
             </div>
