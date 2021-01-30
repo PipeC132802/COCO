@@ -1,18 +1,46 @@
 from datetime import datetime
 
-from django.contrib.auth.models import AbstractBaseUser, User
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.db import models
+
+from COCO.settings import DOMAIN
 
 
 class UserOnline(models.Model):
     user = models.OneToOneField(User, related_name='profile', on_delete=models.CASCADE)
-    is_online = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=True)
     updated = models.DateField(auto_now=True)
 
     def __str__(self):
         message = self.user.username
         message += ' is Online' if self.is_online else ' is Offline'
         return message
+
+
+class UserAbout(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+    birthday = models.DateField(null=True)
+    gender = models.CharField(max_length=10)
+
+    def __str__(self):
+        return 'About ' + self.user.username
+
+    def serializer(self):
+        try:
+            profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=self.user).profile_picture.url
+        except:
+            profile_picture = ''
+
+        return {
+            'user': self.user.username,
+            'name': '{0} {1}'.format(self.user.first_name, self.user.last_name),
+            'profile_picture': profile_picture,
+            'bio': self.bio,
+            'birthday': self.birthday.strftime("%d de %b. de %Y"),
+            'gender': self.gender
+        }
 
 
 class UserProfilePhoto(models.Model):
@@ -27,37 +55,52 @@ class UserProfilePhoto(models.Model):
         return "@" + self.user.username + "'s profile picture"
 
 
+class UserCoverPhoto(models.Model):
+    def user_directory_path(instance, filename):
+        filename = 'user_{0}'.format(datetime.now().strftime("%Y-%m-%d-%H-%M-%S%f"))
+        return 'cover_photos/{0}'.format(filename + ".jpg")
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to=user_directory_path, blank=True)
+
+    def __str__(self):
+        return "@" + self.user.username + "'s cover photo"
+
+
 class UserPasswordChanged(models.Model):
-    modified = models.DateField(auto_now_add=True)
+    modified = models.DateField(auto_now=True)
     user = models.OneToOneField(User,
                                 on_delete=models.CASCADE
                                 )
 
     def __str__(self):
-        return self.user.username + 'cambió su contraseña el ' + self.modified
+        return self.user.username + ' cambió su contraseña el ' + str(self.modified)
 
 
 class Place(models.Model):
     country = models.CharField(verbose_name="País", max_length=15)
-    state = models.CharField(verbose_name="Departamento", max_length=15)
     city = models.CharField(verbose_name="Ciudad", max_length=15)
 
     def __str__(self):
-        return self.city + ", " + self.state + ", " + self.country
+        return self.city + ", " + self.country
 
 
-class UserPlace(models.Model):
+class UserContact(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-
     )
-    contact = models.OneToOneField(Place,
-                                   on_delete=models.CASCADE,
-                                   primary_key=True, )
+    cellphone = models.CharField(max_length=20)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.user.username + 'vive en ' + self.contact.__str__()
+        return self.user.username + ' vive en ' + self.place.__str__()
+
+    def serializer(self):
+        return {
+            'user': self.user.username,
+            'place': self.place.__str__()
+        }
 
 
 class Area(models.Model):
@@ -72,7 +115,7 @@ class UserSkill(models.Model):
     area = models.ForeignKey(Area, related_name='Area_to_skill', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.area
+        return '@' + self.user.username + ': ' + self.area.area
 
 
 class UserInterest(models.Model):
@@ -80,11 +123,12 @@ class UserInterest(models.Model):
     area = models.ForeignKey(Area, related_name='Area_to_Interest', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.area
+        return '@' + self.user.username + ': ' + self.area.area
 
 
 class UserRelationship(models.Model):
     relationship_statuses = (
+        (0, 'None'),
         (1, 'Following'),
         (2, 'Blocked'),
     )
@@ -101,6 +145,9 @@ class UserRelationship(models.Model):
     class Meta:
         ordering = ('-created',)
 
+    def __str__(self):
+        return '{0} to {1}: {2}'.format(self.user_from.username, self.user_to.username, self.status)
+
 
 class UserSettings(models.Model):
     notifications = models.BooleanField(default=True)
@@ -115,7 +162,12 @@ class UserSettings(models.Model):
 
 class VerifyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    token = models.CharField(max_length=30)
+    token = models.CharField(max_length=50)
 
     def __str__(self):
-        return 'token de: ' + self.user
+        return 'token de: @' + self.user.username
+
+
+class UserSession(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)

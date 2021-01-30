@@ -4,7 +4,6 @@
     <div
       @mouseenter="changeContainerSizes(255)"
       @mouseleave="changeContainerSizes(55)"
-      style="background: black"
       v-if="authentication.userIsAuthenticated"
     >
       <LeftAside id="leftAside" />
@@ -12,13 +11,40 @@
     <v-main id="content">
       <router-view />
     </v-main>
+    <div class="notifications">
+      <NotificationBox
+        v-for="(notification, index) in notifications"
+        :key="index"
+        :notification="notification"
+      />
+    </div>
+    <v-fab-transition v-if="floatingIcon && authentication.userIsAuthenticated"> 
+      <v-btn
+        color="primary"
+        fab
+        dark
+        right
+        elevation="3"
+        id="btn-create"
+        bottom
+        fixed
+        @click="setFloatingBtnEvent"
+      >
+        <v-icon>{{ floatingIcon }}</v-icon>
+      </v-btn>
+    </v-fab-transition>
+    <FooterNav v-if="authentication.userIsAuthenticated" class="footer-nav" />
+    <div v-if="authentication.userIsAuthenticated" id="notification"></div>
   </v-app>
 </template>
 
 <script>
 import { mapMutations, mapState } from "vuex";
-import LeftAside from "@/components/LeftAside";
-import NavBar from "@/components/NavBar";
+import { readCookie } from "@/js/cookiesfunctions.js";
+import LeftAside from "@/components/LeftAside.vue";
+import NavBar from "@/components/NavBar.vue";
+import NotificationBox from "@/components/NotificationBox.vue";
+import FooterNav from "@/components/FooterNav.vue";
 
 export default {
   name: "App",
@@ -26,25 +52,36 @@ export default {
   components: {
     NavBar,
     LeftAside,
+    NotificationBox,
+    FooterNav,
   },
 
-  data: () => ({}),
+  data: () => ({
+    floatingIcon: "mdi-pencil",
+  }),
+  watch: {
+    $route(from, to) {
+      if (this.$route.name == "Inbox") this.floatingIcon = "mdi-message-plus";
+      else if (
+        this.$route.name == "Messages" ||
+        this.$route.name == "ComposeBarter" ||
+        this.$route.name == 'Edit'
+      )
+        this.floatingIcon = false;
+      else this.floatingIcon = "mdi-pencil";
+    },
+  },
   beforeUpdate() {},
   beforeMount() {
-    let aside = document.getElementById("leftAside");
-    let token = this.readCookie("token");
-    if (token) {
-      let responseObj = {
-        accessToken: token,
-        userIsAuthenticated: true,
-      };
-      this.updateAuthInfo(responseObj);
-       this.$router.push({ name: "Home" });
-    }
+    let token = readCookie("token");
+    let responseObj = {
+      accessToken: token,
+      userIsAuthenticated: !!token,
+    };
+    this.updateAuthInfo(responseObj);
   },
   computed: {
-    ...mapState(["authentication"]),
-    
+    ...mapState(["authentication", "notifications"]),
   },
   methods: {
     ...mapMutations(["updateAuthInfo"]),
@@ -52,31 +89,82 @@ export default {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
-    readCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(";");
-
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == " ") c = c.substring(1, c.length);
-        if (c.indexOf(nameEQ) == 0) {
-          return decodeURIComponent(c.substring(nameEQ.length, c.length));
-        }
+    setFloatingBtnEvent(){
+      if(this.floatingIcon && this.floatingIcon == "mdi-pencil"){
+        this.$router.push({name:'ComposeBarter'})
+      } else if(this.floatingIcon && this.floatingIcon == 'mdi-message-plus'){
+        this.$root.$emit("createChat")
       }
-
-      return null;
-    },
+    }
   },
 };
 </script>
 
-<style scoped>
-#content {
-  min-height: 100vh;
-  width: 100%;
+<style>
+.big-devices {
+  display: block;
 }
+.small-device {
+  display: none;
+}
+@media (max-width: 920px) {
+  #content {
+    padding: 40px 0px 0px 0px !important;
+  }
+  p,
+  span {
+    font-size: 10pt;
+  }
+  .footer-nav {
+    display: block;
+  }
+  #btn-create {
+    bottom: 60px;
+    z-index: 3;
+  }
+  .big-devices {
+    display: none;
+  }
+  .small-device {
+    display: block;
+  }
+}
+@media (min-width: 920px) {
+  .footer-nav {
+    display: none;
+  }
+  #content {
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 60px !important;
+  }
+  #btn-create {
+    display: none;
+  }
+}
+body {
+  background: rgb(211, 211, 211);
+}
+
 #container-body {
-  background: white;
   margin: 20px auto;
+}
+link {
+  text-decoration: none;
+}
+link:hover {
+  text-decoration: underline;
+}
+.notifications {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  width: 350px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column-reverse;
+}
+#app {
+  overflow-x: hidden;
 }
 </style>

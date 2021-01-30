@@ -1,5 +1,5 @@
-Django
-channels
+Django~=3.1.4
+channels~=3.0.3
 django_allauth
 django_braces
 django_eventstream
@@ -7,7 +7,12 @@ django_model_utils
 django_notify_x
 opencv_python
 python-memcached
-Pillow
+Pillow~=8.0.1
 psycopg2-binary
 django-cors-headers
 dj_rest_auth
+requests
+djangorestframework~=3.12.2
+django-model-utils~=4.1.1
+asgiref~=3.3.1
+django-allauth~=0.44.0

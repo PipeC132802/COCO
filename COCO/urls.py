@@ -16,14 +16,37 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
+from django.conf import settings
+
 from Apps.ManageUsers import urls as user_urls
+from Apps.ManageBarters import urls as barter_urls
+from Apps.ManageSearches import urls as search_urls
+from Apps.ManageNotifications import urls as notify_urls
+from Apps.ManageReviews import urls as reviews_urls
+from Apps.ManageChats import urls as chat_urls
 
 coco_api_base = 'coco/api/v1.0/'
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/login/', include('rest_social_auth.urls_session')),
-    url(r'^api/login/', include('rest_social_auth.urls_token')),
-    # User app apis
-    path(coco_api_base, include(user_urls)),
 
-]
+urlpatterns = [
+                  path('admin/', admin.site.urls),
+
+                  # User app apis
+                  path(coco_api_base, include(user_urls)),
+
+                  # Barter app apis
+                  path(coco_api_base, include(barter_urls)),
+
+                  # Search app apis
+                  path(coco_api_base, include(search_urls)),
+
+                  # Notifications app apis
+                  path(coco_api_base, include(notify_urls)),
+
+                  # Reviews app apis
+                  path(coco_api_base, include(reviews_urls)),
+
+                  # Chat app apis
+                  path(coco_api_base, include(chat_urls)),
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

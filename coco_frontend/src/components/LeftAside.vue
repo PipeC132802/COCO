@@ -16,7 +16,7 @@
               :alt="'perfil de ' + user.name"
               :src="user.profile_picture"
             />
-            <span v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+            <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="white--text">
             <v-list-item-title :title="user.name">{{
@@ -59,7 +59,12 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list-item @click="closeSession()" class="logout error darken-1" link>
+      <v-list-item
+        dense
+        @click="closeSession()"
+        class="logout error darken-1"
+        link
+      >
         <v-list-item-icon>
           <v-icon>mdi-logout-variant</v-icon>
         </v-list-item-icon>
@@ -69,11 +74,97 @@
         </v-list-item-content>
       </v-list-item>
     </v-navigation-drawer>
+
+    <v-navigation-drawer
+      class="navigation-small-device"
+      v-model="drawerSmall"
+      absolute
+      left
+      temporary
+    >
+      <v-list nav dense>
+        <v-list-item-group active-class="primary--text text--accent-4">
+          <v-list-item
+            :to="{ name: 'Profile', params: { username: user.username } }"
+            class="pa-0 pl-2 ma-0"
+            two-line
+          >
+            <v-list-item-avatar size="30" color="secondary" class="mt-4 ml-1">
+              <img
+                v-if="user.profile_picture"
+                :alt="'perfil de ' + user.name"
+                :src="user.profile_picture"
+              />
+              <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title class="primary--text" :title="user.name">
+                <strong>{{ user.name }}</strong>
+              </v-list-item-title>
+              <v-list-item-subtitle
+                :title="'@' + user.username"
+                class="secondary--text"
+                >@{{ user.username }}</v-list-item-subtitle
+              >
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+        <v-list-item
+          title="Perfil"
+          class="mt-2"
+          active-class="primary white--text"
+          :to="{ name: 'Profile', params: { username: user.username } }"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Perfil</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          title="Ajustes"
+          active-class="primary white--text"
+          :to="{ name: 'Settings' }"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon>mdi-cogs</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Ajustes</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item
+          title="Cerrar sesión"
+          @click="closeSession()"
+          class="error darken-1"
+          exact
+          link
+        >
+          <v-list-item-icon>
+            <v-icon color="white">mdi-logout-variant</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title class="white--text"
+              >Cerrar sesión</v-list-item-title
+            >
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import { removeCookie } from "@/js/cookiesfunctions.js";
 export default {
   name: "LeftAside",
   data: () => ({
@@ -85,9 +176,11 @@ export default {
     apiDir: "user-status/",
     logOutApi: "user-auth/logout/",
     drawer: true,
+    drawerSmall: true,
+    group: null,
     items: [
       { title: "Inicio", icon: "mdi-home", link: "/home", value: "" },
-      { title: "Explorar", icon: "mdi-magnify", link: "/explore", value: "" },
+      { title: "Explorar", icon: "mdi-magnify", link: "/search", value: "" },
       {
         title: "Notificaciones",
         icon: "mdi-bell",
@@ -103,63 +196,88 @@ export default {
       { title: "Perfil", icon: "mdi-account", link: "/profile", value: "" },
       { title: "Ajustes ", icon: "mdi-cogs", link: "/settings", value: "" },
     ],
+    notifications_box: [],
     mini: true,
   }),
+  watch: {
+    group() {
+      this.drawer = false;
+    },
+  },
   computed: {
-    ...mapState(["baseUrl", "authentication"]),
+    ...mapState(["baseUrl", "authentication", "wsBase"]),
   },
-  created() {
+  mounted() {
     this.getUserInfo();
-    
+    this.$root.$on("notificationsReaded", () => {
+      this.items[2].value = 0;
+    });
+    this.$root.$on("menu", () => {
+      this.drawerSmall = !this.drawerSmall;
+    });
   },
+
   methods: {
-    ...mapMutations(["setUser", "updateAuthInfo"]),
-    getUserInfo(){
+    ...mapMutations([
+      "setUser",
+      "updateAuthInfo",
+      "addNotification",
+      "notificationStatus",
+    ]),
+    getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
-      method: "GET",
-      headers: {
-        Authorization: `Token ${this.authentication.accessToken}`,
-      },
-    })
-      .then((respose) => {
-        return respose.json();
+        method: "GET",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
       })
-      .then((respose) => {
-        this.user = respose;
-        this.items[2].value = respose.unread_notifications;
-        this.items[3].value = respose.unread_messages;
-        this.items[4].link = `/${respose.username}`;
-        this.setUser(respose);
-      });
+        .then((respose) => {
+          return respose.json();
+        })
+        .then((respose) => {
+          this.user = respose;
+          this.items[2].value = respose.unread_notifications;
+          this.items[3].value = respose.unread_messages;
+          this.items[4].link = `/${respose.username}`;
+          this.notificationStatus({
+            unread_notifications: respose.unread_notifications,
+            unread_messages: respose.unread_messages,
+          });
+          this.setUser(respose);
+          this.$root.$emit("userSetted");
+          this.connect();
+        });
     },
     closeSession() {
       let authObj = {
         accessToken: null,
         userIsAuthenticated: false,
       };
-      this.deleteToken();
-      this.removeCookie("token");
+      //this.deleteToken(); This unauthenticate all users
+      removeCookie("token");
       this.updateAuthInfo(authObj);
       this.$router.push({ name: "Welcome" });
     },
-    setCookie(cname, cvalue, exdays) {
-      var d = new Date();
-
-      d.setTime(d.getTime() + exdays * 24 * 60 * 60 * 1000);
-      var expires = "expires=" + d.toUTCString();
-
-      document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    },
-    removeCookie(cname) {
-      this.setCookie(cname, "", -1);
-    },
-    deleteToken() {
-      fetch(this.baseUrl + this.logOutApi, {
-        method: "POST",
-        headers: {
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-      });
+    connect() {
+      let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
+      this.websocket = new WebSocket(
+        protocol + this.wsBase + "/ws/notifications/" + this.user.username + "/"
+      );
+      this.websocket.onopen = () => {
+        this.websocket.onmessage = ({ data }) => {
+          // this.messages.unshift(JSON.parse(data));
+          const socketData = JSON.parse(data);
+          if (socketData.type == "new_notification") {
+            this.items[2].value = socketData.unread_notifications;
+            this.notificationStatus({
+              unread_notifications: socketData.unread_notifications,
+              unread_messages: this.items[3].value,
+            });
+          }
+          this.addNotification(socketData);
+        };
+      };
+      this.websocket.onclose = () => {};
     },
   },
 };
@@ -167,7 +285,6 @@ export default {
 <style scoped>
 .navigation {
   color: white;
-  border-radius: 0 10px 0px 0;
 }
 .item {
   border-radius: 15px;
@@ -179,5 +296,22 @@ export default {
   bottom: 0;
   width: 100%;
   border-radius: 10px 10px 0px 0;
+}
+@media (max-width: 920px) {
+  .navigation {
+    display: none;
+  }
+  .navigation-small-device {
+    display: block;
+    top: 0px;
+  }
+}
+@media (min-width: 920px) {
+  .navigation {
+    display: block;
+  }
+  .navigation-small-device {
+    display: none;
+  }
 }
 </style>
