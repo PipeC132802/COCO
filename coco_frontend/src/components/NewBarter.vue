@@ -278,6 +278,6 @@ input {
   border-radius: 50px;
 }
 input::placeholder{
-  font-size: calc(0.6em + 0.8vw) ;
+  font-size: calc(0.6em + 0.6vw) ;
 }
 </style>
