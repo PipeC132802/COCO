@@ -2,11 +2,12 @@
   <div class="pa-0" v-if="username == currentUsernamePath">
     <UserCover :user2Follow="user2Follow" />
 
+        <v-divider></v-divider>
     <v-container fluid class="pa-0 mt-0">
       <v-row class="pa-0 ma-0" wrap>
         <v-col tile class="pa-0" cols="12" sm="12" md="8">
           <div v-if="pathName == 'Profile'">
-            <v-tabs show-arrows v-model="tab" class="pa-0">
+            <v-tabs show-arrows v-model="tab" class="pa-0 px-3">
               <v-tab> <v-icon left>mdi-comment</v-icon>Trueques </v-tab>
               <v-tab><v-icon left>mdi-star</v-icon>Reseñas</v-tab>
               <v-tab><v-icon left>mdi-heart</v-icon>Reacciones</v-tab>

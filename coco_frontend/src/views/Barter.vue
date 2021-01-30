@@ -11,7 +11,7 @@
         <User2FollowSuggestions class="mx-2" />
         <CompanyInfo  class="big-devices mx-1" />
       </v-col>
-              <CompanyInfo  class="small-devices mx-1" />
+              <CompanyInfo  class="small-device mx-1" />
     </v-row>
     <v-footer>
 

@@ -3,12 +3,16 @@
     <v-list class="pt-0 pb-0 chat-element" two-line>
       <v-list-item
         :class="
-          chatElement.conversation == msgDecrypted(user.username, $route.params.id)
+          chatElement.conversation ==
+          msgDecrypted(user.username, $route.params.id)
             ? 'chatElement active-chatElement'
             : 'chatElement'
         "
         exact
-        :to="{ name: 'Messages', params: { id: encryptId(chatElement.conversation) } }"
+        :to="{
+          name: 'Messages',
+          params: { id: encryptId(chatElement.conversation) },
+        }"
         @mousemove="menu = true"
         @mouseleave="menu = false"
         @click="chatSelected"
@@ -32,7 +36,9 @@
                 params: { username: chatElement.opponent.username },
               }"
               >{{ chatElement.opponent.name }}</router-link
-            ><span class="grey--text ml-2" :title="'@' + chatElement.opponent.username"
+            ><span
+              class="grey--text ml-2"
+              :title="'@' + chatElement.opponent.username"
               >@{{ chatElement.opponent.username }}</span
             >
           </v-list-item-title>
@@ -42,7 +48,11 @@
             </div>
             <div v-else>
               <span v-if="chatElement.sender == user.username">
-                <v-icon title="Enviado" class="mr-1" v-if="!chatElement.read" small
+                <v-icon
+                  title="Enviado"
+                  class="mr-1"
+                  v-if="!chatElement.read"
+                  small
                   >mdi-check</v-icon
                 >
                 <v-icon title="Visto" class="mr-1" v-else color="primary" small
@@ -50,7 +60,9 @@
                 >
               </span>
               <span :title="chatElement.text">
-                {{ msgDecrypted(chatElement.sender_username, chatElement.text) }}
+                {{
+                  msgDecrypted(chatElement.sender_username, chatElement.text)
+                }}
               </span>
             </div>
           </v-list-item-subtitle>
@@ -94,6 +106,7 @@ export default {
     typing: false,
     seen: true,
     websocket: null,
+    sound: require("../assets/sounds/notifications/newmessage.ogg"),
   }),
   computed: {
     ...mapState(["wsBase", "user", "secretKey", "chats", "chat"]),
@@ -111,29 +124,31 @@ export default {
       }
     },
     getHour() {
-      let getHour = moment(this.chatElement.created).locale("es").format("hh:mm a");
+      let getHour = moment(this.chatElement.created)
+        .locale("es")
+        .format("hh:mm a");
       return getHour;
     },
   },
   mounted() {
     this.connect();
   },
-  beforeDestroy(){
-  },
+  beforeDestroy() {},
   methods: {
     ...mapMutations(["setChat", "msgReceivedInbox"]),
     getChatIndex() {
       let chatElement = this.chats.find(
-        (chatElement) => chatElement.conversation == this.chatElement.conversation
+        (chatElement) =>
+          chatElement.conversation == this.chatElement.conversation
       );
       return this.chats.indexOf(chatElement);
     },
     msgDecrypted(dataKey, msgEncrypted) {
-      var decryptedMsg = ''
+      var decryptedMsg = "";
       try {
         decryptedMsg = decript(dataKey, msgEncrypted);
       } catch (error) {
-        decryptedMsg = 0
+        decryptedMsg = 0;
       }
       return decryptedMsg;
     },
@@ -143,14 +158,24 @@ export default {
     chatSelected() {
       this.setChat(this.chatElement);
     },
-
+    play() {
+      let notificationDiv = document.getElementById("notification");
+      notificationDiv.innerHTML = `<audio src="${this.sound}" autoplay></audio>`;
+    },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
-        protocol + this.wsBase + "/ws/chat/" + this.chatElement.conversation + "/"
+        protocol +
+          this.wsBase +
+          "/ws/chat/" +
+          this.chatElement.conversation +
+          "/"
       );
       this.websocket.onopen = () => {
-        console.info("conectado exitosamente inbox!", this.chatElement.conversation);
+        console.info(
+          "conectado exitosamente inbox!",
+          this.chatElement.conversation
+        );
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
@@ -163,16 +188,14 @@ export default {
             this.chatElement.text = socketData.text;
             this.chatElement.sender_username = socketData.sender_username;
             this.chatElement.created = socketData.created;
-            if (socketData.sender_username != this.user.username){
+            if (socketData.sender_username != this.user.username) {
               this.chatElement.unread_messages = socketData.unread_messages;
-              
-            }
-              
-            else this.chatElement.unread_messages = 0;
+              this.play();
+            } else this.chatElement.unread_messages = 0;
             this.setChat(this.chatElement);
 
             this.typing = false;
-          }   else if (socketData.type == "seen_message") {
+          } else if (socketData.type == "seen_message") {
             this.chatElement.unread_messages = socketData.unread_messages;
           }
           if (socketData.type == "chat_message") {
@@ -187,16 +210,17 @@ export default {
 </script>
 
 <style>
-.link{
+.link {
   text-decoration: none;
-}.link:hover{
+}
+.link:hover {
   text-decoration: underline;
 }
 .active-chatElement {
   border-radius: 5px;
   background: rgb(206, 206, 206);
 }
-.chat-element:hover{
+.chat-element:hover {
   background: rgb(231, 231, 231);
 }
 </style>

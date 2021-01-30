@@ -76,7 +76,7 @@
     </v-navigation-drawer>
 
     <v-navigation-drawer
-      class="navigation-small-devices"
+      class="navigation-small-device"
       v-model="drawerSmall"
       absolute
       left
@@ -301,7 +301,7 @@ export default {
   .navigation {
     display: none;
   }
-  .navigation-small-devices {
+  .navigation-small-device {
     display: block;
     top: 0px;
   }
@@ -310,7 +310,7 @@ export default {
   .navigation {
     display: block;
   }
-  .navigation-small-devices {
+  .navigation-small-device {
     display: none;
   }
 }

@@ -11,7 +11,13 @@
       >
         <InboxComponent />
       </v-col>
-      <v-col tile class="chatlist" cols="12 pt-0 ma-0" sm="12" md="8">
+      <v-col
+        tile
+        class="chatlist"
+        cols="12 pt-0 ma-0"
+        sm="12"
+        md="8"
+      >
         <router-view v-on:main="changeInboxViewStatus" v-if="!change" />
       </v-col>
     </v-row>
@@ -33,7 +39,6 @@ export default {
   }),
   created() {
     document.title = "Inbox | COCO";
-   
   },
   computed: {
     ...mapState(["user", "breakpoints"]),

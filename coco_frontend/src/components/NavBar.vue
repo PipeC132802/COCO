@@ -9,7 +9,7 @@
       class="user-menu"
     >
       <v-row align="center">
-        <v-toolbar-title class="mr-3">
+        <v-toolbar-title>
           <v-btn @click="$root.$emit('menu')" dark icon>
             <v-icon>mdi-menu</v-icon>
           </v-btn>
@@ -19,6 +19,7 @@
         }}</span>
 
         <v-text-field
+        class="pt-0.5"
           v-if="showSearchBar"
           dense
           v-model="searchValue"
@@ -48,7 +49,6 @@
             >
             </v-img>
           </v-list-item-avatar>
-
           <v-list-item-content>
             <v-list-item-title>
               <h2 id="company-name" class="primary--text">COCO</h2>
@@ -64,7 +64,7 @@
         @click:append="go2search"
         @keydown.enter="go2search"
         placeholder="Buscar trueques"
-        solo
+        
         append-icon="mdi-magnify"
       ></v-text-field>
 
@@ -145,6 +145,8 @@ export default {
           this.title = "Trueque";
         } else if (this.$route.name == "Settings") {
           this.title = "Ajustes";
+        } else if (this.$route.name == "ComposeBarter"){
+          this.title = "Nuevo trueque"
         }
       } else {
         this.showSearchBar = true;

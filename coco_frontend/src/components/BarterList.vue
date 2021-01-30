@@ -139,7 +139,7 @@
         </v-list-item>
         <v-card-title class="mt-0 pt-0 mb-1">
           <router-link
-            class="title--text"
+            class="title--text barter-title"
             :title="barter.title"
             :to="{
               name: 'Barter',
@@ -354,6 +354,12 @@ a {
 }
 a:hover {
   text-decoration: underline;
+}
+.barter-title{
+  max-width: 95%;
+  font-weight: 540;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>
 

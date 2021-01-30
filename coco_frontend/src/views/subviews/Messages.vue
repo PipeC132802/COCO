@@ -46,11 +46,28 @@
         </v-col>
       </v-row>
       <v-card-text id="msgs-list" class="messages ma-0">
+        <div class="typing-container" v-if="typing">
+          <div class="typing-animation">
+            <v-avatar class="typing-avatar" size="30" color="secondary">
+              <v-img
+                v-if="chat.opponent.profile_picture"
+                :src="chat.opponent.profile_picture"
+              ></v-img>
+              <span class="white--text" v-else>{{
+                chat.opponent.name.slice(0, 1).toUpperCase()
+              }}</span>
+            </v-avatar>
+            <span style="left: 25px; top: -7px" class="typing-avatar"
+              >Escribiendo...</span
+            >
+          </div>
+        </div>
         <v-row
           v-for="message in messages"
           :key="message.id"
           :class="typing ? 'mb-2' : ''"
         >
+        
           <div
             v-if="message.sender_username != user.username"
             class="incoming-msg"
@@ -78,22 +95,7 @@
             </small>
           </div>
         </v-row>
-        <div class="typing-container" v-if="typing">
-          <div class="typing-animation">
-            <v-avatar class="typing-avatar" size="30" color="secondary">
-              <v-img
-                v-if="chat.opponent.profile_picture"
-                :src="chat.opponent.profile_picture"
-              ></v-img>
-              <span class="white--text" v-else>{{
-                chat.opponent.name.slice(0, 1).toUpperCase()
-              }}</span>
-            </v-avatar>
-            <span style="left: 25px; top: -7px" class="typing-avatar"
-              >Escribiendo...</span
-            >
-          </div>
-        </div>
+        
       </v-card-text>
       <v-container class="px-3 pt-3 pb-0" fluid>
         <v-row>

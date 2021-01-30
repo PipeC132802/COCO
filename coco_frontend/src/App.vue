@@ -28,11 +28,13 @@
         id="btn-create"
         bottom
         fixed
+        :to="{ name: 'ComposeBarter' }"
       >
-        <v-icon>{{floatingIcon}}</v-icon>
+        <v-icon>{{ floatingIcon }}</v-icon>
       </v-btn>
     </v-fab-transition>
     <FooterNav class="footer-nav" />
+    <div id="notification"></div>
   </v-app>
 </template>
 
@@ -55,14 +57,18 @@ export default {
   },
 
   data: () => ({
-    floatingIcon: 'mdi-pencil'
+    floatingIcon: "mdi-pencil",
   }),
   watch: {
-    $route(from,to){
-      if(this.$route.name == "Inbox") this.floatingIcon = 'mdi-message-plus';
-      else if(this.$route.name == "Messages") this.floatingIcon = false;
-      else this.floatingIcon = "mdi-pencil"
-    }
+    $route(from, to) {
+      if (this.$route.name == "Inbox") this.floatingIcon = "mdi-message-plus";
+      else if (
+        this.$route.name == "Messages" ||
+        this.$route.name == "ComposeBarter"
+      )
+        this.floatingIcon = false;
+      else this.floatingIcon = "mdi-pencil";
+    },
   },
   beforeUpdate() {},
   beforeMount() {
@@ -88,14 +94,13 @@ export default {
 </script>
 
 <style>
-.big-devices{
+.big-devices {
   display: block;
 }
-.small-device{
-    display: none;
-  }
+.small-device {
+  display: none;
+}
 @media (max-width: 920px) {
-
   #content {
     padding: 40px 0px 0px 0px !important;
   }
@@ -106,14 +111,14 @@ export default {
   .footer-nav {
     display: block;
   }
-  #btn-create{
+  #btn-create {
     bottom: 60px;
-    z-index: 1000;
+    z-index: 3;
   }
-  .big-devices{
+  .big-devices {
     display: none;
   }
-  .small-device{
+  .small-device {
     display: block;
   }
 }
@@ -126,7 +131,7 @@ export default {
     width: 100%;
     padding-top: 60px !important;
   }
-  #btn-create{
+  #btn-create {
     display: none;
   }
 }
@@ -152,7 +157,7 @@ link:hover {
   display: flex;
   flex-direction: column-reverse;
 }
-#app{
+#app {
   overflow-x: hidden;
 }
 </style>

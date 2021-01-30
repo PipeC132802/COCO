@@ -10,7 +10,7 @@
       </v-col>
     </v-row>
     <v-footer>
-      <CompanyInfo class="mx-1 small-devices" />
+      <CompanyInfo class="mx-1 small-device" />
     </v-footer>
   </v-container>
 </template>

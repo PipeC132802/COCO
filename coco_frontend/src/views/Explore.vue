@@ -20,7 +20,7 @@
       </v-row>
     </v-container>
     <v-footer>
-      <CompanyInfo class="small-devices" />
+      <CompanyInfo class="small-device" />
     </v-footer>
   </div>
 </template>
