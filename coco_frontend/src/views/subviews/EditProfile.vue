@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card elevation="3">
+  <div class="mx-3">
+    <v-card elevation="3" class="px-3">
       <v-card-title>
         <v-btn
           icon
@@ -13,7 +13,7 @@
         Editar tu información
       </v-card-title>
     </v-card>
-    <v-card elevation="3" class="mt-3">
+    <v-card elevation="3" class="mt-3 px-3">
       <v-card-title class="mb-0">
         Información del perfil
         <v-container class="header ma-0 pa-0"></v-container>

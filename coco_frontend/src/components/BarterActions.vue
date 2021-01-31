@@ -15,7 +15,7 @@
           <span class="btn-text ml-1">
           {{ reactionMsg.split(" ")[1] }}
           </span>
-          <v-expand-transition>
+          <v-expand-transition v-if="authentication.userIsAuthenticated">
             <v-card
               v-if="hover"
               class="d-flex transition-fast-in-fast-out v-card--reveal reactions-box mx-1"
@@ -57,7 +57,6 @@
       <v-btn @click="showComments" text class="mr-1 action">
         <v-icon small> mdi-comment-text-multiple </v-icon>
         <span class="btn-text ml-1">
-
         Proponer
         </span>
       </v-btn>

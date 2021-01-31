@@ -227,6 +227,7 @@ export default {
       "updateAuthInfo",
       "addNotification",
       "notificationStatus",
+      "setUser",
     ]),
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
@@ -248,7 +249,7 @@ export default {
             unread_messages: respose.unread_messages,
           });
           this.setUser(respose);
-          
+
           this.$root.$emit("userSetted");
 
           this.connect();
@@ -262,6 +263,7 @@ export default {
       //this.deleteToken(); This unauthenticate all users
       removeCookie("token");
       this.updateAuthInfo(authObj);
+      this.setUser("");
       this.$router.push({ name: "Welcome" });
     },
     connect() {

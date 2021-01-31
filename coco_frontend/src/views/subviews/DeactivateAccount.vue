@@ -110,7 +110,7 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(["updateAuthInfo"]),
+    ...mapMutations(["updateAuthInfo", "setUser"]),
     deactivateAccount() {
       this.loading = true;
       fetch(this.baseUrl + this.apiDir, {
@@ -138,6 +138,7 @@ export default {
       //this.deleteToken(); This unauthenticate all users
       removeCookie("token");
       this.updateAuthInfo(authObj);
+      this.setUser(""),
       this.$router.push({ name: "Welcome" });
     },
     deleteToken() {

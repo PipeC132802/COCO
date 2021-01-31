@@ -1,6 +1,6 @@
 <template>
   <v-container
-    v-if="comments.length || author != user.username"
+    v-if="comments.length && authentication.userIsAuthenticated"
     class="ma-0 pt-0 px-0"
   >
     <CommentForm
