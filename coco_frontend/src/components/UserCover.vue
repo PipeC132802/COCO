@@ -205,7 +205,7 @@
         <v-row justify="center">
           <span class="skills">
             <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
-            Se unió en
+            Se unió el
             {{ dateJoined | capitalize }}
           </span>
         </v-row>

@@ -273,6 +273,7 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
 
         user = User.objects.filter(username=username, is_active=True)
         user = user.first()
+        print(user.date_joined)
         if user:
             user_json = {
                 'name': "{0} {1}".format(user.first_name, user.last_name),
@@ -280,7 +281,7 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
                 'cover_photo': get_img_url_from_model(UserCoverPhoto, Q(user=user)),
                 'skills': [user_skill.area.area for user_skill in
                            UserSkill.objects.filter(user__username=username, user__is_active=True)],
-                'date_joined': user.date_joined.strftime("Se unión en %B de %Y"),
+                'date_joined': user.date_joined,
                 'followers': UserRelationship.objects.filter(user_to__username=username, status=1).count(),
                 'following': UserRelationship.objects.filter(user_from__username=username, status=1).count(),
                 'follow_this_user': UserRelationship.objects.filter(user_from__username=username_request,
