@@ -1,6 +1,6 @@
 <template>
   <div v-if="!authentication.userIsAuthenticated">
-    <h1>Welcome</h1>
+  gg
   </div>
 </template>
 
@@ -10,21 +10,28 @@ export default {
   name: "Welcome",
   created() {},
   computed: {
-    ...mapState(["authentication","userRequireMoreInfo"]),
+    ...mapState(["authentication", "userRequireMoreInfo"]),
   },
   created() {
-    if(!this.userRequireMoreInfo){
-      this.$router.push({name: 'MoreInfo'})
+    if (!this.userRequireMoreInfo) {
+      this.$router.push({ name: "MoreInfo" });
     }
-    if(this.authentication.userIsAuthenticated ) {
+    if (this.authentication.userIsAuthenticated) {
       this.$router.push({ name: "Home" });
     }
   },
   mounted() {
-    let navBar = document.getElementById("logo-btn");
-    navBar.classList.remove("v-list-item--active");
+    let btn = document.getElementById("logo-btn");
+    let navBar = document.getElementsByClassName("company");
+    btn.classList.remove("v-list-item--active");
+    console.log(navBar);
+    navBar.forEach((element) => {
+      element.classList.add("init");
+      console.log(element);
+    });
   },
-  methods: {
-  },
+  methods: {},
 };
 </script>
+<style>
+</style>

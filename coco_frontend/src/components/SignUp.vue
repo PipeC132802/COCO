@@ -2,14 +2,18 @@
   <div>
     <v-dialog persistent v-model="signUpDialog" dense max-width="600">
       <v-card id="v-dialog">
-        <v-card-title class="pl-8 pt-5 pb-0 mx-auto"> <div class="mx-auto">Regístrate con</div> </v-card-title>
+        <v-card-title class="pl-8 pt-5 pb-0 mx-auto">
+          <div class="mx-auto">Regístrate con</div>
+        </v-card-title>
         <SocialLogin />
         <v-card-text class="pt-0 mt-0 pb-0">
-        <div class="text-left pl-3 pt-2 pb-0 mb-0"><p class="ma-0">O ingresando tus datos</p></div>
+          <div class="text-left pl-3 pt-2 pb-0 mb-0">
+            <p class="ma-0">O ingresando tus datos</p>
+          </div>
           <v-container class="pt-0">
             <form style="width: 100%" @submit.prevent="signUpSubmit">
               <v-row align="center">
-                <v-col class="pt-0 pb-0" cols="12"  md="6">
+                <v-col class="pt-0 pb-0" cols="12" md="6">
                   <v-text-field
                     class="mb-1"
                     v-model="firstName"
@@ -121,11 +125,11 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 import { setCookie } from "@/js/cookiesfunctions.js";
-import SocialLogin from "../components/SocialLogin.vue"
+import SocialLogin from "../components/SocialLogin.vue";
 export default {
   name: "SignUp",
-  components:{
-    SocialLogin
+  components: {
+    SocialLogin,
   },
   data: () => ({
     firstName: "",
