@@ -2,10 +2,11 @@
   <div>
     <v-dialog persistent v-model="loginDialog" max-width="600">
       <v-card id="v-dialog">
-        <v-card-title class="pb-0 mb-0"> Inicia sesión con </v-card-title>
+        <v-card-title class="pb-0 mb-0"> <div class="mx-auto">Inicia sesión con</div> </v-card-title>
         <SocialLogin />
-
         <v-card-text class="pb-0 mb-0">
+                  <div class="text-left pl-0 pt-2 pb-0 mb-0"><p class="ma-0">O ingresando tus datos</p></div>
+
           <v-container fluid>
             <v-row>
               <form style="width: 100%" @submit.prevent="loginSubmit">

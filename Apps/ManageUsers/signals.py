@@ -21,10 +21,3 @@ def create_user_status(sender, instance, created, **kwargs):
         UserPasswordChanged.objects.create(user=instance)
         UserSettings.objects.create(user=instance)
         NotificationsPreference.objects.create(user=instance)
-
-
-def user_reload_page(sender, session, **kwargs):
-    print(session.session_key)
-
-
-retrieve_barters.connect(user_reload_page)

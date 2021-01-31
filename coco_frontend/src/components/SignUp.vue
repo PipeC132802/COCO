@@ -2,7 +2,7 @@
   <div>
     <v-dialog persistent v-model="signUpDialog" dense max-width="600">
       <v-card id="v-dialog">
-        <v-card-title class="pl-8 pt-5 pb-0 mx-auto"> Regístrate con </v-card-title>
+        <v-card-title class="pl-8 pt-5 pb-0 mx-auto"> <div class="mx-auto">Regístrate con</div> </v-card-title>
         <SocialLogin />
         <v-card-text class="pt-0 mt-0 pb-0">
         <div class="text-left pl-3 pt-2 pb-0 mb-0"><p class="ma-0">O ingresando tus datos</p></div>
