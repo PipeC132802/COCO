@@ -102,7 +102,7 @@ export default {
             userIsAuthenticated: !!response.key,
           };
           setCookie("token", response.key, 60);
-
+          console.log(responseObj)
           this.updateAuthInfo(responseObj);
           this.updateFormsInfo(false, false);
 
@@ -131,4 +131,7 @@ export default {
 </script>
 
   <style>
+  #fb-btn:hover{
+    cursor: pointer;
+  }
 </style>

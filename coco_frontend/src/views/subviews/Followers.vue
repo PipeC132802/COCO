@@ -45,6 +45,7 @@
             v-if="user.username && follower.username != user.username"
           >
             <FollowButton
+
               :followThisUser="false"
               :from="user.username"
               :to="follower.username"

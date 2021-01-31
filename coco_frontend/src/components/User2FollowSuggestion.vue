@@ -18,7 +18,8 @@
           <v-list-item-subtitle :title="'@'+userSuggestion.username">@{{ userSuggestion.username }}</v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
-              <FollowButton :text="false" :from="user.username" :to="userSuggestion.username" 
+              <FollowButton
+ :text="false" :from="user.username" :to="userSuggestion.username" 
               :target="$route.params.username == user.username?'self':'other'"  />
         </v-list-item-action>
       </v-list-item>

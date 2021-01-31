@@ -1,5 +1,6 @@
 <template>
   <div class="pa-2">
+    <v-btn block color="primary" :to="{name:'Edit', params:{username:user.username}}" v-if="!userAbout.bio">Agregar información personal</v-btn>
     <blockquote v-if="userAbout.bio" class="blockquote">
       <p class="mb-0 mt-5 ml-0">
         {{ userAbout.bio }}
@@ -29,10 +30,13 @@ export default {
     apiDir: "user-about/",
   }),
   computed: {
-    ...mapState(["baseUrl","authentication"]),
+    ...mapState(["baseUrl","authentication", "user"]),
   },
-  created() {
+  mounted() {
     this.getUserAboutInfo();
+    this.$root.$on("userInfoUpdated",()=>{
+      this.getUserAboutInfo();
+    });
   },
   methods: {
     getUserAboutInfo() {

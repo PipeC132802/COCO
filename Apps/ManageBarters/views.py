@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from Apps.ManageBarters.models import Barter, BarterAbout, BarterSkill, BarterMode, BarterInterest, BarterReaction, \
     BarterComment, BarterView
 from Apps.ManageBarters.serializer import BarterCommentSerializer
+from Apps.ManageBarters.signals import proposal_accepted
 from Apps.ManageUsers.models import Area, UserRelationship, UserInterest, UserSession
 from Apps.ManageUsers.signals import retrieve_barters
 from COCO.functions import get_place, get_profile_url, get_img_url_from_model, get_notification_and_mark_as_unread
@@ -116,12 +117,10 @@ class BarterListApi(generics.ListAPIView):
             return UserInterest.objects.filter(user__username=request.GET['username']).values_list('area__area',
                                                                                                    flat=True).distinct()
 
-        user = User.objects.filter(username=request.GET['username'], is_active=True)
-        if not user.first():
-            return Response({'Detail': 'User not found'}, status=404)
         field = request.GET['field']
+
         if field == 'profile':
-            query = Q(user=user.first(), deleted=False)
+            query = Q(user=self.get_user_query_set(request), deleted=False)
             barters_json = self.get_barter_list(query)
         elif field == 'reactions':
             barters_json = self.get_barters_reacted(request)
@@ -130,22 +129,30 @@ class BarterListApi(generics.ListAPIView):
             barters_json = self.get_barters_recommendations(interests, request)
         elif field == 'detail' or field == 'search':
             query = Q(id=request.GET['id'])
+            print(query)
             barters_json = self.get_barter_list(query)
-        elif field == 'search':
-            query = Q(id=request.GET['id'])
-            barters_json = self.get_barter_list(query)
+
         else:
-            query = Q(user_id__in=self.get_following_users(user.first()), deleted=False)
+            query = Q(user_id__in=self.get_following_users(self.get_user_query_set(request)), deleted=False)
+            print(query)
             barters_json = self.get_barter_list(query)
 
         return Response(barters_json, status=200)
 
+    def get_user_query_set(self, request):
+        user = User.objects.filter(username=request.GET['username'], is_active=True)
+        if not user.first():
+            return user
+        else:
+            return user.first()
+
     @staticmethod
     def get_following_users(user):
-        following = list(
-            UserRelationship.objects.filter(user_from=user, user_from__is_active=True, status=1).values_list(
-                'user_to_id', flat=True).distinct())
+        following = [0]
         if user:
+            following = list(
+                UserRelationship.objects.filter(user_from=user, user_from__is_active=True, status=1).values_list(
+                    'user_to_id', flat=True).distinct())
             following.append(user.pk)
         return following
 
@@ -391,6 +398,7 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
                     obj=comment.barter,
                     verb='Aceptó tu propuesta',
                     nf_type='accepted_by_user')
+        proposal_accepted.send(owner=request.user, opponent=comment.barter.user)
 
         return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted,
                 'user_comment': comment.user_from.username,

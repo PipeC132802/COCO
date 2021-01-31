@@ -37,6 +37,7 @@
       <v-card-actions class="pt-0" v-if="username !== user.username">
         <v-row justify="center">
           <FollowButton
+
             class="mb-2"
             :from="user.username"
             :to="username"

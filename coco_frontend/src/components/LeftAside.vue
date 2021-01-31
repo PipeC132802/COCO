@@ -7,6 +7,7 @@
       class="navigation pa-0 ma-0"
       dark
       expand-on-hover
+      v-if="authentication.userIsAuthenticated"
     >
       <template v-slot:prepend class="ma-0">
         <v-list-item class="pa-0 pl-2 ma-0" two-line>
@@ -83,8 +84,10 @@
       absolute
       left
       temporary
+      :right="authentication.userIsAuthenticated ? false : true"
+
     >
-      <v-list nav dense>
+      <v-list nav dense v-if="authentication.userIsAuthenticated">
         <v-list-item-group active-class="primary--text text--accent-4">
           <v-list-item
             :to="{ name: 'Profile', params: { username: user.username } }"
@@ -162,6 +165,25 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-list v-else>
+        <v-list-item>
+          <v-list-item-title color="primary">
+            <v-btn @click="$root.$emit('loginOrSingUpForm', true, false)" block color="primary" outlined>
+              <v-icon left>mdi-login</v-icon>
+
+              Iniciar sesión
+            </v-btn>
+          </v-list-item-title>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-title>
+            <v-btn @click="$root.$emit('loginOrSingUpForm', false, true)" block color="primary">
+              <v-icon left>mdi-account-plus</v-icon>
+              Regístrate
+            </v-btn>
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
     </v-navigation-drawer>
   </div>
 </template>
@@ -207,6 +229,9 @@ export default {
     group() {
       this.drawer = false;
     },
+    authentication(){
+      this.getUserInfo();
+    }
   },
   computed: {
     ...mapState(["baseUrl", "authentication", "wsBase"]),
@@ -227,7 +252,6 @@ export default {
       "updateAuthInfo",
       "addNotification",
       "notificationStatus",
-      "setUser",
     ]),
     getUserInfo() {
       fetch(this.baseUrl + this.apiDir, {

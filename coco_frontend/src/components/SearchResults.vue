@@ -1,6 +1,6 @@
 <template>
   <v-container class="pa-0">
-    <p class="settings-title title--text text-center ma-0">
+    <p class="search-title title--text text-center ma-0">
       Resultados para
       <span :title="$route.query.q" class="primary--text">
         {{ $route.query.q }}
@@ -141,5 +141,10 @@ export default {
 <style>
 .tab-title {
   text-transform: capitalize;
+}
+.search-title{
+  word-break: break-word;  
+  font-size: calc(1vw + 0.5em);
+  font-weight: 550;
 }
 </style>

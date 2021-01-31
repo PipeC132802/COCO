@@ -85,6 +85,7 @@
           v-if="userP.username != user.username"
         >
           <FollowButton
+
             :from="user.username"
             :to="userP.username"
             v-on:followObj="followInfo"
@@ -243,6 +244,7 @@
             Te sigue
           </v-chip>
           <FollowButton
+
             :from="user.username"
             :to="userP.username"
             v-on:followObj="followInfo"
@@ -368,6 +370,11 @@ export default {
         .locale("es")
         .format("D [de] MMMM [de] YYYY");
     },
+  },
+  mounted(){
+    this.$root.$on("userInfoUpdated",()=>{
+      this.getUserCoverInfo();
+    });
   },
   watch: {
     profileFollowStatus: function () {

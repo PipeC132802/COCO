@@ -35,15 +35,16 @@ export default {
   computed: {
     ...mapState(["baseUrl", "authentication"]),
   },
-  created() {
+  mounted() {
     this.getUserContactInfo();
+    this.$root.$on("userInfoUpdated", () => {
+      this.getUserContactInfo();
+    });
   },
   methods: {
     getUserContactInfo() {
       let username = this.$route.params.username;
-      fetch(this.baseUrl + this.apiDir + "?username=" + username, {
-     
-      })
+      fetch(this.baseUrl + this.apiDir + "?username=" + username, {})
         .then((response) => {
           return response.json();
         })

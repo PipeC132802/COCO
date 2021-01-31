@@ -10,7 +10,7 @@
     <p class="pl-5"></p>
     <v-alert
       v-if="!notifications[0]"
-      color="warning"
+      color="primary darken-3"
       dark
       icon="mdi-bell-remove"
       dense

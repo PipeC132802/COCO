@@ -10,6 +10,16 @@
           ></v-skeleton-loader>
         </div>
         <div v-else>
+          <v-alert
+          v-if="!chats.length"
+            color="primary darken-3"
+            dark
+            icon="mdi-message-bulleted-off"
+            dense
+            class="mx-2 mt-3"
+          >
+            No tienes chats
+          </v-alert>
           <MessageInInbox
             v-for="(chat, index) in chats"
             :key="chat.id"

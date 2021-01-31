@@ -58,7 +58,7 @@ export default {
   watch: {
     $route(from, to) {
       let screenWidth = window.screen.width;
-      if (this.breakpoints.xs > screenWidth && this.$route.name != "Settings") {
+      if (this.breakpoints.sm > screenWidth && this.$route.name != "Settings") {
         this.mainMenu = false;
       } else {
         this.mainMenu = true;

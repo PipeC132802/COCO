@@ -81,7 +81,7 @@ export default {
   mounted() {
     this.getNotificationsPreferences();
     let screenWidth = window.screen.width;
-    if (this.breakpoints.xs > screenWidth) {
+    if (this.breakpoints.sm > screenWidth) {
       this.$emit("main", false);
     } else {
       this.$emit("main", true);

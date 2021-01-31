@@ -34,6 +34,7 @@
           <v-list-item-action v-if="user.username != userInList.user">
             <FollowButton
 
+
               :text="false"
               :from="user.username"
               :to="userInList.user"

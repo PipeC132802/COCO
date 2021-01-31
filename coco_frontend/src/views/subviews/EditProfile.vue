@@ -175,6 +175,7 @@ export default {
         })
           .then((response) => {
             if (response.status == 200) {
+              this.$root.$emit("userInfoUpdated")
               this.snackbar = true;
               this.message = "Información actualizada exitosamente!";
             } else {

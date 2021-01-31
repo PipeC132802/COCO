@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="authentication.userIsAuthenticated">
     <v-btn
       @click="followUser"
       :outlined="!followed"
@@ -24,7 +24,7 @@ export default {
     verbose: "",
   }),
   computed: {
-    ...mapState(["authentication", "baseUrl", "wsBase"]),
+    ...mapState(["authentication", "baseUrl", "wsBase", "user"]),
   },
   created() {
     this.followed = this.followThisUser;

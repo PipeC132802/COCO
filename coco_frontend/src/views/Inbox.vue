@@ -46,7 +46,7 @@ export default {
   watch: {
     $route(to, from) {
       let screenWidth = window.screen.width;
-      if (this.breakpoints.xs > screenWidth) {
+      if (this.breakpoints.sm > screenWidth) {
         if (to.name != "Inbox") {
           this.change = true;
           this.sleep(5).then(() => {

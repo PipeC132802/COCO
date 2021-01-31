@@ -4,7 +4,6 @@
     <div
       @mouseenter="changeContainerSizes(255)"
       @mouseleave="changeContainerSizes(55)"
-      v-if="authentication.userIsAuthenticated"
     >
       <LeftAside id="leftAside" />
     </div>
@@ -18,7 +17,7 @@
         :notification="notification"
       />
     </div>
-    <v-fab-transition v-if="floatingIcon && authentication.userIsAuthenticated"> 
+    <v-fab-transition v-if="floatingIcon && authentication.userIsAuthenticated">
       <v-btn
         color="primary"
         fab
@@ -58,6 +57,7 @@ export default {
 
   data: () => ({
     floatingIcon: "mdi-pencil",
+    apiDir: "user-status/",
   }),
   watch: {
     $route(from, to) {
@@ -65,37 +65,57 @@ export default {
       else if (
         this.$route.name == "Messages" ||
         this.$route.name == "ComposeBarter" ||
-        this.$route.name == 'Edit'
+        this.$route.name == "Edit"
       )
         this.floatingIcon = false;
       else this.floatingIcon = "mdi-pencil";
+    },
+    authentication() {
+      
     },
   },
   beforeUpdate() {},
   beforeMount() {
     let token = readCookie("token");
-    let responseObj = {
-      accessToken: token,
-      userIsAuthenticated: !!token,
-    };
-    this.updateAuthInfo(responseObj);
+    if (token) {
+      let responseObj = {
+        accessToken: token,
+        userIsAuthenticated: !!token,
+      };
+      this.updateAuthInfo(responseObj);
+    }
   },
   computed: {
-    ...mapState(["authentication", "notifications"]),
+    ...mapState(["authentication", "notifications", "baseUrl"]),
   },
   methods: {
-    ...mapMutations(["updateAuthInfo"]),
+    ...mapMutations(["updateAuthInfo", "setUser"]),
     changeContainerSizes(size) {
       let container = document.getElementById("content");
       container.style = `padding-left: ${size}px; padding-top: 62px;`;
     },
-    setFloatingBtnEvent(){
-      if(this.floatingIcon && this.floatingIcon == "mdi-pencil"){
-        this.$router.push({name:'ComposeBarter'})
-      } else if(this.floatingIcon && this.floatingIcon == 'mdi-message-plus'){
-        this.$root.$emit("createChat")
+    setFloatingBtnEvent() {
+      if (this.floatingIcon && this.floatingIcon == "mdi-pencil") {
+        this.$router.push({ name: "ComposeBarter" });
+      } else if (this.floatingIcon && this.floatingIcon == "mdi-message-plus") {
+        this.$root.$emit("createChat");
       }
-    }
+    },
+    getUserInfo() {
+      fetch(this.baseUrl + this.apiDir, {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((respose) => {
+          return respose.json();
+        })
+        .then((respose) => {
+          this.setUser(respose);
+          this.$root.$emit("userSetted");
+        });
+    },
   },
 };
 </script>
