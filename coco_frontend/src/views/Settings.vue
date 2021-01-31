@@ -84,6 +84,7 @@ export default {
 .settings-title {
   font-size: calc(1em + 1vw);
 }
+
 @media (max-width: 920px) {
   .arrow-back {
     display: block;

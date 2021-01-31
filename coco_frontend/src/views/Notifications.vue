@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-row wrap>
-      <v-col class="pt-0 pb-0 px-0" tile sm="12" md="8" lg="8" xl="9">
+      <v-col class="pt-0 pb-0 " tile sm="12" md="8" lg="8" xl="9">
         <NotificationsList />
       </v-col>
       <v-col cols="12" sm="12" md="4" lg="4" xl="3" class="pt-0 mt-0">

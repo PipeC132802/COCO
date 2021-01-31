@@ -25,6 +25,12 @@
           @submit.prevent="updateUserInfo"
           lazy-validation
         >
+          <v-text-field
+            class="mb-1"
+            v-model="username"
+            label="Nombre de usuario"
+            required
+          ></v-text-field>
           <v-row class="ma-0 pa-0">
             <v-col xs="12" md="6" class="pl-0">
               <v-text-field
@@ -93,6 +99,7 @@ export default {
   data: () => ({
     apiDir: "user-info-update/",
     valid: false,
+    username: "",
     firstName: "",
     lastName: "",
     bio: "",
@@ -113,6 +120,7 @@ export default {
     ...mapState(["baseUrl", "user", "authentication"]),
   },
   beforeUpdate() {
+    this.formData.username = this.username;
     this.formData.first_name = this.firstName;
     this.formData.last_name = this.lastName;
     this.formData.bio = this.bio;
@@ -121,6 +129,7 @@ export default {
     this.retrieveUserInfo();
   },
   methods: {
+    ...mapMutations(["setUser"]),
     retrieveUserInfo() {
       fetch(this.baseUrl + this.apiDir, {
         headers: {
@@ -131,6 +140,7 @@ export default {
           return response.json();
         })
         .then((response) => {
+          this.username = response.username;
           this.firstName = response.first_name;
           this.lastName = response.last_name;
           this.bio = response.bio;
@@ -172,7 +182,15 @@ export default {
             }
           })
           .then((response) => {
-            location.reload();
+            let user = this.user;
+            user.username = this.username;
+            this.name = this.firstName + " " + this.lastName;
+            console.log(user)
+            this.setUser(user);
+            this.$router.push({
+              name: "Profile",
+              params: { username: this.username },
+            });
           })
           .catch((err) => {
             this.snackbar = true;

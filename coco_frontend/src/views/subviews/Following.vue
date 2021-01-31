@@ -99,8 +99,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 p {
-  font-size: 16pt;
+  font-size: calc(0.5vw + 1em);
 }
 </style>

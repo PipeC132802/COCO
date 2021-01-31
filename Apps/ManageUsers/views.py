@@ -1,6 +1,9 @@
 from datetime import datetime
 
 from PIL import Image
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.twitter.views import TwitterOAuthAdapter
+from dj_rest_auth.social_serializers import TwitterLoginSerializer
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db.models import Q
@@ -21,6 +24,8 @@ from COCO.functions import save_areas, get_place, get_profile_url, get_img_url_f
     get_notification_and_mark_as_unread
 from COCO.mailing import sendMail
 from COCO.settings import DOMAIN, BASE_DIR, PIXABAY_API_KEY
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from dj_rest_auth.registration.views import SocialLoginView
 
 
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
@@ -309,6 +314,7 @@ class UserAboutApi(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             user_about = UserAbout.objects.get(user__username=request.GET["username"], user__is_active=True)
+            print(user_about.bio)
             return Response(user_about.serializer(), status=200)
         except:
             user = User.objects.filter(username=request.GET["username"], is_active=True)
@@ -527,9 +533,11 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
         return Response({'Detail': 'User info edited successfully'}, status=200)
 
     def save_personal_info(self, request):
+        username = request.data["username"]
         first_name = request.data["first_name"]
         last_name = request.data["last_name"]
         user = request.user
+        user.username = username
         user.first_name = first_name
         user.last_name = last_name
         user.save()
@@ -593,6 +601,7 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
             bio = ''
 
         response = {
+            'username': user.username,
             'first_name': user.first_name,
             'last_name': user.last_name,
             'country': country,
@@ -617,3 +626,16 @@ class DeactivateAccountApi(generics.UpdateAPIView):
         user.is_active = False
         user.save()
         return Response({'Detail': 'user account deactivated'})
+
+
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
+
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+
+
+class TwitterLogin(SocialLoginView):
+    serializer_class = TwitterLoginSerializer
+    adapter_class = TwitterOAuthAdapter

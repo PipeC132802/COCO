@@ -3,28 +3,7 @@
     <v-dialog persistent v-model="signUpDialog" dense max-width="600">
       <v-card id="v-dialog">
         <v-card-title class="pl-8 pt-5 pb-0 mx-auto"> Regístrate con </v-card-title>
-        <v-container fluid class="pa-0">
-          <v-row justify="center">
-            <v-col cols="3" class="text-center">
-              <v-btn color="red darken-4" dark>
-                <v-icon>mdi-google</v-icon>
-                <span class="big-devices ml-1">Google</span>
-              </v-btn>
-            </v-col>
-            <v-col cols="3" sm="4" class="text-center">
-              <v-btn  color="blue darken-4" dark>
-                <v-icon>mdi-facebook</v-icon>
-                <span class="big-devices ml-1">Facebook</span>
-              </v-btn>
-            </v-col>
-            <v-col cols="3" class="text-center">
-              <v-btn color="blue"  dark>
-                <v-icon>mdi-twitter</v-icon>
-                <span class="big-devices ml-1">Twitter</span>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
+        <SocialLogin />
         <v-card-text class="pt-0 mt-0 pb-0">
         <div class="text-left pl-3 pt-2 pb-0 mb-0"><p class="ma-0">O ingresando tus datos</p></div>
           <v-container class="pt-0">
@@ -142,9 +121,12 @@
 <script>
 import { mapMutations, mapState } from "vuex";
 import { setCookie } from "@/js/cookiesfunctions.js";
-
+import SocialLogin from "../components/SocialLogin.vue"
 export default {
   name: "SignUp",
+  components:{
+    SocialLogin
+  },
   data: () => ({
     firstName: "",
     lastName: "",

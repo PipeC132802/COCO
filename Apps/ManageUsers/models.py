@@ -32,13 +32,16 @@ class UserAbout(models.Model):
             profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=self.user).profile_picture.url
         except:
             profile_picture = ''
-
+        try:
+            birthday = self.birthday.strftime("%d de %b. de %Y")
+        except:
+            birthday = ''
         return {
             'user': self.user.username,
             'name': '{0} {1}'.format(self.user.first_name, self.user.last_name),
             'profile_picture': profile_picture,
             'bio': self.bio,
-            'birthday': self.birthday.strftime("%d de %b. de %Y"),
+            'birthday': birthday,
             'gender': self.gender
         }
 

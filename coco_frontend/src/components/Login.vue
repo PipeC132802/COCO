@@ -1,9 +1,10 @@
 <template>
   <div>
-    <v-dialog persistent  v-model="loginDialog" max-width="600">
-      <v-card  id="v-dialog">
+    <v-dialog persistent v-model="loginDialog" max-width="600">
+      <v-card id="v-dialog">
         <v-card-title class="pb-0 mb-0"> Inicia sesión con </v-card-title>
-        
+        <SocialLogin />
+
         <v-card-text class="pb-0 mb-0">
           <v-container fluid>
             <v-row>
@@ -42,13 +43,13 @@
             ¿No tienes una cuenta?
             <a @click="updateFormsDialog(false, true)">Regístrate gratis</a>
           </p>
-          
         </v-card-text>
         <v-card-actions class="pt-0 mr-4 mb-2">
           <v-spacer></v-spacer>
-          <v-btn  color="error" @click="loginDialog = false" text> cerrar </v-btn>
+          <v-btn color="error" @click="loginDialog = false" text>
+            cerrar
+          </v-btn>
         </v-card-actions>
-        
       </v-card>
       <v-snackbar v-model="snackbar">
         {{ message }}
@@ -60,7 +61,7 @@
       </v-snackbar>
     </v-dialog>
 
-     <ResetPassword v-if="resetPassword" v-on:dialog-state="changeDialogState" />
+    <ResetPassword v-if="resetPassword" v-on:dialog-state="changeDialogState" />
   </div>
 </template>
 
@@ -68,10 +69,12 @@
 import { mapMutations, mapState } from "vuex";
 import { setCookie } from "@/js/cookiesfunctions.js";
 import ResetPassword from "@/components/subcomponents/ResetPassword.vue";
+import SocialLogin from "../components/SocialLogin.vue";
 export default {
   name: "Login",
   components: {
-    ResetPassword
+    ResetPassword,
+    SocialLogin,
   },
   data: () => ({
     username: "",
@@ -143,21 +146,17 @@ export default {
           setCookie("token", response.key, 60);
 
           this.updateAuthInfo(responseObj);
-          this.updateFormsDialog(false,false);
+          this.updateFormsDialog(false, false);
           this.$router.push({ name: "Home" });
         })
-        .catch((error) => {
+        .catch(() => {
           this.password = "";
           this.snackbar = true;
           this.message = "Credenciales inválidas!";
         })
-        .finally(()=>{
-           this.loading = false;
-           
-           
-        })
-
-     
+        .finally(() => {
+          this.loading = false;
+        });
     },
     updateFormsDialog(login, signup) {
       let formDialog = {
@@ -167,9 +166,9 @@ export default {
 
       this.updateFormsInfo(formDialog);
     },
-    changeDialogState: function(dialogState) {
+    changeDialogState: function (dialogState) {
       this.resetPassword = dialogState;
-    }
+    },
   },
 };
 </script>

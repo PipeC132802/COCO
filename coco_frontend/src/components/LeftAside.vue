@@ -16,7 +16,9 @@
               :alt="'perfil de ' + user.name"
               :src="user.profile_picture"
             />
-            <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+            <span class="white--text" v-else>{{
+              user.name.slice(0, 1).toUpperCase()
+            }}</span>
           </v-list-item-avatar>
           <v-list-item-content class="white--text">
             <v-list-item-title :title="user.name">{{
@@ -95,7 +97,9 @@
                 :alt="'perfil de ' + user.name"
                 :src="user.profile_picture"
               />
-              <span class="white--text" v-else>{{ user.name.slice(0, 1).toUpperCase() }}</span>
+              <span class="white--text" v-else>{{
+                user.name.slice(0, 1).toUpperCase()
+              }}</span>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title class="primary--text" :title="user.name">
@@ -244,7 +248,9 @@ export default {
             unread_messages: respose.unread_messages,
           });
           this.setUser(respose);
+          
           this.$root.$emit("userSetted");
+
           this.connect();
         });
     },

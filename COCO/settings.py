@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'Apps.ManageReviews',
     'Apps.ManageChats',
     # Django apps
-    'dj_rest_auth',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,11 +50,19 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-
+    'dj_rest_auth',
     'notify',
     'channels',
-]
 
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.twitter',
+    'allauth.socialaccount.providers.google',
+]
+SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -135,7 +143,6 @@ CHANNEL_LAYERS = {
         },
     },
 }
-
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_ALL_ORIGINS = True

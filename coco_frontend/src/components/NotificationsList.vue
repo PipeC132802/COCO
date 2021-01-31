@@ -14,6 +14,7 @@
       dark
       icon="mdi-bell-remove"
       dense
+      class="mx-2"
     >
       Aún no tienes notificaciones
     </v-alert>

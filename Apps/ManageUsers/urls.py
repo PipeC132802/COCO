@@ -4,6 +4,9 @@ from .views import *
 
 urlpatterns = [
     path('user-auth/', include('dj_rest_auth.urls')),
+    path('user-auth/facebook/', FacebookLogin.as_view(), name='fb_login'),
+    path('user-auth/google/', GoogleLogin.as_view(), name='google_login'),
+    path('user-auth/twitter/', TwitterLogin.as_view(), name='twitter_login'),
     path('create-user/', CreateUserApi.as_view(), name='create_user'),
     path('user-status/', UserStatus.as_view(), name='user_status'),
     path('confirm-user/', UserVerificationApi.as_view(), name='confirm_user'),
