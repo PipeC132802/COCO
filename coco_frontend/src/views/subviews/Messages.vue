@@ -67,12 +67,11 @@
           :key="message.id"
           :class="typing ? 'mb-2' : ''"
         >
-        
           <div
             v-if="message.sender_username != user.username"
             class="incoming-msg"
           >
-            {{ decriptText(message.sender_username, message.text) }}
+            {{ decriptText(message.sender_username, message.text).trim() }}
             <small
               :title="formatDate(message.created) | capitalize"
               class="msg-footer mr-1"
@@ -95,7 +94,6 @@
             </small>
           </div>
         </v-row>
-        
       </v-card-text>
       <v-container class="px-3 pt-3 pb-0" fluid>
         <v-row>
@@ -166,7 +164,6 @@ export default {
     } else {
       this.$emit("main", true);
     }
-     
   },
   beforeDestroy() {
     this.websocket.close();
@@ -406,14 +403,28 @@ body {
 .inbox-chats-active {
   display: block;
 }
+.messages {
+  display: flex;
+  flex-direction: column-reverse;
+  position: relative;
+  margin: 20px 0px;
+  max-height: calc(100vh - 190px);
+  min-height: calc(100vh - 190px);
+  width: 100%;
+  padding: 10px 6%;
+  overflow: auto;
+  background: var(--background-color);
+  border-radius: 15px 15px 0 0;
+  scroll-snap-type: y proximity;
+}
 .incoming-msg {
-  display: inline-block;
+  display: inline;
   position: relative;
   margin: 7px 0;
-  padding: 10px 10% 2% 10px;
+  min-width: 60px;
+  padding: 10px 12% 10px 10px;
   border-radius: 0px 13px 13px 13px;
   max-width: 80%;
-  width: auto;
   background: var(--incoming-msg-bg);
   color: white;
   text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
@@ -437,9 +448,10 @@ body {
   display: inline-block;
   position: relative;
   margin: 7px 0;
-  padding: 10px 12% 2% 10px;
+  padding: 10px 12% 10px 10px;
   border-radius: 13px 0px 13px 13px;
   max-width: 80%;
+  min-height: 30px;
   width: auto;
   color: white;
   background: var(--outgoing-msg-bg);
@@ -461,20 +473,7 @@ body {
   transform: rotate(-135deg);
   border-radius: 5px;
 }*/
-.messages {
-  display: flex;
-  flex-direction: column-reverse;
-  position: relative;
 
-  margin: 20px 0px;
-  height: calc(100vh - 190px);
-  width: 100%;
-  padding: 10px 6%;
-  overflow: auto;
-  background: var(--background-color);
-  border-radius: 15px 15px 0 0;
-  scroll-snap-type: y proximity;
-}
 @media (max-width: 920px) {
   .inbox-chats {
     display: none;
@@ -490,7 +489,8 @@ body {
 }
 @media (min-width: 920px) {
   .messages {
-    height: calc(100vh - 230px);
+    min-height: calc(100vh - 230px);
+    max-height: calc(100vh - 230px);
   }
 }
 
@@ -541,7 +541,8 @@ body {
   position: relative;
   margin: 25px 0%;
 }
-.v-messages, .v-text-field__details{
+.v-messages,
+.v-text-field__details {
   display: none;
 }
 </style>

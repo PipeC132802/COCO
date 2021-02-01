@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.db.models.signals import post_save
 from Apps.ManageBarters.models import Barter, BarterView
 from Apps.ManageChats.models import Conversation
@@ -20,4 +21,6 @@ proposal_accepted = dispatch.Signal(providing_args=[
 def create_chat(sender, **kwargs):
     owner = kwargs.pop('owner', None)
     opponent = kwargs.pop('opponent', None)
-    Conversation.objects.create(owner=owner, opponent=opponent)
+    conversation = Conversation.objects.filter(Q(owner=owner, opponent=opponent) | Q(opponent=owner, owner=opponent))
+    if not conversation.exists():
+        Conversation.objects.create(owner=owner, opponent=opponent)

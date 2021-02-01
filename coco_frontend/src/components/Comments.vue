@@ -112,6 +112,7 @@
         <v-divider class="mt-1"></v-divider>
       </v-list>
     </div>
+    <ProposalAccepted v-on:messageSent="chatData = ''; proposal=false;" v-if="proposal" :chatData="chatData" />
   </v-container>
 </template>
 
@@ -120,11 +121,13 @@ import { mapState } from "vuex";
 import { sendNotificationViaWS } from "../functions.js";
 import moment from "moment";
 import CommentForm from "../components/CommentForm.vue";
+import ProposalAccepted from "../components/ProposalAccepted.vue";
 export default {
   name: "Comments",
   props: ["barterId", "author"],
   components: {
     CommentForm,
+    ProposalAccepted
   },
   data: () => ({
     comments: [],
@@ -135,6 +138,8 @@ export default {
     },
     comment2Edit: "",
     commentDialog: false,
+    chatData:'',
+    proposal: false,
   }),
   computed: {
     ...mapState(["user", "authentication", "baseUrl", "wsBase"]),
@@ -200,8 +205,15 @@ export default {
         .then((response) => {
           this.notifyUser(response)
           this.getComments();
+          this.proposal = true;
+          this.chatData = {
+            sender : this.user,
+            receiver : comment.user,
+            conversation : response.conversation
+          }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        
     },
      notifyUser(response) {
         let sockedData = {

@@ -400,7 +400,8 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
                     nf_type='accepted_by_user')
         proposal_accepted.send(sender=request.user, owner=request.user, opponent=comment.user_from)
 
-        return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted,
+        return {'Detail': 'Comment accepted status updated successfully',
+                'status': comment.accepted,
                 'user_comment': comment.user_from.username,
                 'user_accept': {
                     'username': request.user.username,

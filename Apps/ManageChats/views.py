@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from Apps.ManageChats.models import Message
+from Apps.ManageChats.models import Message, Conversation
 from Apps.ManageChats.serializer import MessageSerializer
 from COCO.functions import get_profile_url
 
@@ -41,9 +41,22 @@ class ChatsListApi(generics.RetrieveAPIView):
         return opponent
 
 
-class MessagesApi(generics.ListAPIView):
+class MessagesApi(generics.ListAPIView, generics.CreateAPIView):
     model = Message
     serializer_class = MessageSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         return Message.objects.filter(conversation_id=self.request.GET["conversation"]).order_by("-created")
+
+    def post(self, request, *args, **kwargs):
+        owner = request.data["owner"]
+        opponent = request.data["opponent"]
+        msg = request.data["text"]
+        sender = request.user
+        conversation = Conversation.objects.filter(
+            Q(owner__username=owner, opponent__username=opponent) | Q(owner__username=opponent,
+                                                                      opponent__username=opponent)
+        ).first()
+        Message.objects.create(conversation_id=conversation.pk, sender=sender, text=msg)
+        return Response({'Detail': 'Message sent'}, status=200)
