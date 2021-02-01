@@ -398,7 +398,7 @@ class BarterCommentsApi(generics.CreateAPIView, generics.ListAPIView, generics.U
                     obj=comment.barter,
                     verb='Aceptó tu propuesta',
                     nf_type='accepted_by_user')
-        proposal_accepted.send(owner=request.user, opponent=comment.barter.user)
+        proposal_accepted.send(sender=request.user, owner=request.user, opponent=comment.user_from)
 
         return {'Detail': 'Comment accepted status updated successfully', 'status': comment.accepted,
                 'user_comment': comment.user_from.username,

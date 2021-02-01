@@ -36,7 +36,7 @@
                   name: 'Profile',
                   params: { username: comment.user.username },
                 }"
-                >{{ comment.user.name }}</router-link
+                >{{ comment.user.name.trim() }}</router-link
               >
 
               <span class="grey--text ml-2" :title="'@' + comment.user.username"

@@ -1,6 +1,6 @@
 <template>
   <div class="pa-2">
-    <v-btn block color="primary" :to="{name:'Edit', params:{username:user.username}}" v-if="!userAbout.bio">Agregar información personal</v-btn>
+    <v-btn block color="primary" :to="{name:'Edit', params:{username:user.username}}" v-if="!userAbout.bio && userAbout.user == user.username">Agregar información personal</v-btn>
     <blockquote v-if="userAbout.bio" class="blockquote">
       <p class="mb-0 mt-5 ml-0">
         {{ userAbout.bio }}

@@ -52,7 +52,7 @@
                 @change="addProfilePicture"
               ></v-file-input>
               <div class="align-self-center">
-                <v-icon  class="mt-14 mx-auto" x-large v-if="hover">
+                <v-icon class="mt-14 mx-auto" x-large v-if="hover">
                   mdi-camera-plus
                 </v-icon>
               </div>
@@ -84,26 +84,29 @@
           class="pa-0 pt-1 pl-6"
           v-if="userP.username != user.username"
         >
-          <FollowButton
-
-            :from="user.username"
-            :to="userP.username"
-            v-on:followObj="followInfo"
-            :text="true"
-            :target="$route.params.username == user.username ? 'self' : 'other'"
-          />
-          <v-chip
-            class="ml-5"
-            v-if="userP.followYou"
-            color="info darken-5"
-            text-color="white"
-            title="Te sigue"
-          >
-            <v-avatar left>
-              <v-icon>mdi-account-circle</v-icon>
-            </v-avatar>
-            Te sigue
-          </v-chip>
+          <v-row class="pl-3">
+            <FollowButton
+              :from="user.username"
+              :to="userP.username"
+              v-on:followObj="followInfo"
+              :text="true"
+              :target="
+                $route.params.username == user.username ? 'self' : 'other'
+              "
+            />
+            <v-chip
+              class="ml-5"
+              v-if="userP.followYou"
+              color="info darken-5"
+              text-color="white"
+              title="Te sigue"
+            >
+              <v-avatar left>
+                <v-icon>mdi-account-circle</v-icon>
+              </v-avatar>
+              Te sigue
+            </v-chip>
+          </v-row>
         </v-col>
         <v-col class="pl-6" cols="12">
           <v-btn
@@ -244,7 +247,6 @@
             Te sigue
           </v-chip>
           <FollowButton
-
             :from="user.username"
             :to="userP.username"
             v-on:followObj="followInfo"
@@ -371,8 +373,8 @@ export default {
         .format("D [de] MMMM [de] YYYY");
     },
   },
-  mounted(){
-    this.$root.$on("userInfoUpdated",()=>{
+  mounted() {
+    this.$root.$on("userInfoUpdated", () => {
       this.getUserCoverInfo();
     });
   },

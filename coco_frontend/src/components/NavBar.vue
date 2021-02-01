@@ -1,12 +1,11 @@
   <template>
   <div>
     <div class="big-devices">
-      <v-app-bar elevate-on-scroll class="company" app color="white">
+      <v-app-bar elevate-on-scroll class="company" app :color="toolbarColor">
         <v-toolbar-title>
           <v-list-item
             dense
-            id="logo-btn"
-            class="mt-2 mb-2 pl-0 primary--text"
+            class="mt-2 mb-2 pl-0 primary--text logo-btn"
             one-line
             :to="{ path: '/' }"
           >
@@ -36,13 +35,14 @@
           append-icon="mdi-magnify"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <div v-if="!authentication.userIsAuthenticated && userRequireMoreInfo">
+        <div class="mr-3" v-if="!authentication.userIsAuthenticated && userRequireMoreInfo">
           <v-row>
             <v-btn
               @click="updateFormsDialog(true, false)"
               class="mr-2 big-devices"
-              text
-              color="primary darken-1"
+              
+              color="white primary--text"
+              
             >
               Inicia sesión
             </v-btn>
@@ -102,13 +102,13 @@
           ></v-text-field>
         </v-row>
       </v-app-bar>
-      <v-app-bar v-else elevate-on-scroll class="company" app color="white">
+      <v-app-bar v-else elevate-on-scroll class="company" app :color="toolbarColor">
         <v-toolbar-title>
           <v-list-item
             dense
-            id="logo-btn"
-            class="mt-2 mb-2 pl-0 primary--text"
+            class="mt-2 mb-2 pl-0 primary--text logo-btn"
             one-line
+            active-class="transparent"
             :to="{ path: '/' }"
           >
             <v-img
@@ -154,6 +154,7 @@ export default {
     showSearchBar: false,
     title: "",
     screenWidth: window.screen.width,
+    toolbarColor: 'white'
   }),
   components: {
     Login,
@@ -185,6 +186,9 @@ export default {
   mounted() {
     this.$root.$on("loginOrSingUpForm", (lg, sp) => {
       this.updateFormsDialog(lg, sp);
+    });
+    this.$root.$on("toolBarColor", (color) => {
+      this.toolbarColor = color;
     });
   },
 
@@ -263,7 +267,7 @@ export default {
     display: block;
   }
 }
-#logo-btn {
+.logo-btn {
   max-height: 30px;
 }
 </style>

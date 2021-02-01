@@ -62,7 +62,7 @@
                     name: 'Profile',
                     params: { username: barter.user.username },
                   }"
-                  >{{ barter.user.name }}</router-link
+                  >{{ barter.user.name.trim() }}</router-link
                 ></span
               ><span class="grey--text ml-2" :title="'@' + barter.user.username"
                 >@{{ barter.user.username }}</span

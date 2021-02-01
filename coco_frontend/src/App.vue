@@ -7,7 +7,10 @@
     >
       <LeftAside id="leftAside" />
     </div>
-    <v-main id="content">
+    <v-main
+      :class="authentication.userIsAuthenticated ? '' : 'px-12'"
+      id="content"
+    >
       <router-view />
     </v-main>
     <div class="notifications">
@@ -70,9 +73,7 @@ export default {
         this.floatingIcon = false;
       else this.floatingIcon = "mdi-pencil";
     },
-    authentication() {
-      
-    },
+    authentication() {},
   },
   beforeUpdate() {},
   beforeMount() {

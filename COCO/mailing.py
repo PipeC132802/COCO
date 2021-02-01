@@ -11,7 +11,7 @@ def sendMail(configs, context):
         body = render_to_string(Template, context)
         email_message = EmailMessage(subject=subject,
                                      body=body,
-                                     from_email="pipe de COCO <{}>".format(
+                                     from_email="Felipe (@pipe) de COCO <{}>".format(
                                          EMAIL_HOST_USER),
                                      to=email)
         email_message.content_subtype = 'html'
@@ -20,7 +20,4 @@ def sendMail(configs, context):
     except:
         return False
 
-"""{
-"email":"andrescercal@hotmail.com",
-"aim": "change"
-}"""
+
