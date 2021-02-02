@@ -1,43 +1,52 @@
 <template>
-  <v-app color="primary">
-    <NavBar />
-    <div
-      @mouseenter="changeContainerSizes(255)"
-      @mouseleave="changeContainerSizes(55)"
-    >
-      <LeftAside id="leftAside" />
-    </div>
-    <v-main
-      :class="authentication.userIsAuthenticated ? '' : 'px-12'"
-      id="content"
-    >
-      <router-view />
-    </v-main>
-    <div class="notifications">
-      <NotificationBox
-        v-for="(notification, index) in notifications"
-        :key="index"
-        :notification="notification"
-      />
-    </div>
-    <v-fab-transition v-if="floatingIcon && authentication.userIsAuthenticated">
-      <v-btn
-        color="primary"
-        fab
-        dark
-        right
-        elevation="3"
-        id="btn-create"
-        bottom
-        fixed
-        @click="setFloatingBtnEvent"
+    
+
+    <v-app color="primary">
+      <router-view v-if="$route.name == 'VerifyEmail'" />
+      <div v-else>
+
+      <NavBar />
+      <div
+        @mouseenter="changeContainerSizes(255)"
+        @mouseleave="changeContainerSizes(55)"
       >
-        <v-icon>{{ floatingIcon }}</v-icon>
-      </v-btn>
-    </v-fab-transition>
-    <FooterNav v-if="authentication.userIsAuthenticated" class="footer-nav" />
-    <div v-if="authentication.userIsAuthenticated" id="notification"></div>
-  </v-app>
+        <LeftAside id="leftAside" />
+      </div>
+      <v-main
+        :class="authentication.userIsAuthenticated ? '' : 'px-12'"
+        id="content"
+      >
+        <router-view />
+      </v-main>
+      <div class="notifications">
+        <NotificationBox
+          v-for="(notification, index) in notifications"
+          :key="index"
+          :notification="notification"
+        />
+      </div>
+      <v-fab-transition
+        v-if="floatingIcon && authentication.userIsAuthenticated"
+      >
+        <v-btn
+          color="primary"
+          fab
+          dark
+          right
+          elevation="3"
+          id="btn-create"
+          bottom
+          fixed
+          @click="setFloatingBtnEvent"
+        >
+          <v-icon>{{ floatingIcon }}</v-icon>
+        </v-btn>
+      </v-fab-transition>
+      <FooterNav v-if="authentication.userIsAuthenticated" class="footer-nav" />
+      <div v-if="authentication.userIsAuthenticated" id="notification"></div>
+            </div>
+
+    </v-app>
 </template>
 
 <script>

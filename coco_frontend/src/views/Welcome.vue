@@ -9,7 +9,13 @@
       <p class="pt-0">¡Únete a COCO hoy mismo!</p>
     </div>
     <v-footer class="footer" color="transparent" dark padless>
-      <v-card flat tile min-width="100%" color="transparent" class="white--text text-center">
+      <v-card
+        flat
+        tile
+        min-width="100%"
+        color="transparent"
+        class="white--text text-center"
+      >
         <v-card-text>
           <v-btn
             v-for="socialbtn in social"
@@ -47,9 +53,12 @@ export default {
   },
   data: () => ({
     social: [
-      {icon:'mdi-facebook' , link:'https://www.facebook.com/Coco-Platform-111091337351773'},
-      {icon:'mdi-twitter' , link:'https://twitter.com/coco_platform'},
-      {icon:'mdi-instagram' , link:'https://instagram.com/coco_platform'},
+      {
+        icon: "mdi-facebook",
+        link: "https://www.facebook.com/Coco-Platform-111091337351773",
+      },
+      { icon: "mdi-twitter", link: "https://twitter.com/coco_platform" },
+      { icon: "mdi-instagram", link: "https://instagram.com/coco_platform" },
     ],
   }),
   created() {},
@@ -88,8 +97,8 @@ export default {
   margin: 25vh auto 0px auto;
   z-index: 2;
 }
-.footer{
+.footer {
   z-index: 1;
-  margin-top: calc(100vh - 80vh)
+  margin-top: 10%;
 }
 </style>

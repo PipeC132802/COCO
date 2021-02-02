@@ -28,6 +28,54 @@ from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from dj_rest_auth.registration.views import SocialLoginView
 
 
+def get_token(email, aim):
+    try:
+        user = User.objects.get(email=email, is_active=True)
+        token_generator = PasswordResetTokenGenerator()
+        token = token_generator.make_token(user)
+        try:
+            token_in_db = VerifyUser.objects.get(user=user, is_active=True)
+            if token_in_db.token != token:
+                token_in_db.token = token
+                token_in_db.save()
+        except:
+            token_in_db = VerifyUser.objects.create(user=user, token=token)
+        mail_conf(token_in_db, aim.upper())
+    except:
+        pass
+
+
+def mail_conf(instance, aim):
+    name = '{0} {1}'.format(instance.user.first_name, instance.user.last_name)
+    subject = 'Confirmación de tu correo electrónico'
+    description = []
+    if aim == 'CHANGE':
+        description.append(
+            'Solicitaste cambiar tu contraseña y para ello es necesario que confirmes tu correo electrónico.'
+        )
+    else:
+        description.append(
+            'Hola, soy Felipe Cerquera el desarrollador de COCO y quiero agradecerte por unirte a esta comunidad ❤.'
+        )
+    description.append('Para confirmar tu correo pulsa el botón que está a continuación:')
+    token = instance.token
+    link = 'http://localhost:8080/verify-email/temp-link'
+    context = {
+        'name': name,
+        'subject': subject,
+        'description': description,
+        'token': token,
+        'link': link
+    }
+    configs = {
+        'Template': 'Mail/mail-template.html',
+        'subject': subject,
+        'to': [instance.user.email],
+    }
+
+    sendMail(configs, context)
+
+
 class UserStatus(generics.RetrieveAPIView):  # , LoginRequiredMixin):
     permission_classes = (IsAuthenticated,)
 
@@ -70,6 +118,7 @@ class CreateUserApi(generics.CreateAPIView):
             user.save()
 
             token = Token.objects.create(user=user)
+            get_token(email=user.email, aim='VERIFY')
             return JsonResponse({
                 'created': True,
                 'key': token.key
@@ -80,65 +129,14 @@ class CreateUserApi(generics.CreateAPIView):
 
 
 class UserVerificationApi(APIView):
-    permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         token = request.GET['token']
         try:
-            VerifyUser.objects.get(user=request.user, token=token)
-            return Response({'user_verified': True}, status=200)
+            VerifyUser.objects.get(token=token)
+            return Response({'Detail': 'User verified'}, status=200)
         except:
-            return Response({'user_verified': False}, status=400)
-
-    def post(self, request, *args, **kwargs):
-        email = request.data["email"]
-        aim = request.data["aim"]
-        try:
-            user = User.objects.get(email=email, is_active=True)
-            token_generator = PasswordResetTokenGenerator()
-            token = token_generator.make_token(user)
-            try:
-                token_in_db = VerifyUser.objects.get(user=user, is_active=True)
-                if token_in_db.token != token:
-                    token_in_db.token = token
-                    token_in_db.save()
-            except:
-                token_in_db = VerifyUser.objects.create(user=user, token=token)
-            self.send_mail(token_in_db, aim.upper())
-            return Response({'verificationToken': True}, status=200)
-        except:
-            return Response({'verificationToken': False}, status=403)
-
-    def send_mail(self, instance, aim):
-        name = '{0} {1}'.format(instance.user.first_name, instance.user.last_name)
-        subject = 'Confirmación de tu correo electrónico'
-        description = []
-        if aim == 'CHANGE':
-            description.append(
-                'Solicitaste cambiar tu contraseña y para ello es necesario que confirmes tu correo electrónico.'
-            )
-        else:
-            description.append(
-                'Vamos a confirmar tu correo electrónico para que puedas usar COCO, construyendo comunidad alrededor '
-                'del conocimiento. '
-            )
-        description.append('Para continuar pulsa el botón que está a continuación:')
-        token = instance.token
-        link = 'http://localhost:8080/'
-        context = {
-            'name': name,
-            'subject': subject,
-            'description': description,
-            'token': token,
-            'link': link
-        }
-        configs = {
-            'Template': 'Mail/mail-template.html',
-            'subject': subject,
-            'to': [instance.user.email],
-        }
-
-        sendMail(configs, context)
+            return Response({'Detail': 'User is not verified'}, status=400)
 
 
 class AreaListApi(generics.ListAPIView):

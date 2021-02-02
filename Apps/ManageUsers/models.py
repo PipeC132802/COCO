@@ -165,6 +165,7 @@ class UserSettings(models.Model):
 
 class VerifyUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    verified = models.BooleanField(default=False)
     token = models.CharField(max_length=50)
 
     def __str__(self):

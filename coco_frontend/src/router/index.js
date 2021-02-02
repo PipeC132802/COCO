@@ -127,6 +127,14 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: () => import('../views/ComposeBarter.vue'),
   },
+  {
+    path: '/verify-email/temp-link',
+    name: 'VerifyEmail',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import('../views/Temp.vue'),
+  },
   
 
 ]
