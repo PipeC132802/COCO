@@ -73,8 +73,6 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-
-              <p class="forgot-password">¿Olvidaste tu contraseña?</p>
               <v-progress-linear
                 v-if="loading"
                 color="accent"

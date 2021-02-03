@@ -36,7 +36,7 @@
                 <v-btn class="mr-4 mb-2" color="primary" block type="submit">
                   Iniciar sesión
                 </v-btn>
-                <a @click="resetPassword = true">¿Olvidaste tu contraseña?</a>
+                <a>¿Olvidaste tu contraseña?</a>
               </form>
             </v-row>
           </v-container>

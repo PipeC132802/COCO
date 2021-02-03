@@ -139,6 +139,8 @@ class UserVerificationApi(APIView):
             return Response({'Detail': 'User is not verified'}, status=400)
 
 
+
+
 class AreaListApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AreaSerializer

@@ -2,13 +2,13 @@
   <div>
     <v-container fluid class="pa-0">
       <v-row justify="center">
-        <v-col cols="3" class="text-center">
+        <v-col cols="3"  class="text-center">
           <v-btn @click="googleLogin" color="red darken-4" dark>
             <v-icon>mdi-google</v-icon>
             <span class="big-devices ml-1">Google</span>
           </v-btn>
         </v-col>
-        <v-col cols="3" sm="3" md="4" class="text-center">
+        <v-col cols="3"  class="text-center">
           <v-btn
             @click="socialBtn = 'Facebook'"
             color="blue darken-4"
@@ -32,12 +32,6 @@
                 <span class="big-devices ml-1" slot="working">Espere...</span>
               </v-facebook-login>
             </template>
-          </v-btn>
-        </v-col>
-        <v-col cols="3" class="text-center">
-          <v-btn color="blue" dark>
-            <v-icon>mdi-twitter</v-icon>
-            <span class="big-devices ml-1">Twitter</span>
           </v-btn>
         </v-col>
       </v-row>

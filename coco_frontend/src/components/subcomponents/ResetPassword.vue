@@ -11,17 +11,17 @@
               v-model="email"
               label="Correo"
             ></v-text-field>
-            <v-btn class="mr-4 mb-2" color="primary" block type="submit">
+            <v-btn class="mr-4 mb-2" color="primary" block>
               Recuperar contraseña
             </v-btn>
           </form>
           <p align="center">
             ¿No tienes cuenta en COCO?
-            <a @click="updateFormsDialog(false,true)"> Regístrarse </a>
+            <a @click="updateFormsDialog(false, true)"> Regístrarse </a>
           </p>
           <p align="center">
             También puedes
-            <a @click="updateFormsDialog(true,false)"> Iniciar sesión </a>
+            <a @click="updateFormsDialog(true, false)"> Iniciar sesión </a>
           </p>
         </v-card-text>
         <v-card-actions class="pt-0 mr-4">
@@ -35,22 +35,21 @@
   </div>
 </template>
 <script>
-import {mapMutations} from "vuex";
+import { mapMutations, mapState } from "vuex";
 export default {
   name: "ResetPassword",
   data: () => ({
     resetPassword: true,
     email: "",
+    apiDir: "confirm-user/",
   }),
-  beforeUpdate() {
-    this.$emit("dialog-state", this.resetPassword);
+  beforeUpdate() {},
+  computed: {
+    ...mapState(["baseUrl"]),
   },
-  computed:{
-     
-  },
-  methods:{
-       ...mapMutations(["updateFormsInfo"]),
-      updateFormsDialog(login, signup) {
+  methods: {
+    ...mapMutations(["updateFormsInfo"]),
+    updateFormsDialog(login, signup) {
       let formDialog = {
         loginDialog: login,
         signUpDialog: signup,
@@ -58,7 +57,19 @@ export default {
       this.resetPassword = false;
       this.updateFormsInfo(formDialog);
     },
-  }
+    resetPassword() {
+      if (this.email) {
+        fetch(this.baseUrl + this.apiDir, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: this.email }),
+        })
+        
+      }
+    },
+  },
 };
 </script>
 <style scoped>
