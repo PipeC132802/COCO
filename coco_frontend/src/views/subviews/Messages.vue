@@ -95,21 +95,45 @@
           </div>
         </div>
       </v-card-text>
-      <v-container class="pb-0" fluid>
-          <v-text-field
-            @keyup="typingMessage"
-            @keyup.enter="sendMessage"
-            @focus="seenMsg"
-            rounded
-            outlined
-            dense
-            v-model="msg"
-            label="Escribe tu mensaje"
-            solo
-            @click:append-outer="sendMessage"
-            prepend-icon="mdi-emoticon-outline"
-            :append-outer-icon="msg ? 'mdi-send' : ''"
-          ></v-text-field>
+      <v-container class="pb-0 white" fluid>
+        <picker
+          v-on:click="addEmoji"
+          v-if="picker"
+          :style="{
+            position: 'absolute',
+            bottom: '0px',
+            left: '0px',
+            'z-index': 0,
+          }"
+          :i18n="i18n"
+        />
+        <div
+          class="white"
+          style="
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            max-height: 30px;
+            z-index: 0;
+            left: -10px;
+          "
+        ></div>
+        <v-text-field
+          class="white"
+          @keyup="typingMessage"
+          @keyup.enter="sendMessage"
+          @focus="seenMsg"
+          rounded
+          outlined
+          dense
+          v-model="msg"
+          label="Escribe tu mensaje"
+          solo
+          :append-outer-icon="msg ? 'mdi-send' : ''"
+          prepend-icon="mdi-emoticon-outline"
+          @click:append-outer="sendMessage"
+          @click:prepend.prevent="picker = !picker"
+        ></v-text-field>
       </v-container>
     </v-card>
     <ColorPicker
@@ -126,6 +150,7 @@
 </template>
 
 <script>
+import { Picker } from "emoji-mart-vue";
 import { mapState, mapMutations } from "vuex";
 import { decript, encrypt } from "@/functions.js";
 import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
@@ -135,8 +160,10 @@ export default {
   name: "Messages",
   components: {
     ColorPicker,
+    Picker,
   },
   data: () => ({
+    picker: false,
     messages: [],
     message: "",
     apiDir: "messages/",
@@ -150,6 +177,23 @@ export default {
     msg: "",
     typing: false,
     change: false,
+    i18n: {
+      search: "Buscar...",
+      notfound: "No hay emojis",
+      categories: {
+        search: "Buscar",
+        recent: "Usados recientemente",
+        people: "Personas",
+        nature: "Animales y Naturaleza",
+        foods: "Comidas y bebidas",
+        activity: "Acciones",
+        places: "Viajes y lugares",
+        objects: "Objectos",
+        symbols: "Símbolos",
+        flags: "Banderas",
+        custom: "Personalizados",
+      },
+    },
   }),
   mounted() {
     this.getMessages();
@@ -212,6 +256,7 @@ export default {
     },
     sendMessage() {
       if (this.msg.length) {
+        this.picker = false;
         this.websocket.send(
           JSON.stringify({
             type: "chat_message",
@@ -224,6 +269,9 @@ export default {
         );
         this.msg = "";
       }
+    },
+    addEmoji(emoji) {
+      this.msg += emoji.native.toString();
     },
     typingMessage() {
       let sender = this.user.username;
@@ -408,8 +456,6 @@ export default {
   scroll-snap-type: y proximity;
 }
 .incoming-msg {
- 
-
   position: relative;
   margin: 7px 0;
   float: left;
@@ -475,11 +521,10 @@ export default {
   .incoming-msg {
     border-radius: 0px 20px 20px 20px;
     padding: 10px 20% 8% 10px;
-    
   }
   .outgoing-msg {
     border-radius: 20px 0px 20px 20px;
-      padding: 10px 20% 8% 10px;
+    padding: 10px 20% 8% 10px;
   }
 }
 @media (min-width: 920px) {
@@ -535,7 +580,8 @@ export default {
   position: relative;
   margin: 25px 0%;
 }
-.v-messages, .v-text-field__details {
+.v-messages,
+.v-text-field__details {
   display: none !important;
 }
 </style>
