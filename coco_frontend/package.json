@@ -8,7 +8,12 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "crypto-js": "^4.0.0",
+    "emoji-mart-vue": "^1.0.2",
+    "moment": "^2.15.2",
     "vue": "^2.6.11",
+    "vue-facebook-login-component": "^3.0.0",
+    "vue-google-oauth2": "^1.5.5",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0"
