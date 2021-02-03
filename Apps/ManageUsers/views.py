@@ -273,7 +273,6 @@ class UserAccountInfoApi(generics.RetrieveAPIView):
 
         user = User.objects.filter(username=username, is_active=True)
         user = user.first()
-        print(user.date_joined)
         if user:
             user_json = {
                 'name': "{0} {1}".format(user.first_name, user.last_name),
@@ -315,7 +314,6 @@ class UserAboutApi(generics.RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         try:
             user_about = UserAbout.objects.get(user__username=request.GET["username"], user__is_active=True)
-            print(user_about.bio)
             return Response(user_about.serializer(), status=200)
         except:
             user = User.objects.filter(username=request.GET["username"], is_active=True)

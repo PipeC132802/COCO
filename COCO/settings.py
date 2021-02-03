@@ -22,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '9+5u#n8q)x$+8iju=g(nlmd58yc6j2t-91%mt#1v%1ea712&w('
+SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -164,6 +164,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(str(BASE_DIR), 'static')
 MEDIA_ROOT = os.path.join(str(BASE_DIR), 'Files')
 MEDIA_URL = '/coco-files/'
 PASSWORD_RESET_TIMEOUT_DAYS = 1
