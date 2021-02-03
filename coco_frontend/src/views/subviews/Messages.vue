@@ -62,7 +62,7 @@
             >
           </div>
         </div>
-        <v-row
+        <div
           v-for="message in messages"
           :key="message.id"
           :class="typing ? 'mb-2' : ''"
@@ -93,13 +93,9 @@
               </span>
             </small>
           </div>
-        </v-row>
+        </div>
       </v-card-text>
-      <v-container class="px-3 pt-3 pb-0" fluid>
-        <v-row>
-          <v-btn class="mt-1 mr-1" icon>
-            <v-icon>mdi-emoticon-outline</v-icon>
-          </v-btn>
+      <v-container class="pb-0" fluid>
           <v-text-field
             @keyup="typingMessage"
             @keyup.enter="sendMessage"
@@ -111,9 +107,9 @@
             label="Escribe tu mensaje"
             solo
             @click:append-outer="sendMessage"
+            prepend-icon="mdi-emoticon-outline"
             :append-outer-icon="msg ? 'mdi-send' : ''"
           ></v-text-field>
-        </v-row>
       </v-container>
     </v-card>
     <ColorPicker
@@ -379,19 +375,14 @@ export default {
 };
 </script>
 
-<style>
-body {
-  background: white;
-}
+
+<style scoped>
 :root {
   --incoming-msg-bg: #09243df5;
   --outgoing-msg-bg: #3079bdfa;
   --background-color: #3636362a;
 }
-.chat-body {
-  height: 85vh;
-  background: red;
-}
+
 .link-msgs {
   font-size: 14pt;
   font-weight: bold;
@@ -408,25 +399,27 @@ body {
   flex-direction: column-reverse;
   position: relative;
   margin: 20px 0px;
-  max-height: calc(100vh - 190px);
-  min-height: calc(100vh - 190px);
+  height: calc(100vh - 210px);
   width: 100%;
-  padding: 10px 6%;
+  padding: 10px 3%;
   overflow: auto;
   background: var(--background-color);
   border-radius: 15px 15px 0 0;
   scroll-snap-type: y proximity;
 }
 .incoming-msg {
-  display: inline;
+ 
+
   position: relative;
   margin: 7px 0;
-  min-width: 60px;
+  float: left;
   padding: 10px 12% 10px 10px;
   border-radius: 0px 13px 13px 13px;
   max-width: 80%;
-  background: var(--incoming-msg-bg);
+  min-height: 30px;
+  width: auto;
   color: white;
+  background: var(--incoming-msg-bg);
   text-shadow: 0px 0px 1px rgba(0, 0, 0, 1);
 }
 /*.incoming-msg::before {
@@ -445,9 +438,9 @@ body {
   border-radius: 5px;
 }*/
 .outgoing-msg {
-  display: inline-block;
   position: relative;
   margin: 7px 0;
+  float: right;
   padding: 10px 12% 10px 10px;
   border-radius: 13px 0px 13px 13px;
   max-width: 80%;
@@ -480,17 +473,18 @@ body {
   }
 
   .incoming-msg {
+    border-radius: 0px 20px 20px 20px;
     padding: 10px 20% 8% 10px;
+    
   }
   .outgoing-msg {
-    min-width: 80px;
-    padding: 10px 20% 8% 10px;
+    border-radius: 20px 0px 20px 20px;
+      padding: 10px 20% 8% 10px;
   }
 }
 @media (min-width: 920px) {
   .messages {
-    min-height: calc(100vh - 230px);
-    max-height: calc(100vh - 230px);
+    max-height: calc(100vh - 250px);
   }
 }
 
@@ -541,8 +535,7 @@ body {
   position: relative;
   margin: 25px 0%;
 }
-.v-messages,
-.v-text-field__details {
-  display: none;
+.v-messages, .v-text-field__details {
+  display: none !important;
 }
 </style>

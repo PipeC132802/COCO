@@ -73,9 +73,9 @@ export default {
   }),
   watch: {
     $route(from, to) {
-      if (this.$route.name == "Inbox") this.floatingIcon = "mdi-message-plus";
-      else if (
+      if (
         this.$route.name == "Messages" ||
+        this.$route.name == "Inbox" ||
         this.$route.name == "ComposeBarter" ||
         this.$route.name == "Edit"
       )

@@ -125,7 +125,10 @@ export default {
   mounted() {
     this.connect();
   },
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.websocket.close();
+    this.websocket = null;
+  },
   methods: {
     ...mapMutations(["setChat", "msgReceivedInbox", 'notificationStatus']),
     getChatIndex() {

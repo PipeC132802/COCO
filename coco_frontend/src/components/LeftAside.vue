@@ -231,10 +231,13 @@ export default {
     },
     authentication(){
       this.getUserInfo();
+    },
+    notification(){
+      this.items[3].value = this.notification.unread_messages;
     }
   },
   computed: {
-    ...mapState(["baseUrl", "authentication", "wsBase"]),
+    ...mapState(["baseUrl", "authentication", "wsBase", "notification"]),
   },
   mounted() {
     this.getUserInfo();
