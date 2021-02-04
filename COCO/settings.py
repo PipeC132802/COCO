@@ -27,7 +27,7 @@ SECRET_KEY = os.environ['SECRET_KEY']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['api.cocoplatform.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -144,9 +144,14 @@ CHANNEL_LAYERS = {
     },
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_ALL_ORIGINS = True
-
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://cocoplatform.com",
+    "http://www.cocoplatform.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:8080"
+]
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
