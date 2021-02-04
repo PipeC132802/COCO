@@ -14,7 +14,7 @@ export default new Vuex.Store({
       signUpDialog: false,
     },
     user: '',
-    baseUrl: 'http://127.0.0.1:8000/coco/api/v1.0/',
+    baseUrl: 'http://api.cocoplatform.com/coco/api/v1.0/',
     userRequireMoreInfo: true,
     pixaKey: '19499640-f691e6b92721afc93a5b52556',
     profileFollowStatus: {
@@ -22,7 +22,7 @@ export default new Vuex.Store({
       following: '',
       followThisUser: false,
     },
-    wsBase : '127.0.0.1:8000',
+    wsBase : 'api.cocoplatform.com',
     notifications: [],
     chat: '',
     chats: [],

@@ -176,7 +176,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
 EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
-DOMAIN = "http://127.0.0.1:8000"
+DOMAIN = "http://api.cocoplatform.com"
 
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
 
