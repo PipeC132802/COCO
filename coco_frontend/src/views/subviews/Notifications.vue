@@ -15,7 +15,7 @@
         </v-row>
       </div>
       <v-divider></v-divider>
-      <p class="grey--text px-4 mb-0">
+      <p class="grey--text px-4 mb-1">
         Establece las preferencias para tus notificationes.
       </p>
       <v-row>

@@ -15,7 +15,7 @@
         </v-row>
       </div>
       <v-divider></v-divider>
-      <p class="grey--text px-4 mb-0">
+      <p class="grey--text px-4 mb-1">
         Encuentra más información sobre COCO.
       </p>
       <v-row>

@@ -125,7 +125,10 @@ export default {
     this.formData.last_name = this.lastName;
     this.formData.bio = this.bio;
   },
-  created() {
+  mounted() {
+    if(!this.user){
+      this.$router.push({name: "Welcome"})
+    }
     this.retrieveUserInfo();
   },
   methods: {
