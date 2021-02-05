@@ -1,7 +1,7 @@
 <template>
   <div v-if="visible">
     <v-bottom-navigation grow id="bottom-nav" class="pt-1" color="primary">
-      <v-row class="px-3 pt-0">
+      <v-row class="px-3 pt-3">
         <v-col class="pa-0">
           <v-btn icon class="pa-2" block exact :to="{ name: 'Home' }">
             <v-icon>mdi-home</v-icon>
@@ -22,7 +22,6 @@
             >
               <v-icon>mdi-bell</v-icon>
             </v-badge>
-            
           </v-btn></v-col
         >
         <v-col class="pa-0">
@@ -43,22 +42,22 @@
 </template>
 
 <script>
-import {mapState} from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "FooterNav",
-  data:()=>({
+  data: () => ({
     visible: true,
   }),
   computed: {
-    ...mapState(['notification'])
-  }, 
-  watch:{
-    $route(to, from){
-      if(this.$route.name == "Messages"){
+    ...mapState(["notification"]),
+  },
+  watch: {
+    $route(to, from) {
+      if (this.$route.name == "Messages") {
         this.visible = false;
       } else this.visible = true;
-    }
-  }
+    },
+  },
 };
 </script>
 

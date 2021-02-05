@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <div class="title--text settings-title px-3">
-        <v-row align="center" class="pl-3">
+        <v-row align="center" class="pl-3 pt-2">
           <v-btn
             @click="$router.push({ name: 'Settings' })"
             class="mr-3 arrow-back"
@@ -20,7 +20,7 @@
         cuenta.
       </p>
       <v-row>
-        <v-col class="pt-0" cols="12">
+        <v-col class="pt-2" cols="12">
           <v-list subheader one-line>
             <v-list-item
               v-for="item in menu"

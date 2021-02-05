@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <div class="title--text settings-title px-3">
-        <v-row align="center" class="pl-3">
+        <v-row align="center" class="pl-3 pt-2">
           <v-btn
             @click="$router.push({ name: 'Settings' })"
             class="mr-3 arrow-back"
@@ -15,11 +15,11 @@
         </v-row>
       </div>
       <v-divider></v-divider>
-      <p class="grey--text px-4 mb-1">
+      <p class="grey--text px-4 mb-1 mt-2">
         Establece las preferencias para tus notificationes.
       </p>
       <v-row>
-        <v-col class="pt-0" cols="12">
+        <v-col class="pt-2" cols="12">
           <v-list subheader one-line>
             <v-list-item active-class="primary white--text" class="pa-1 px-3">
               <v-list-item-avatar>

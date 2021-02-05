@@ -13,7 +13,7 @@
       </div>
       <v-divider></v-divider>
       <v-row align="center">
-        <v-col cols="12" class="pt-0">
+        <v-col cols="12" class="pt-2">
           <v-list subheader one-line>
             <v-list-item
               v-for="item in info"
