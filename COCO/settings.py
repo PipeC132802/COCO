@@ -155,8 +155,8 @@ CHANNEL_LAYERS = {
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    "http://cocoplatform.com",
-    "http://www.cocoplatform.com",
+    "https://cocoplatform.com",
+    "https://www.cocoplatform.com",
     "http://localhost:8080",
     "http://127.0.0.1:8080"
 ]
@@ -189,7 +189,7 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
 EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
-DOMAIN = "http://api.cocoplatform.com"
+DOMAIN = "https://api.cocoplatform.com"
 
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
 

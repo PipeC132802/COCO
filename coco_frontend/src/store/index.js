@@ -14,7 +14,7 @@ export default new Vuex.Store({
       signUpDialog: false,
     },
     user: '',
-    baseUrl: 'http://api.cocoplatform.com/coco/api/v1.0/',
+    baseUrl: 'https://api.cocoplatform.com/coco/api/v1.0/',
     userRequireMoreInfo: true,
     pixaKey: '19499640-f691e6b92721afc93a5b52556',
     profileFollowStatus: {
