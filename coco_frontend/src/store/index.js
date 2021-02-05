@@ -22,7 +22,7 @@ export default new Vuex.Store({
       following: '',
       followThisUser: false,
     },
-    wsBase : 'api.cocoplatform.com',
+    wsBase : 'api.cocoplatform.com:8000',
     notifications: [],
     chat: '',
     chats: [],
