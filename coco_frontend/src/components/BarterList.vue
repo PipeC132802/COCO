@@ -14,7 +14,7 @@
       ></v-skeleton-loader>
     </div>
     <div class="mt-2" v-if="!barters.length">
-      <v-alert color="primary darken-3" dark icon="mdi-alert" dense>
+      <v-alert color="primary darken-3" :class="$route.name =='Home'?'mt-2':''" dark icon="mdi-alert" dense>
         <div v-if="field == 'profile'">
           <span v-if="$route.params.username !== user.username">
             @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
@@ -30,7 +30,7 @@
         <div v-else-if="field == 'recommendations'">
           No hemos encontrado sugerencias para ti 😔
         </div>
-        <div class="mt-2" v-else-if="field == 'newsfeed'">
+        <div v-else-if="field == 'newsfeed'">
           Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
           comunidad! 🤗
         </div>

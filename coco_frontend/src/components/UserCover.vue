@@ -21,7 +21,7 @@
             class="px-8 pt-5"
             justify="end"
           >
-            <div class="cover-btn">
+            <div class="cover-btn mt-2">
               <v-file-input
                 @change="addCoverPhoto"
                 class="cover-input"
@@ -84,7 +84,7 @@
           class="pa-0 pt-1 pl-6"
           v-if="userP.username != user.username"
         >
-          <v-row class="pl-3 mt-1 mb-1">
+          <v-row class="pl-3 pt-3 pb-2 mb-1">
             <FollowButton
               :from="user.username"
               :to="userP.username"
@@ -149,10 +149,10 @@
         </template>
         <v-row
           v-if="user.username == $route.params.username"
-          class="px-5 pt-2"
+          class="px-5"
           justify="end"
         >
-          <div class="cover-btn">
+          <div class="cover-btn mt-2">
             <v-file-input
               @change="addCoverPhoto"
               class="cover-input"
