@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 with open('/var/SECRET_KEY.txt') as f:
     SECRET_KEY = f.read().strip()
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 # Production settings
 DEBUG = False
@@ -111,8 +112,8 @@ DATABASES = {
         'NAME': 'coco_platform',
         'USER': 'cocoadmin',
         'PASSWORD': 'pZfMDy%sDpb07DXDVqs$JK@Ql#j6NY',
-        'HOST': 'localhost',
-        'PORT': '',
+        'HOST': '34.95.214.248',
+        'PORT': 5432
     }
 }
 
