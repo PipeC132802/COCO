@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container fluid>
-      <div class="title--text settings-title px-3">
+      <div class="title--text settings-title px-3 mb-2 mt-1">
         <v-row align="center" class="pl-3 pt-2">
           <v-btn
             @click="$router.push({ name: 'Settings' })"

@@ -30,7 +30,7 @@
         <div v-else-if="field == 'recommendations'">
           No hemos encontrado sugerencias para ti 😔
         </div>
-        <div class="mt-1" v-else-if="field == 'newsfeed'">
+        <div class="mt-2" v-else-if="field == 'newsfeed'">
           Nada en tu feed. ¡Date una vuelta y comparte con las personas de la
           comunidad! 🤗
         </div>

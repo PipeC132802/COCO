@@ -246,7 +246,6 @@ export default {
           city: this.contact.city.trim(),
           phone_number: this.contact.phone.trim(),
         };
-        console.log(body, "/");
         let headers = {
           Authorization: `Token ${this.authentication.accessToken}`,
           "Content-Type": "application/json",

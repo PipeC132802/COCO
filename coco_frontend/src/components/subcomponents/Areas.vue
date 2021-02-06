@@ -106,7 +106,6 @@ export default {
 
   methods: {
     remove(item) {
-      console.log(item, "delete", this.areasList)
       const index = this.areasList.indexOf(item.area);
       if (index >= 0) this.areasList.splice(index, 1);
     },

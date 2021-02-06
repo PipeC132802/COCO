@@ -43,7 +43,7 @@
             {{ notification.comment.text }}</router-link
           >
         </v-list-item-subtitle>
-        <v-row justify="start"  class="grey--text pl-3" :title="timeSince|capitalize"> <v-icon left small>mdi-progress-clock</v-icon> <small>{{timeSince|capitalize}}</small> </v-row>
+        <v-row justify="start"  class="grey--text pl-3 mt-1" :title="timeSince|capitalize"> <v-icon left small>mdi-progress-clock</v-icon> <small>{{timeSince|capitalize}}</small> </v-row>
       </v-list-item-content>
     </v-list-item>
   </div>

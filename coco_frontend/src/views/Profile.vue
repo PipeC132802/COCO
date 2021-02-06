@@ -37,7 +37,7 @@
         </v-col>
         <v-col cols="12" md="4" tile>
           <UserAbout class="big-devices" />
-          <UserContact class="big-devices" />
+          <UserContact class="big-devices mt-1" />
           <User2FollowSuggestion
             v-if="$route.params.username != user.username"
             v-on:followUser="followUser"

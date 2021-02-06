@@ -27,7 +27,7 @@
                 class="cover-input"
                 accept="image/png, image/jpeg, image/bmp"
               ></v-file-input>
-              <v-btn small>
+              <v-btn class="mt-2" small>
                 <v-icon left>mdi-camera-outline</v-icon>
                 <span class="text-btn">Subir portada</span>
               </v-btn>
@@ -61,7 +61,7 @@
         </v-hover>
       </div>
       <v-row justify="center" class="container-small">
-        <v-col cols="12" class="pl-6 pb-1">
+        <v-col cols="12" class="pl-6 pb-1 mt-1">
           <div class="profile-name pt-5">
             {{ userP.name
             }}<span class="grey--text ml-1">@{{ userP.username }}</span
@@ -75,7 +75,7 @@
           </div>
         </v-col>
         <v-col cols="12" class="pa-0 pl-6">
-          <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
+          <v-icon class="pb-1 pt-1" left color="info"> mdi-calendar </v-icon>
           Se unió el
           {{ dateJoined | capitalize }}
         </v-col>
@@ -84,7 +84,7 @@
           class="pa-0 pt-1 pl-6"
           v-if="userP.username != user.username"
         >
-          <v-row class="pl-3">
+          <v-row class="pl-3 mt-1 mb-1">
             <FollowButton
               :from="user.username"
               :to="userP.username"
@@ -100,6 +100,7 @@
               color="info darken-5"
               text-color="white"
               title="Te sigue"
+              small
             >
               <v-avatar left>
                 <v-icon>mdi-account-circle</v-icon>
@@ -110,7 +111,7 @@
         </v-col>
         <v-col class="pl-6" cols="12">
           <v-btn
-            class="mr-2"
+            class="mr-4"
             active-class="primary"
             text
             small
@@ -121,7 +122,6 @@
           </v-btn>
           <v-btn
             small
-            class="ml-2"
             active-class="primary"
             text
             :to="{ name: 'Following', params: { username: userP.username } }"
@@ -158,7 +158,7 @@
               class="cover-input"
               accept="image/png, image/jpeg, image/bmp"
             ></v-file-input>
-            <v-btn>
+            <v-btn class="mt-2">
               <v-icon left>mdi-camera-outline</v-icon>
               <span class="text-btn">Subir portada</span>
             </v-btn>
@@ -208,7 +208,7 @@
       <v-card-text>
         <v-row justify="center">
           <span class="skills">
-            <v-icon class="pb-1" left color="info"> mdi-calendar </v-icon>
+            <v-icon class="pb-1 pt-1" left color="info"> mdi-calendar </v-icon>
             Se unió el
             {{ dateJoined | capitalize }}
           </span>

@@ -189,7 +189,6 @@ export default {
             let user = this.user;
             user.username = this.username;
             this.name = this.firstName + " " + this.lastName;
-            console.log(user)
             this.setUser(user);
             this.$router.push({
               name: "Profile",

@@ -5,6 +5,18 @@
       :outlined="!followed"
       color="success"
       :title="followed ? 'Siguiendo' : 'Seguir'"
+      class="big-devices"
+    >
+      <v-icon> mdi-account-plus </v-icon>
+      <span class="ml-2" v-if="text">{{ verbose }}</span>
+    </v-btn>
+    <v-btn
+      small
+      @click="followUser"
+      :outlined="!followed"
+      color="success"
+      :title="followed ? 'Siguiendo' : 'Seguir'"
+      class="small-device"
     >
       <v-icon> mdi-account-plus </v-icon>
       <span class="ml-2" v-if="text">{{ verbose }}</span>
@@ -84,7 +96,6 @@ export default {
             }
             this.$emit("followObj", response);
             this.notifyUser(response.notification);
-
           })
           .catch((err) => {
             console.error(err);
@@ -104,7 +115,6 @@ export default {
           action: response.action,
           created: response.created,
           field: response.field,
-
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_to);
       }

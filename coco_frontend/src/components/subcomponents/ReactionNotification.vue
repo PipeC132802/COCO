@@ -50,7 +50,7 @@
         </v-list-item-subtitle>
         <v-row
           justify="start"
-          class="grey--text pl-3"
+          class="grey--text pl-3 mt-1"
           :title="timeSince | capitalize"
         >
           <v-icon left small>mdi-progress-clock</v-icon>
