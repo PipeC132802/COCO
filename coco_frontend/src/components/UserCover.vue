@@ -152,7 +152,7 @@
           class="px-5"
           justify="end"
         >
-          <div class="cover-btn mt-2">
+          <div class="cover-btn mt-5">
             <v-file-input
               @change="addCoverPhoto"
               class="cover-input"

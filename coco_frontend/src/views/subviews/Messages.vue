@@ -41,7 +41,6 @@
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
-            <v-divider></v-divider>
           </v-list>
         </v-col>
       </v-row>
@@ -580,8 +579,5 @@ export default {
   position: relative;
   margin: 25px 0%;
 }
-.v-messages,
-.v-text-field__details {
-  display: none !important;
-}
+
 </style>

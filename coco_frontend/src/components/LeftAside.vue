@@ -11,13 +11,13 @@
     >
       <template v-slot:prepend class="ma-0">
         <v-list-item class="pa-0 pl-2 ma-0" two-line>
-          <v-list-item-avatar size="30" color="secondary" class="mt-4 ml-1">
+          <v-list-item-avatar size="30" color="white" class="mt-4 ml-1">
             <img
               v-if="user.profile_picture"
               :alt="'perfil de ' + user.name"
               :src="user.profile_picture"
             />
-            <span class="white--text" v-else>{{
+            <span class="secondary--text" v-else>{{
               user.name.slice(0, 1).toUpperCase()
             }}</span>
           </v-list-item-avatar>

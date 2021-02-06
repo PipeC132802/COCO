@@ -2,7 +2,7 @@
   <div>
     <v-container fluid>
       <div class="title--text settings-title px-3 mt-1 mb-2">
-        <v-row align="center" class="pl-3 pt-2">
+        <v-row align="center" class="pl-3 pt-3">
           <v-btn
             @click="$router.push({ name: 'Settings' })"
             class="mr-3 arrow-back"

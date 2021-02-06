@@ -13,7 +13,7 @@
       </v-col>
       <v-col
         tile
-        class="chatlist pa-0 px-3"
+        class="chatlist mt-5 pa-0 px-3"
         cols="12"
         sm="12"
         md="8"
