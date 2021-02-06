@@ -8,7 +8,7 @@
       >
         <v-container class="pt-1 pb-0">
           <v-row class="pt-0 mb-0" align="center">
-            <v-col class="pt-0" cols="12" sm="12" md="3">
+            <v-col class="pt-5" cols="12" sm="12" md="3">
               <p>Entrantes</p>
               <v-color-picker
                 width="100%"
