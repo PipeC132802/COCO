@@ -44,6 +44,7 @@
             <span v-else>{{ userP.name.slice(0, 1) }}</span>
             <div
               class="upload-profile"
+              title="Sube tu foto de perfil"
               v-if="user.username == $route.params.username"
             >
               <v-file-input
@@ -109,7 +110,7 @@
             </v-chip>
           </v-row>
         </v-col>
-        <v-col class="pl-6" cols="12">
+        <v-col class="pl-6 pt-0 mb-2" cols="12">
           <v-btn
             class="mr-4"
             active-class="primary"
@@ -390,7 +391,7 @@ export default {
     this.getUserCoverInfo();
   },
   methods: {
-    ...mapMutations(["setProfile"]),
+    ...mapMutations(["setProfile", "setUser"]),
     getUserCoverInfo() {
       fetch(
         this.baseUrl +
@@ -484,6 +485,9 @@ export default {
           .then((response) => response.json())
           .then((response) => {
             this.userP.profilePicture = response.profile_picture;
+            let userAux = this.user;
+            userAux.profile_picture = response.profile_picture;
+            this.setUser(userAux);
           })
           .catch((err) => console.error(err))
           .finally(() => {
