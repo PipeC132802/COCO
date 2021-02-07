@@ -63,7 +63,7 @@
       </div>
       <v-row justify="center" class="container-small">
         <v-col cols="12" class="pl-9 pb-1 mt-1">
-          <v-row align="center" justify="start" class="pt-5 profile-name pt-6 pb-3">
+          <v-row align="center" justify="start" class="profile-name pt-9 pb-3">
             {{ userP.name }}
             <span class="grey--text ml-1">@{{ userP.username }}</span
             ><span
