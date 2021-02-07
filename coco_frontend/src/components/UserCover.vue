@@ -61,19 +61,19 @@
           </v-avatar>
         </v-hover>
       </div>
-      <v-row justify="center" align="center" class="container-small">
-        <v-col cols="12" class="pl-6 pb-1 mt-1">
-          <div align="center" class="profile-name pt-5">
-            {{ userP.name
-            }}<span class="grey--text ml-1">@{{ userP.username }}</span
+      <v-row justify="center" class="container-small">
+        <v-col cols="12" class="pl-9 pb-1 mt-1">
+          <v-row align="center" justify="start" class="pt-5 profile-name pt-6 pb-3">
+            {{ userP.name }}
+            <span class="grey--text ml-1">@{{ userP.username }}</span
             ><span
               v-if="userP.username == user.username"
               @click="go2Edit"
-              class="route ml-3"
+              class="route ml-2"
               title="Editar información de la cuenta"
               ><small>Editar</small></span
             >
-          </div>
+          </v-row>
         </v-col>
         <v-col cols="12" class="pa-0 pl-6">
           <v-icon class="pb-1 pt-1" left color="info"> mdi-calendar </v-icon>
