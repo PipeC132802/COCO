@@ -61,9 +61,9 @@
           </v-avatar>
         </v-hover>
       </div>
-      <v-row justify="center" class="container-small">
+      <v-row justify="center" align="center" class="container-small">
         <v-col cols="12" class="pl-6 pb-1 mt-1">
-          <div class="profile-name pt-5">
+          <div align="center" class="profile-name pt-5">
             {{ userP.name
             }}<span class="grey--text ml-1">@{{ userP.username }}</span
             ><span
