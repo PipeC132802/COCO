@@ -320,7 +320,7 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 import moment from "moment";
-
+import {addMetaTagData} from "../functions.js";
 import FollowButton from "@/components/FollowButton.vue";
 export default {
   name: "UserCover",
@@ -415,12 +415,10 @@ export default {
           this.userP.following = response.following;
           this.userP.followThisUser = response.follow_this_user;
           this.userP.followYou = response.follow_you;
-
-          document.title =
-            this.userP.name + ` (@${this.userP.username}) | COCO`;
           if (!response.cover_photo) this.searchCover();
           else this.userP.coverPhoto = response.cover_photo;
           this.setProfile({ name: this.userP.name });
+          this.setMetaData();
         })
         .catch((err) => {
           this.$router.push({ name: "NotFound" });
@@ -497,6 +495,18 @@ export default {
             this.profilePicture.url = "";
           });
       }
+    },
+    setMetaData(){
+      let metaObj = [
+        {property: 'og:title', content: this.userP.name + ` (@${this.userP.username})`},
+        {property: 'og:description', content: ""},
+        {property: 'description', content: ""},
+        {property: 'title', content: this.userP.name + ` (@${this.userP.username})`},
+        {property: 'og:type', content: "perfil"},
+      ];
+      addMetaTagData(metaObj);
+      document.title =
+            this.userP.name + ` (@${this.userP.username}) | COCO`;
     },
     uploadCoverPhoto() {
       this.loadingCoverBtn = true;

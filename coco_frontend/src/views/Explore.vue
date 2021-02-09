@@ -26,10 +26,12 @@
 </template>
 
 <script>
+import {addMetaTagData} from "../functions.js";
 import User2FollowSuggestion from "../components/User2FollowSuggestion.vue";
 import BarterList from "../components/BarterList.vue";
 import CompanyInfo from "../components/CompanyInfo.vue";
 import SearchResults from "../components/SearchResults.vue";
+
 
 export default {
   components: {
@@ -40,6 +42,14 @@ export default {
   },
   created() {
     document.title = "Explorar | COCO";
+    let metaObj = [
+        {property: 'og:title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:type', content: "website"},
+      ];
+      addMetaTagData(metaObj);
   },
 };
 </script>

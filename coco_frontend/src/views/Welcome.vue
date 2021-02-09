@@ -42,7 +42,8 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import {addMetaTagData} from "../functions.js";
+import { mapState } from "vuex";
 import VideoBg from "../components/VideoBg.vue";
 import DiscoverHowItWorks from "../components/DiscoverHowItWorks.vue";
 export default {
@@ -73,6 +74,14 @@ export default {
       this.$router.push({ name: "Home" });
     }
     document.title = "Comparte tus conocimientos en COCO";
+    let metaObj = [
+        {property: 'og:title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:type', content: "website"},
+      ];
+      addMetaTagData(metaObj);
   },
   mounted() {
     let btn = document.getElementsByClassName("logo-btn");

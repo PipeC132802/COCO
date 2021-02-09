@@ -22,9 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-with open('/var/SECRET_KEY.txt') as f:
-    SECRET_KEY = f.read().strip()
+"""with open('/var/SECRET_KEY.txt') as f:
+    SECRET_KEY = f.read().strip()"""
 
+SECRET_KEY = '9+5u#n8q)x$+8iju=g(nlmd58yc6j2t-91%mt#1v%1ea712&w('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Production settings
@@ -36,7 +37,7 @@ SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True"""
 
-ALLOWED_HOSTS = ['api.cocoplatform.com']
+ALLOWED_HOSTS = ['api.cocoplatform.com', '127.0.0.1']
 
 # Application definition
 INSTALLED_APPS = [
@@ -106,17 +107,18 @@ WSGI_APPLICATION = 'COCO.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'coco_platform',
         'USER': 'cocoadmin',
         'PASSWORD': 'pZfMDy%sDpb07DXDVqs$JK@Ql#j6NY',
-        'HOST': '34.95.214.248',
-        'PORT': 5432
+        'HOST': '127.0.0.1',
+        #'HOST': '34.95.214.248',
+        #'PORT': 5432
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -190,7 +192,8 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "app.cocoplatform@gmail.com"  # Cambiar por correo del semillero
 EMAIL_HOST_PASSWORD = "xaqtuyhjzxojouhj"  # Contraseña de aplicación
-DOMAIN = "https://api.cocoplatform.com"
+# DOMAIN = "https://api.cocoplatform.com"
+DOMAIN = "http://127.0.0.1:8000"
 
 PIXABAY_API_KEY = '19499640-f691e6b92721afc93a5b52556'
 

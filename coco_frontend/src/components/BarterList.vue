@@ -209,6 +209,7 @@
 
   <script>
 import { mapState } from "vuex";
+import { addMetaTagData } from "../functions.js";
 import moment from "moment";
 import Reactions from "../components/Reactions.vue";
 import BarterActions from "../components/BarterActions.vue";
@@ -276,6 +277,9 @@ export default {
         .then((response) => {
           this.barters = response;
           this.loaded = true;
+          if(this.field == "detail"){
+            this.setMetaData();
+          }
         })
         .catch((err) => console.error(err));
     },
@@ -324,6 +328,17 @@ export default {
     toProfile(username) {
       this.$router.push({ name: "Profile", params: { username: username } });
     },
+    setMetaData(){
+      let metaObj = [
+        {property: 'og:title', content: this.barters[0].title},
+        {property: 'og:description', content: this.barters[0].about.description},
+        {property: 'description', content: this.barters[0].about.description},
+        {property: 'title', content: this.barters[0].title},
+        {property: 'og:type', content: "trueque"},
+      ];
+      addMetaTagData(metaObj);
+      document.title = this.barters[0].title + " | COCO";
+    }
   },
 };
 </script>

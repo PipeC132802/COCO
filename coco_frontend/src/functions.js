@@ -26,3 +26,20 @@ export function decript(value2Key, msgEncrypted) {
     var originalText = bytes.toString(CryptoJS.enc.Utf8);
     return originalText;
 }
+
+export function addMetaTagData(data){
+    const metasTag = document.getElementsByTagName('meta');
+    data.forEach(metaData => {
+        var metaTag;
+        for (let i = 0; i < metasTag.length; i++) {
+            if (metasTag[i].getAttribute('property') === metaData.property) {
+              metaTag = metasTag[i];
+              break;
+            }
+        }
+        metaTag.setAttribute('property', metaData.property);
+        metaTag.content = metaData.content;
+        
+       
+    });
+}

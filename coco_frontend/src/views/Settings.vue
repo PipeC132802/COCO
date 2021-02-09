@@ -38,6 +38,7 @@
 
 <script>
 import { mapState } from "vuex";
+import {addMetaTagData} from "../functions.js";
 export default {
   name: "Settings",
   data: () => ({
@@ -54,6 +55,14 @@ export default {
   },
   created() {
     document.title = "Ajustes | COCO";
+    let metaObj = [
+        {property: 'og:title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
+        {property: 'title', content: "'Truequea' tus conocimientos con COCO"},
+        {property: 'og:type', content: "website"},
+      ];
+      addMetaTagData(metaObj);
   },
   watch: {
     $route(from, to) {
