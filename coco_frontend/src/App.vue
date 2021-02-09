@@ -70,6 +70,7 @@ export default {
   data: () => ({
     floatingIcon: "mdi-pencil",
     apiDir: "user-status/",
+    sound: require("../assets/sounds/notifications/newmessage.ogg"),
   }),
   watch: {
     $route(from, to) {
@@ -84,7 +85,11 @@ export default {
     },
     authentication() {},
   },
-  beforeUpdate() {},
+  mounted() {
+    this.$root.$on("newMewssage", () => {
+      this.play();
+    });
+  },
   beforeMount() {
     let token = readCookie("token");
     if (token) {
@@ -125,6 +130,10 @@ export default {
           this.setUser(respose);
           this.$root.$emit("userSetted");
         });
+    },
+    play() {
+      let notificationDiv = document.getElementById("notification");
+      notificationDiv.innerHTML = `<audio src="${this.sound}" autoplay></audio>`;
     },
   },
 };

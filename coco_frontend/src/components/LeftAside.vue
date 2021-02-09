@@ -85,7 +85,6 @@
       left
       temporary
       :right="authentication.userIsAuthenticated ? false : true"
-
     >
       <v-list nav dense v-if="authentication.userIsAuthenticated">
         <v-list-item-group active-class="primary--text text--accent-4">
@@ -168,7 +167,12 @@
       <v-list v-else>
         <v-list-item>
           <v-list-item-title color="primary">
-            <v-btn @click="$root.$emit('loginOrSingUpForm', true, false)" block color="primary" outlined>
+            <v-btn
+              @click="$root.$emit('loginOrSingUpForm', true, false)"
+              block
+              color="primary"
+              outlined
+            >
               <v-icon left>mdi-login</v-icon>
 
               Iniciar sesión
@@ -177,7 +181,11 @@
         </v-list-item>
         <v-list-item>
           <v-list-item-title>
-            <v-btn @click="$root.$emit('loginOrSingUpForm', false, true)" block color="primary">
+            <v-btn
+              @click="$root.$emit('loginOrSingUpForm', false, true)"
+              block
+              color="primary"
+            >
               <v-icon left>mdi-account-plus</v-icon>
               Regístrate
             </v-btn>
@@ -199,7 +207,10 @@ export default {
       name: "",
       username: "",
     },
-    apiDir: "user-status/",
+    apiDir: {
+      status: "user-status/",
+      unreadMsgs: "unread-messages/",
+    },
     logOutApi: "user-auth/logout/",
     drawer: true,
     drawerSmall: true,
@@ -229,12 +240,12 @@ export default {
     group() {
       this.drawer = false;
     },
-    authentication(){
+    authentication() {
       this.getUserInfo();
     },
-    notification(){
+    notification() {
       this.items[3].value = this.notification.unread_messages;
-    }
+    },
   },
   computed: {
     ...mapState(["baseUrl", "authentication", "wsBase", "notification"]),
@@ -247,6 +258,9 @@ export default {
     this.$root.$on("menu", () => {
       this.drawerSmall = !this.drawerSmall;
     });
+    this.$root.$on("newMewssage", () => {
+      this.unreadMsgs();
+    });
   },
 
   methods: {
@@ -257,7 +271,7 @@ export default {
       "notificationStatus",
     ]),
     getUserInfo() {
-      fetch(this.baseUrl + this.apiDir, {
+      fetch(this.baseUrl + this.apiDir.status, {
         method: "GET",
         headers: {
           Authorization: `Token ${this.authentication.accessToken}`,
@@ -313,6 +327,29 @@ export default {
         };
       };
       this.websocket.onclose = () => {};
+    },
+    unreadMsgs() {
+      fetch(this.baseUrl + this.apiDir.unreadMsgs, {
+        method: "GET",
+        headers: {
+          Authorization: `Token ${this.authentication.accessToken}`,
+        },
+      })
+        .then((respose) => {
+          return respose.json();
+        })
+        .then((respose) => {
+          this.items[3].value = respose.unread_messages;
+          this.notificationStatus({
+            unread_messages: respose.unread_messages,
+            unread_notifications: this.notification.unread_messages,
+          });
+          this.setUser(respose);
+
+          this.$root.$emit("userSetted");
+
+          this.connect();
+        });
     },
   },
 };

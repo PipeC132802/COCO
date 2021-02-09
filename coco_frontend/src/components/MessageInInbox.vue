@@ -98,7 +98,7 @@ export default {
     typing: false,
     seen: true,
     websocket: null,
-    sound: require("../assets/sounds/notifications/newmessage.ogg"),
+    
   }),
   computed: {
     ...mapState(["wsBase", "user", "secretKey", "chats", "chat", "notification"]),
@@ -124,6 +124,7 @@ export default {
   },
   mounted() {
     this.connect();
+    
   },
   beforeDestroy() {
     this.websocket.close();
@@ -153,10 +154,7 @@ export default {
     chatSelected() {
       this.setChat(this.chatElement);
     },
-    play() {
-      let notificationDiv = document.getElementById("notification");
-      notificationDiv.innerHTML = `<audio src="${this.sound}" autoplay></audio>`;
-    },
+    
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
       this.websocket = new WebSocket(
@@ -183,7 +181,7 @@ export default {
             if (socketData.sender_username != this.user.username) {
               this.chatElement.unread_messages = socketData.unread_messages;
               this.notificationStatus({unread_messages: socketData.unread_messages, unread_notifications: this.notification.unread_notifications});
-              this.play();
+              this.$root.$emit("newMessage")
             } else this.chatElement.unread_messages = 0;
             this.setChat(this.chatElement);
 

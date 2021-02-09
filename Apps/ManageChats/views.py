@@ -60,3 +60,14 @@ class MessagesApi(generics.ListAPIView, generics.CreateAPIView):
         ).first()
         Message.objects.create(conversation_id=conversation.pk, sender=sender, text=msg)
         return Response({'Detail': 'Message sent'}, status=200)
+
+class UnreadMsgsApi(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        unread_messages = Message.objects.filter(
+            (Q(conversation__owner_id=request.user.pk) |
+             Q(conversation__opponent_id=request.user.pk)),
+            read=False
+        ).exclude(sender=request.user).count()
+        return Response({"unread_messages": unread_messages})
