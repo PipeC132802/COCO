@@ -70,7 +70,7 @@ export default {
   data: () => ({
     floatingIcon: "mdi-pencil",
     apiDir: "user-status/",
-    sound: require("../assets/sounds/notifications/newmessage.ogg"),
+    sound: require("@/assets/sounds/notifications/newmessage.ogg"),
   }),
   watch: {
     $route(from, to) {
