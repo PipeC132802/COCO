@@ -258,7 +258,7 @@ export default {
     this.$root.$on("menu", () => {
       this.drawerSmall = !this.drawerSmall;
     });
-    this.$root.$on("newMewssage", () => {
+    this.$root.$on("newMessage", () => {
       this.unreadMsgs();
     });
   },

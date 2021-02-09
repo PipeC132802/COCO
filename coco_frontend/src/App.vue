@@ -86,7 +86,7 @@ export default {
     authentication() {},
   },
   mounted() {
-    this.$root.$on("newMewssage", () => {
+    this.$root.$on("newMessage", () => {
       this.play();
     });
   },
