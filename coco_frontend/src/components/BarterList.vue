@@ -334,7 +334,6 @@ export default {
         {property: 'og:description', content: this.barters[0].about.description},
         {property: 'description', content: this.barters[0].about.description},
         {property: 'title', content: this.barters[0].title},
-        {property: 'og:type', content: "trueque"},
       ];
       addMetaTagData(metaObj);
       document.title = this.barters[0].title + " | COCO";
