@@ -206,4 +206,7 @@ link:hover {
 #app {
   overflow-x: hidden;
 }
+.v-card__title  {
+  word-break: break-word  !important;
+}
 </style>
