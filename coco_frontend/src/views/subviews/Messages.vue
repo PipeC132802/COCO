@@ -319,24 +319,6 @@ export default {
           })
         );
       }
-
-      /* if (
-        this.messages.length &&
-        this.messages[0].sender !== this.user.username &&
-        !this.messages[0].read
-      ) {
-        let sender = this.user.username;
-        this.websocket.onopen = () =>
-          this.websocket.send(
-            JSON.stringify({
-              type: "seen_message",
-              sender: sender,
-              receiver: this.chat.username,
-              seen: true,
-              room: this.room,
-            })
-          );
-      } */
     },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
@@ -358,10 +340,7 @@ export default {
           } else if (socketData.type === "seen_message") {
             this.seenFlag = false;
             this.checkSeen();
-            this.notificationStatus({
-              unread_notifications: this.notification.unread_notifications,
-              unread_messages: 0,
-            });
+            this.$root.$emit("readMsgs")
           }
         };
       };

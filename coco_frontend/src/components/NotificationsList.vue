@@ -79,7 +79,7 @@ export default {
         })
         .then((response) => {
           this.notifications = response;
-          this.$root.$emit("notificationsReaded");
+          this.$root.$emit("notificationsRead");
           this.notificationStatus({
             unread_notifications: 0,
             unread_messages: this.notification.unread_messages,
