@@ -97,10 +97,10 @@
       <v-container class="pb-0 white" fluid>
         <picker
           v-on:click="addEmoji"
-          v-if="picker"
+          :class="picker?'picker-visible':'picker-hidden'"
           :style="{
             position: 'absolute',
-            bottom: '0px',
+            bottom: '5px',
             left: '0px',
             'z-index': 0,
           }"
@@ -112,14 +112,16 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            max-height: 30px;
+            max-height: 65px;
             z-index: 0;
             left: -10px;
+            bottom: 10px;
+
           "
         ></div>
         <v-text-field
           class="white"
-          @keyup="typingMessage"
+          
           @keyup.enter="sendMessage"
           @focus="seenMsg"
           rounded
@@ -196,6 +198,11 @@ export default {
       },
     },
   }),
+  watch:{
+    msg(){
+        this.typingMessage();
+    }
+  },
   mounted() {
     this.getMessages();
     this.setColors2Divs();
@@ -567,5 +574,15 @@ export default {
 .typing-container {
   position: relative;
   margin: 25px 0%;
+}
+.picker-visible{
+  z-index: 0 !important;
+}
+.picker-hidden{
+  z-index: -10 !important;
+}
+.emoji-fallback:hover{
+  cursor: pointer  !important;
+  transform: scale(1.2);
 }
 </style>
