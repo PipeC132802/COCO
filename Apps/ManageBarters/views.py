@@ -13,7 +13,8 @@ from Apps.ManageBarters.serializer import BarterCommentSerializer
 from Apps.ManageBarters.signals import proposal_accepted
 from Apps.ManageUsers.models import Area, UserRelationship, UserInterest, UserSession
 from Apps.ManageUsers.signals import retrieve_barters
-from COCO.functions import get_place, get_profile_url, get_img_url_from_model, get_notification_and_mark_as_unread
+from COCO.functions import get_place, get_profile_url, get_img_url_from_model, get_notification_and_mark_as_unread, \
+    save_areas
 from django.contrib.sessions.models import Session
 
 
@@ -57,6 +58,7 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
             return Response({'Detail': 'Barter not found'}, status=404)
 
     def post(self, request, *args, **kwargs):
+        print(request.data)
         barter = self.create_barter(request)
         self.create_barter_about(request, barter)
         self.create_barter_skill(request, barter)
@@ -81,33 +83,47 @@ class BarterApi(generics.CreateAPIView, generics.DestroyAPIView, generics.Update
     def create_barter_skill(self, request, barter):
         skill = request.data['skill']
         area = self.get_area(area=skill)
-        if area.exists():
+        if area:
             try:
-                BarterSkill.objects.create(area=area[0], barter=barter)
-            except:
                 barter_skill = BarterSkill.objects.get(barter=barter)
-                barter_skill.area = area[0]
+                barter_skill.area = area
                 barter_skill.save()
+            except:
+                BarterSkill.objects.create(area=area, barter=barter)
 
     def create_barter_interest(self, request, barter):
         interest = request.data['interest']
-        area = self.get_area(area=interest)
-        if area.exists():
+        area = self.get_area(interest)
+        try:
+            BarterInterest.objects.create(area=area, barter=barter)
+        except:
+            pass
+        if area:
             try:
-                BarterInterest.objects.create(area=area[0], barter=barter)
-            except:
-                barter_interest = BarterInterest.objects.get(barter=barter)
-                barter_interest.area = area[0]
+                barter_interest = BarterSkill.objects.get(barter=barter)
+                barter_interest.area = area
                 barter_interest.save()
+            except:
+                BarterInterest.objects.create(area=area, barter=barter)
 
     @staticmethod
     def create_barter_mode(request, barter):
         mode = request.data['mode']
-        BarterMode.objects.create(mode=mode, barter=barter)
+        try:
+            barter = BarterMode.objects.get(barter=barter)
+            barter.mode = mode
+            barter.save()
+        except:
+            BarterMode.objects.create(mode=mode, barter=barter)
 
     @staticmethod
     def get_area(area):
-        return Area.objects.filter(area=area)
+        area_obj = Area.objects.filter(area__icontains=area)
+        if area_obj.exists():
+            area_obj = area_obj.first()
+        else:
+            area_obj = Area.objects.create(area=area.capitalize())
+        return area_obj
 
 
 class BarterListApi(generics.ListAPIView):
@@ -134,7 +150,6 @@ class BarterListApi(generics.ListAPIView):
         else:
             query = Q(user_id__in=self.get_following_users(self.get_user_query_set(request)), deleted=False)
             barters_json = self.get_barter_list(query)
-
         return Response(barters_json, status=200)
 
     def get_user_query_set(self, request):

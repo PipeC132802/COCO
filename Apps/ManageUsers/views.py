@@ -139,8 +139,6 @@ class UserVerificationApi(APIView):
             return Response({'Detail': 'User is not verified'}, status=400)
 
 
-
-
 class AreaListApi(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = AreaSerializer
@@ -200,27 +198,34 @@ class ProfilePictureApi(generics.CreateAPIView, generics.UpdateAPIView):
     def post(self, request, *args, **kwargs):
         profile_picture = request.FILES.get("profile_picture")
         try:
-            profile_picture_obj = UserProfilePhoto.objects.create(user=request.user, profile_picture=profile_picture)
+            profile_picture_obj = self.create_photo(user=request.user, photo=profile_picture)
             self.resize_img(profile_picture_obj)
-            return JsonResponse({'profile_picture_created': True,
-                                 'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url})
+            return Response({'profile_picture_created': True,
+                             'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url
+                             }, status=200)
         except:
             return Response({'Detail': 'An server error have ocurred'}, status=500)
 
     def put(self, request, *args, **kwargs):
         profile_picture = request.FILES.get("profile_picture")
-        try:
-            profile_picture_obj = UserProfilePhoto.objects.get(user=request.user)
-            profile_picture_obj.profile_picture = profile_picture
-            profile_picture_obj.save()
-            self.resize_img(profile_picture_obj)
-            return JsonResponse({'Detail': 'Profile photo updated successfully',
-                                 'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url
-                                 })
-        except:
-            self.post(request, args, kwargs)
+        profile_picture_obj = self.create_photo(user=request.user, photo=profile_picture)
+        self.resize_img(profile_picture_obj)
+        return Response({'Detail': 'Profile photo updated successfully',
+                         'profile_picture': DOMAIN + profile_picture_obj.profile_picture.url
+                         }, status=200)
 
-    def resize_img(self, profile_picture):
+    @staticmethod
+    def create_photo(user, photo):
+        try:
+            profile_picture_obj = UserProfilePhoto.objects.create(user=user, profile_picture=photo)
+        except:
+            profile_picture_obj = UserProfilePhoto.objects.get(user=user)
+            profile_picture_obj.profile_picture = photo
+            profile_picture_obj.save()
+        return profile_picture_obj
+
+    @staticmethod
+    def resize_img(profile_picture):
         import cv2 as cv
         path = str(BASE_DIR) + '/Files/' + str(profile_picture.profile_picture)
         img = cv.imread(path)
@@ -248,21 +253,24 @@ class CoverPhotoApi(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
 
         try:
-            return Response(self.update(request))
+            return Response(self.update(request), status=200)
         except:
             cover_photo = request.FILES.get("cover_photo")
             cover_photo_model = UserCoverPhoto.objects.create(user=request.user, photo=cover_photo)
-            return JsonResponse({'Detail': 'Cover photo updated successfully',
-                                 'cover_photo': DOMAIN + cover_photo_model.photo.url})
+            return Response({
+                'Detail': 'Cover photo updated successfully',
+                'cover_photo': DOMAIN + cover_photo_model.photo.url
+            }, status=200)
 
     def update(self, request):
         cover_photo = request.FILES.get("cover_photo")
         cover_photo_model = UserCoverPhoto.objects.get(user=request.user)
         cover_photo_model.photo = cover_photo
         cover_photo_model.save()
-        return {'Detail': 'Cover photo updated successfully',
-                'cover_photo': DOMAIN + cover_photo_model.photo.url
-                }
+        return {
+            'Detail': 'Cover photo updated successfully',
+            'cover_photo': DOMAIN + cover_photo_model.photo.url
+        }
 
 
 class UserAccountInfoApi(generics.RetrieveAPIView):

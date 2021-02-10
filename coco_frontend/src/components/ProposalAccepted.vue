@@ -61,8 +61,7 @@
 
 <script>
 import { mapState } from "vuex";
-import { encrypt } from "@/functions.js";
-
+import { encrypt, sendNotificationViaWS } from "@/functions.js";
 export default {
   name: "ProposalAccepted",
   props: ["chatData"],
@@ -75,7 +74,7 @@ export default {
     snackMsg: "",
   }),
   computed: {
-    ...mapState(["authentication", "baseUrl"]),
+    ...mapState(["authentication", "baseUrl", "wsBase"]),
   },
   mounted() {
     this.dialog = true;
@@ -83,44 +82,52 @@ export default {
   },
   methods: {
     sendMessage() {
-     if(this.message.trim()){
-      let formData = {
-        owner: this.chatData.sender.username,
-        opponent: this.chatData.receiver.username,
-        text: encrypt(this.message.trim(), this.chatData.sender.username),
-      };
-      fetch(this.baseUrl + this.apiDir, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${this.authentication.accessToken}`,
-        },
-        body: JSON.stringify(formData),
-      })
-        .then((response) => {
-          if (response.status == 200) {
+      if (this.message.trim()) {
+        let formData = {
+          owner: this.chatData.sender.username,
+          opponent: this.chatData.receiver.username,
+          text: encrypt(this.message.trim(), this.chatData.sender.username),
+        };
+        fetch(this.baseUrl + this.apiDir, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${this.authentication.accessToken}`,
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => {
+            if (response.status == 200) {
               this.snackMsg = "Mensaje enviado!";
-          this.snackbar = true;
-            this.dialog = false;
-            this.$emit("messageSent");
-          } else {
-            throw new Error();
-          }
-        })
-        .catch((err) => {
-          this.snackMsg = "Ha sucedido un error inesperado.";
-          this.snackbar = true;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-        }
-        else{
-            this.snackMsg = "Debes agregar un mensaje";
-          this.snackbar = true;
-        }
+              this.snackbar = true;
+              this.dialog = false;
+              this.$emit("messageSent");
+              let sockedData = {
+                type: "new_msg",
+                sender: this.chatData.sender.username,
+                receiver: this.chatData.receiver.username,
+              };
+              sendNotificationViaWS(
+                sockedData,
+                this.wsBase,
+                sockedData.receiver
+              );
+            } else {
+              throw new Error();
+            }
+          })
+          .catch((err) => {
+            this.snackMsg = "Ha sucedido un error inesperado.";
+            this.snackbar = true;
+          })
+          .finally(() => {
+            this.loading = false;
+          });
+      } else {
+        this.snackMsg = "Debes agregar un mensaje";
+        this.snackbar = true;
+      }
     },
-    
   },
 };
 </script>

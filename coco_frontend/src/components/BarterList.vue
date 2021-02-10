@@ -165,7 +165,7 @@
           </v-chip>
           <v-chip
             :title="'Quiero aprender ' + barter.interest"
-            class="mt-1"
+            class="mt-1 mr-1"
             color="accent darken-1"
           >
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
