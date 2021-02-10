@@ -208,6 +208,7 @@
           fetchBarterList();
           updateDialog = false;
         "
+        v-on:closeEditBarter="updateDialog = false;"
         :barter="barter2Edit"
       />
     </v-dialog>

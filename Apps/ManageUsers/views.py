@@ -176,7 +176,7 @@ class UserAboutAndAreasApi(generics.CreateAPIView, generics.UpdateAPIView, gener
         bio = request.data["bio"]
         skills = request.data["skills"]
         learn = request.data["learn"]
-
+        print(skills, learn)
         save_areas(skills, request.user, UserSkill)
         save_areas(learn, request.user, UserInterest)
 
@@ -534,7 +534,6 @@ class UpdateUserAccountInfoApi(generics.RetrieveAPIView, generics.UpdateAPIView)
         self.save_personal_info(request)
         self.save_user_about(request)
         self.save_user_contact(request)
-
         save_areas(skills, request.user, UserSkill)
         save_areas(learn, request.user, UserInterest)
         return Response({'Detail': 'User info edited successfully'}, status=200)

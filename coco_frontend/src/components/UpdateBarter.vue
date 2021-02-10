@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ city }}
     <v-form @submit.prevent="updateBarter">
       <v-card class="px-5">
         <v-card-title class="mb-0 pb-0"> Edita tu trueque </v-card-title>
@@ -34,14 +33,13 @@
               </v-col>
               <v-col>
                 <v-autocomplete
-                  v-model="countryModel"
+                  v-model="country"
                   :items="countriesList"
                   hide-no-data
                   hide-selected
                   item-text="nombre"
                   item-value="nombre"
                   label="País"
-                  return-object
                   :rules="[rules.required]"
                   required
                   class="pa-0"
@@ -104,6 +102,7 @@
         </v-card-text>
         <v-card-actions class="pr-4 mt-0 pb-5">
           <v-spacer></v-spacer>
+          <v-btn :disabled="loading" text @click="$emit('closeEditBarter')" color="error">Cerrar</v-btn>
           <v-btn :loading="loading" type="submit" color="primary darken-2">
             Editar
           </v-btn>
@@ -175,8 +174,8 @@ export default {
     },
     countryModel: {
       get: function () {
-        this.country = { nombre: this.barter.about.place.split(",")[1] };;
-        return { nombre: this.barter.about.place.split(",")[1] };
+        this.country = this.barter.about.place.split(",")[1] ;
+        return  this.barter.about.place.split(",")[1] ;
       },
       set: function (country) {
         this.country = country;
@@ -184,7 +183,7 @@ export default {
     },
     cityModel: {
       get: function () {
-        this.city = this.barter.about.place.split(",")[0];;
+        this.city = this.barter.about.place.split(",")[0];
         return this.barter.about.place.split(",")[0];
       },
       set: function (city) {
@@ -210,9 +209,6 @@ export default {
       },
     },
   },
-  mounted(){
-
-  },
   methods: {
     updateBarter() {
       if (
@@ -229,7 +225,7 @@ export default {
           barter: this.barter.id,
           title: this.title,
           description: this.description,
-          country: this.country.nombre.trim(),
+          country: this.country,
           city: this.city,
           skill: this.skill,
           interest: this.interest,

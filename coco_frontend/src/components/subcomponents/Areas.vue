@@ -1,6 +1,6 @@
 <template>
   <div :id="subject">
-    <v-combobox 
+    <v-autocomplete
       v-model="areasList"
       :items="items"
       chips
@@ -38,7 +38,7 @@
           </v-list-item-content>
         </template>
       </template>
-    </v-combobox >
+    </v-autocomplete>
   </div>
 </template>
 
