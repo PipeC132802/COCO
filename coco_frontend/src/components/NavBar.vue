@@ -35,14 +35,15 @@
           append-icon="mdi-magnify"
         ></v-text-field>
         <v-spacer></v-spacer>
-        <div class="mr-3" v-if="!authentication.userIsAuthenticated && userRequireMoreInfo">
+        <div
+          class="mr-3"
+          v-if="!authentication.userIsAuthenticated && userRequireMoreInfo"
+        >
           <v-row>
             <v-btn
               @click="updateFormsDialog(true, false)"
               class="mr-2 big-devices"
-              
               color="white primary--text"
-              
             >
               Inicia sesión
             </v-btn>
@@ -64,8 +65,10 @@
             <v-icon>mdi-menu</v-icon>
           </v-btn>
         </div>
-        <v-btn v-else icon>
-          <v-icon class="help-icon">mdi-help-circle-outline</v-icon>
+        <v-btn v-else @click="bugDialog = true" icon>
+          <v-icon title="Reportar un bug" color="error" class="help-icon"
+            >mdi-bug</v-icon
+          >
         </v-btn>
       </v-app-bar>
     </div>
@@ -102,7 +105,13 @@
           ></v-text-field>
         </v-row>
       </v-app-bar>
-      <v-app-bar v-else elevate-on-scroll class="company" app :color="toolbarColor">
+      <v-app-bar
+        v-else
+        elevate-on-scroll
+        class="company"
+        app
+        :color="toolbarColor"
+      >
         <v-toolbar-title>
           <v-list-item
             dense
@@ -139,6 +148,11 @@
 
     <Login v-if="forms.loginDialog" />
     <SignUp v-if="forms.signUpDialog" />
+    <v-dialog width="500" v-model="bugDialog">
+      <v-card> 
+        <Bug v-on:closeBug="bugDialog=false;" />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -146,19 +160,22 @@
 import { mapState, mapMutations } from "vuex";
 import Login from "@/components/Login.vue";
 import SignUp from "@/components/SignUp.vue";
+import Bug from "../components/Bug.vue";
 export default {
   data: () => ({
     loginDialog: false,
     signUpDialog: false,
+    bugDialog: false,
     searchValue: "",
     showSearchBar: false,
     title: "",
     screenWidth: window.screen.width,
-    toolbarColor: 'white'
+    toolbarColor: "white",
   }),
   components: {
     Login,
     SignUp,
+    Bug
   },
   computed: {
     ...mapState([

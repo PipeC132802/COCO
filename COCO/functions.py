@@ -1,8 +1,11 @@
+import base64
 from datetime import datetime
 
 from notify.models import Notification
+from rest_framework.response import Response
 
 from Apps.ManageUsers.models import Area, Place, UserProfilePhoto
+from COCO.mailing import send_mail_with_file
 from COCO.settings import DOMAIN
 
 
@@ -28,6 +31,9 @@ def get_place(country, city):
     return place
 
 
+from rest_framework import generics
+
+
 def get_profile_url(user):
     try:
         profile_picture = DOMAIN + UserProfilePhoto.objects.get(user=user).profile_picture.url
@@ -49,3 +55,25 @@ def get_notification_and_mark_as_unread(query):
     for notification in notifications:
         notification.created = datetime.now()
         notification.mark_as_unread()
+
+
+class SendBug(generics.RetrieveAPIView):
+    def post(self, request, *args, **kwargs):
+        img = request.FILES.get("img")
+        if img is not None:
+            img = base64.b64encode(img.read())
+        else:
+            img = ""
+
+        description = request.data["description"]
+        context = {
+            'description': description,
+            'img': img
+        }
+        configs = {
+            'Template': 'Mail/bug-mail.html',
+            'subject': 'Bug reportado',
+            'to': ['andrescercal@hotmail.com', 'andres_f.cerquera@uao.edu.co'],
+        }
+        send_mail_with_file(configs, context)
+        return Response({"Detail": "Bug reported"}, status=200)

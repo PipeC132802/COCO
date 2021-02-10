@@ -56,6 +56,7 @@
                         <v-col class="ma-0" xs="12" md="12">
                           <Areas
                            :areas="areas.skills"
+                           
                             v-on:skills="skillsInfo"
                             subject="skills"
                           />

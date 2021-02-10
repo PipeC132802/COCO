@@ -302,7 +302,7 @@
               Subir
             </v-btn>
             <v-btn
-              @click="loadingCoverBtn = false"
+              @click="coverPhotoDialog = false"
               outlined
               class="mt-2 ml-3 mb-5"
               color="error darken-3"

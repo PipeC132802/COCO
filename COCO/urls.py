@@ -25,6 +25,7 @@ from Apps.ManageSearches import urls as search_urls
 from Apps.ManageNotifications import urls as notify_urls
 from Apps.ManageReviews import urls as reviews_urls
 from Apps.ManageChats import urls as chat_urls
+from COCO.functions import SendBug
 
 coco_api_base = 'coco/api/v1.0/'
 
@@ -48,5 +49,8 @@ urlpatterns = [
 
                   # Chat app apis
                   path(coco_api_base, include(chat_urls)),
+
+                  # Bug
+                  path(coco_api_base + 'bug/', SendBug.as_view())
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
