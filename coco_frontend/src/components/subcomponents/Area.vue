@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-combobox
+    <v-autocomplete
       v-model="area"
       :items="items"
       :label="subject == 'skill' ? 'Habilidad en' : 'Interés en'"
@@ -13,7 +13,7 @@
       hide-no-data
       hide-selected
     >
-    </v-combobox>
+    </v-autocomplete>
   </div>
 </template>
 

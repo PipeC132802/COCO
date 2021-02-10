@@ -103,6 +103,7 @@
             solo
             prepend-inner-icon="mdi-magnify"
           ></v-text-field>
+          
         </v-row>
       </v-app-bar>
       <v-app-bar
