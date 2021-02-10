@@ -29,7 +29,7 @@ SECRET_KEY = '9+5u#n8q)x$+8iju=g(nlmd58yc6j2t-91%mt#1v%1ea712&w('
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Production settings
-DEBUG = False
+DEBUG = True
 """SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True

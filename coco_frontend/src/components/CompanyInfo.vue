@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-5 big-devices">
+  <div class="mt-5">
     <v-container content="center">
       <span class="mr-1"
         ><router-link

@@ -316,14 +316,19 @@ export default {
         this.websocket.onmessage = ({ data }) => {
           // this.messages.unshift(JSON.parse(data));
           const socketData = JSON.parse(data);
+          
           if (socketData.type == "new_notification") {
             this.items[2].value = socketData.unread_notifications;
             this.notificationStatus({
               unread_notifications: socketData.unread_notifications,
               unread_messages: this.items[3].value,
             });
+            this.addNotification(socketData);
           }
-          this.addNotification(socketData);
+          if (socketData.type == "new_msg") {
+            
+            this.$root.$emit("newMessage");
+          }
         };
       };
       this.websocket.onclose = () => {};
@@ -342,13 +347,8 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.notificationStatus({
             unread_messages: respose.unread_messages,
-            unread_notifications: this.notification.unread_messages,
+            unread_notifications: this.notification.unread_notifications,
           });
-          this.setUser(respose);
-
-          this.$root.$emit("userSetted");
-
-          this.connect();
         });
     },
   },

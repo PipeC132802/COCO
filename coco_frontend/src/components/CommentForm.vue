@@ -142,7 +142,7 @@ export default {
           created: response.created,
         };
         sendNotificationViaWS(sockedData, this.wsBase, response.user_barter);
-      }
+    }
   },
 };
 </script>

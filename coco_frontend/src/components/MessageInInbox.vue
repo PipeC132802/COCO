@@ -150,6 +150,7 @@ export default {
     },
     encryptId(id) {
       return encrypt(id, this.user.username);
+      
     },
     chatSelected() {
       this.setChat(this.chatElement);
@@ -180,11 +181,8 @@ export default {
             this.chatElement.created = socketData.created;
             if (socketData.sender_username != this.user.username) {
               this.chatElement.unread_messages = socketData.unread_messages;
-              this.notificationStatus({unread_messages: socketData.unread_messages, unread_notifications: this.notification.unread_notifications});
-              this.$root.$emit("newMessage")
             } else this.chatElement.unread_messages = 0;
             this.setChat(this.chatElement);
-
             this.typing = false;
           } else if (socketData.type == "seen_message") {
             this.chatElement.unread_messages = socketData.unread_messages;

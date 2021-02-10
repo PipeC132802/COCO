@@ -154,6 +154,7 @@ import { mapState, mapMutations } from "vuex";
 import { decript, encrypt } from "@/functions.js";
 import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
 import moment from "moment";
+import { sendNotificationViaWS } from "@/functions.js";
 
 export default {
   name: "Messages",
@@ -176,6 +177,7 @@ export default {
     msg: "",
     typing: false,
     change: false,
+    seenFlag: false,
     i18n: {
       search: "Buscar...",
       notfound: "No hay emojis",
@@ -267,6 +269,12 @@ export default {
           })
         );
         this.msg = "";
+        let sockedData = {
+          type: "new_msg",
+          sender: this.user.username,
+          receiver: this.chat.opponent.username,
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, sockedData.receiver);
       }
     },
     addEmoji(emoji) {
@@ -283,6 +291,9 @@ export default {
             typing: true,
           })
         );
+        if (this.msg.length == 1) {
+              this.seenMsg();
+        }
       } else {
         this.websocket.send(
           JSON.stringify({
@@ -295,7 +306,8 @@ export default {
       }
     },
     seenMsg() {
-      if (this.chat.sender_username != this.user.username) {
+      if (this.chat.sender_username != this.user.username && !this.seenFlag) {
+        this.seenFlag = true;
         let sender = this.user.username;
         this.websocket.send(
           JSON.stringify({
@@ -343,10 +355,8 @@ export default {
           } else if (socketData.type === "chat_message") {
             this.messages.unshift(socketData);
             this.typing = false;
-            if (socketData.sender_username == this.user.username) {
-              this.seenMsg();
-            }
           } else if (socketData.type === "seen_message") {
+            this.seenFlag = false;
             this.checkSeen();
             this.notificationStatus({
               unread_notifications: this.notification.unread_notifications,
@@ -423,7 +433,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 :root {
   --incoming-msg-bg: #09243df5;
   --outgoing-msg-bg: #3079bdfa;
@@ -579,5 +589,4 @@ export default {
   position: relative;
   margin: 25px 0%;
 }
-
 </style>
