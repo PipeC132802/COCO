@@ -1,7 +1,7 @@
 <template>
   <v-container
     v-if="(comments.length || user.username != $route.params.username) && authentication.userIsAuthenticated"
-    class="ma-0 pt-0 px-0"
+    class="ma-0  mt-4 px-0"
   >
     <CommentForm
       v-on:commentPosted="getComments"

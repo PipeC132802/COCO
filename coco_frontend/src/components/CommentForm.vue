@@ -167,7 +167,7 @@ export default {
   position: absolute;
   max-width: 40px;
   max-height: 35px;
-  top: -12px;
+  top: 0px;
 }
 [contenteditable][placeholder]:empty:before {
   content: attr(placeholder);
