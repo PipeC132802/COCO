@@ -23,7 +23,7 @@
               rounded="pill"
               min-width="120"
             >
-              <v-row justify="space-around" class="pt-1 px-4">
+              <v-row justify="space-around" class="pt-3 px-4">
                 <span
                   @click="reac2Barter(1)"
                   data-title="Cool"

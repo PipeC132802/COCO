@@ -252,15 +252,16 @@ export default {
   },
   mounted() {
     this.getUserInfo();
-    this.$root.$on("notificationsReaded", () => {
+    this.$root.$on("notificationsRead", () => {
       this.items[2].value = 0;
     });
     this.$root.$on("menu", () => {
       this.drawerSmall = !this.drawerSmall;
     });
-    this.$root.$on("newMessage", () => {
+    this.$root.$on("readMsgs", () => {
       this.unreadMsgs();
     });
+    
   },
 
   methods: {
@@ -322,8 +323,16 @@ export default {
               unread_notifications: socketData.unread_notifications,
               unread_messages: this.items[3].value,
             });
+            this.addNotification(socketData);
           }
-          this.addNotification(socketData);
+          else if (socketData.type == "new_msg") {
+            this.items[3].value = socketData.unread_msgs;
+            this.notificationStatus({
+              unread_messages: socketData.unread_msgs,
+              unread_notifications: this.items[2].value,
+            });
+            this.$root.$emit("newMessage");
+          }
         };
       };
       this.websocket.onclose = () => {};
@@ -342,13 +351,8 @@ export default {
           this.items[3].value = respose.unread_messages;
           this.notificationStatus({
             unread_messages: respose.unread_messages,
-            unread_notifications: this.notification.unread_messages,
+            unread_notifications: this.notification.unread_notifications,
           });
-          this.setUser(respose);
-
-          this.$root.$emit("userSetted");
-
-          this.connect();
         });
     },
   },

@@ -27,15 +27,11 @@
       <v-card-actions>
         <v-btn @click="dialog = true" rounded text color="secondary">
           <v-icon left>mdi-school</v-icon>
-          <span class="btn-text">
-          Quiero aprender
-          </span>
+          <span class="btn-text"> Quiero aprender </span>
         </v-btn>
         <v-btn @click="dialog = true" rounded text color="secondary">
           <v-icon left>mdi-teach</v-icon>
-          <span class="btn-text">
-          Voy a enseñar
-          </span>
+          <span class="btn-text"> Voy a enseñar </span>
         </v-btn>
         <v-btn @click="dialog = true" class="ml-auto" color="primary darken-2">
           Publicar
@@ -195,7 +191,7 @@ export default {
       ],
       rules: {
         required: (value) => !!value || "Obligatorio",
-        maxLength: v => v.length <= 255 || 'Max. 255 caracteres'
+        maxLength: (v) => v.length <= 255 || "Max. 255 caracteres",
       },
     };
   },
@@ -232,16 +228,16 @@ export default {
           method: "POST",
           headers: {
             Authorization: `Token ${this.authentication.accessToken}`,
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(formData),
         })
-        .then((response)=>(response.json()))
-        .then((response)=>{
-          this.clearFields();
-          
-          this.$root.$emit('newBarterPosted')
-        })
+          .then((response) => response.json())
+          .then((response) => {
+            this.clearFields();
+
+            this.$root.$emit("newBarterPosted");
+          });
       } else {
         this.snackbar = true;
         this.message = "Debes ingresar toda la información solicitada!";
@@ -253,22 +249,21 @@ export default {
     setInterest(interest) {
       this.interest = interest;
     },
-    clearFields(){
-      this.country = '';
-      this.city = '';
-      this.mode = '';
-      this.title = '';
-      this.description = '';
-      this.skill = '';
-      this.interest = '';
+    clearFields() {
+      this.country = "";
+      this.city = "";
+      this.mode = "";
+      this.title = "";
+      this.description = "";
+      this.skill = "";
+      this.interest = "";
       this.dialog = false;
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
-
 input {
   outline: none;
   width: 100%;
@@ -277,7 +272,7 @@ input {
   background: #d6d6d6;
   border-radius: 50px;
 }
-input::placeholder{
-  font-size: calc(0.6em + 0.6vw) ;
+input::placeholder {
+  font-size: calc(0.6em + 0.6vw);
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
-
-  <div :id="subject"> 
-    <v-autocomplete
+  <div :id="subject">
+    <v-combobox 
       v-model="areasList"
       :items="items"
       chips
@@ -39,7 +38,7 @@
           </v-list-item-content>
         </template>
       </template>
-    </v-autocomplete>
+    </v-combobox >
   </div>
 </template>
 
@@ -47,7 +46,7 @@
 import { mapState } from "vuex";
 export default {
   name: "Areas",
-  props: ["areas","subject"],
+  props: ["areas", "subject"],
   data() {
     return {
       autoUpdate: true,
@@ -68,16 +67,15 @@ export default {
       });
     },
     areasList: {
-      get: function(){
-        return this.areas? this.areas:[]
+      get: function () {
+        return this.areas ? this.areas : [];
       },
-      set: function(value){
-        this.$emit(this.subject,  value)
-      }
-    }
+      set: function (value) {
+        this.$emit(this.subject, value);
+      },
+    },
   },
-  beforeUpdate(){
-  },
+  beforeUpdate() {},
   watch: {
     search(val) {
       // Items have already been loaded
@@ -86,7 +84,7 @@ export default {
       if (this.isLoading) return;
 
       this.isLoading = true;
-      let query = val != null? val.trim(): '';
+      let query = val != null ? val.trim() : "";
       fetch(this.baseUrl + this.apiDir + `?area=${query}`, {
         method: "GET",
         headers: {
@@ -109,11 +107,11 @@ export default {
       const index = this.areasList.indexOf(item.area);
       if (index >= 0) this.areasList.splice(index, 1);
     },
-    trimInput(){
+    trimInput() {
       var parent = document.getElementById(this.subject);
-      var input = parent.getElementsByTagName('input')[0]
+      var input = parent.getElementsByTagName("input")[0];
       input.value = input.value.trim();
-    }
+    },
   },
 };
 </script>

@@ -502,7 +502,6 @@ export default {
         {property: 'og:description', content: ""},
         {property: 'description', content: ""},
         {property: 'title', content: this.userP.name + ` (@${this.userP.username})`},
-        {property: 'og:type', content: "perfil"},
       ];
       addMetaTagData(metaObj);
       document.title =

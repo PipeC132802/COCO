@@ -97,10 +97,10 @@
       <v-container class="pb-0 white" fluid>
         <picker
           v-on:click="addEmoji"
-          v-if="picker"
+          :class="picker?'picker-visible':'picker-hidden'"
           :style="{
             position: 'absolute',
-            bottom: '0px',
+            bottom: '5px',
             left: '0px',
             'z-index': 0,
           }"
@@ -112,14 +112,16 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            max-height: 30px;
+            max-height: 65px;
             z-index: 0;
             left: -10px;
+            bottom: 10px;
+
           "
         ></div>
         <v-text-field
           class="white"
-          @keyup="typingMessage"
+          
           @keyup.enter="sendMessage"
           @focus="seenMsg"
           rounded
@@ -154,6 +156,7 @@ import { mapState, mapMutations } from "vuex";
 import { decript, encrypt } from "@/functions.js";
 import ColorPicker from "@/components/subcomponents/ColorPicker.vue";
 import moment from "moment";
+import { sendNotificationViaWS } from "@/functions.js";
 
 export default {
   name: "Messages",
@@ -176,6 +179,7 @@ export default {
     msg: "",
     typing: false,
     change: false,
+    seenFlag: false,
     i18n: {
       search: "Buscar...",
       notfound: "No hay emojis",
@@ -194,6 +198,11 @@ export default {
       },
     },
   }),
+  watch:{
+    msg(){
+        this.typingMessage();
+    }
+  },
   mounted() {
     this.getMessages();
     this.setColors2Divs();
@@ -267,6 +276,12 @@ export default {
           })
         );
         this.msg = "";
+        let sockedData = {
+          type: "new_msg",
+          sender: this.user.username,
+          receiver: this.chat.opponent.username,
+        };
+        sendNotificationViaWS(sockedData, this.wsBase, sockedData.receiver);
       }
     },
     addEmoji(emoji) {
@@ -283,6 +298,9 @@ export default {
             typing: true,
           })
         );
+        if (this.msg.length == 1) {
+              this.seenMsg();
+        }
       } else {
         this.websocket.send(
           JSON.stringify({
@@ -295,7 +313,8 @@ export default {
       }
     },
     seenMsg() {
-      if (this.chat.sender_username != this.user.username) {
+      if (this.chat.sender_username != this.user.username && !this.seenFlag) {
+        this.seenFlag = true;
         let sender = this.user.username;
         this.websocket.send(
           JSON.stringify({
@@ -307,24 +326,6 @@ export default {
           })
         );
       }
-
-      /* if (
-        this.messages.length &&
-        this.messages[0].sender !== this.user.username &&
-        !this.messages[0].read
-      ) {
-        let sender = this.user.username;
-        this.websocket.onopen = () =>
-          this.websocket.send(
-            JSON.stringify({
-              type: "seen_message",
-              sender: sender,
-              receiver: this.chat.username,
-              seen: true,
-              room: this.room,
-            })
-          );
-      } */
     },
     connect() {
       let protocol = document.location.protocol == "http:" ? "ws://" : "wss://";
@@ -343,15 +344,10 @@ export default {
           } else if (socketData.type === "chat_message") {
             this.messages.unshift(socketData);
             this.typing = false;
-            if (socketData.sender_username == this.user.username) {
-              this.seenMsg();
-            }
           } else if (socketData.type === "seen_message") {
+            this.seenFlag = false;
             this.checkSeen();
-            this.notificationStatus({
-              unread_notifications: this.notification.unread_notifications,
-              unread_messages: 0,
-            });
+            this.$root.$emit("readMsgs")
           }
         };
       };
@@ -423,7 +419,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style>
 :root {
   --incoming-msg-bg: #09243df5;
   --outgoing-msg-bg: #3079bdfa;
@@ -579,5 +575,14 @@ export default {
   position: relative;
   margin: 25px 0%;
 }
-
+.picker-visible{
+  z-index: 0 !important;
+}
+.picker-hidden{
+  z-index: -10 !important;
+}
+.emoji-fallback:hover{
+  cursor: pointer  !important;
+  transform: scale(1.2);
+}
 </style>

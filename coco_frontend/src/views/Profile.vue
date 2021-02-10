@@ -11,7 +11,7 @@
               <v-tab><v-icon left>mdi-star</v-icon>Reseñas</v-tab>
               <v-tab><v-icon left>mdi-heart</v-icon>Reacciones</v-tab>
             </v-tabs>
-            <v-tabs-items class="px-2" v-model="tab">
+            <v-tabs-items class="px-2 pb-4 pt-2" v-model="tab">
               <v-tab-item>
                 <div class="pa-1">
                   <NewBarter

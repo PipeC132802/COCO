@@ -19,6 +19,7 @@
       Aún no tienes notificaciones
     </v-alert>
     <v-card
+      flat
       class="ma-2 px-0 mx-0"
       v-for="notification in notifications"
       :key="notification.id"
@@ -78,7 +79,7 @@ export default {
         })
         .then((response) => {
           this.notifications = response;
-          this.$root.$emit("notificationsReaded");
+          this.$root.$emit("notificationsRead");
           this.notificationStatus({
             unread_notifications: 0,
             unread_messages: this.notification.unread_messages,

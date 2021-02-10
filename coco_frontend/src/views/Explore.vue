@@ -19,9 +19,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-footer>
-      <CompanyInfo class="small-device" />
-    </v-footer>
+  
   </div>
 </template>
 
@@ -47,7 +45,6 @@ export default {
         {property: 'og:description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
         {property: 'description', content: "Busca personas con conocimientos en lo que quieres aprender e interés en lo que sabes. ¡Truequea tus habilidades!"},
         {property: 'title', content: "'Truequea' tus conocimientos con COCO"},
-        {property: 'og:type', content: "website"},
       ];
       addMetaTagData(metaObj);
   },

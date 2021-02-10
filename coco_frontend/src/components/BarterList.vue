@@ -14,7 +14,13 @@
       ></v-skeleton-loader>
     </div>
     <div class="mt-2" v-if="!barters.length">
-      <v-alert color="primary darken-3" :class="$route.name =='Home'?'mt-4':''" dark icon="mdi-alert" dense>
+      <v-alert
+        color="primary darken-3"
+        :class="$route.name == 'Home' ? 'mt-4' : ''"
+        dark
+        icon="mdi-alert"
+        dense
+      >
         <div v-if="field == 'profile'">
           <span v-if="$route.params.username !== user.username">
             @{{ $route.params.username }} aún no ha publicado ningún trueque 🙄
@@ -38,7 +44,7 @@
     </div>
     <v-card
       elevation="3"
-      class="mb-4 pt-0"
+      class="mb-4 pb-2 px-2"
       v-for="barter in barters"
       :key="barter.id"
     >
@@ -93,6 +99,7 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-menu
+              v-if="authentication.userIsAuthenticated"
               top
               open-on-hover
               offset-y
@@ -158,7 +165,7 @@
           </v-chip>
           <v-chip
             :title="'Quiero aprender ' + barter.interest"
-            class="mt-1"
+            class="mt-1 mr-1"
             color="accent darken-1"
           >
             <v-icon class="pl-1" small pill left> mdi-school </v-icon>
@@ -277,7 +284,7 @@ export default {
         .then((response) => {
           this.barters = response;
           this.loaded = true;
-          if(this.field == "detail"){
+          if (this.field == "detail") {
             this.setMetaData();
           }
         })
@@ -328,17 +335,19 @@ export default {
     toProfile(username) {
       this.$router.push({ name: "Profile", params: { username: username } });
     },
-    setMetaData(){
+    setMetaData() {
       let metaObj = [
-        {property: 'og:title', content: this.barters[0].title},
-        {property: 'og:description', content: this.barters[0].about.description},
-        {property: 'description', content: this.barters[0].about.description},
-        {property: 'title', content: this.barters[0].title},
-        {property: 'og:type', content: "trueque"},
+        { property: "og:title", content: this.barters[0].title },
+        {
+          property: "og:description",
+          content: this.barters[0].about.description,
+        },
+        { property: "description", content: this.barters[0].about.description },
+        { property: "title", content: this.barters[0].title },
       ];
       addMetaTagData(metaObj);
       document.title = this.barters[0].title + " | COCO";
-    }
+    },
   },
 };
 </script>
