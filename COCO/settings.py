@@ -28,7 +28,7 @@ with open('/var/SECRET_KEY.txt') as f:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Production settings
-DEBUG = True
+DEBUG = False
 """SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
