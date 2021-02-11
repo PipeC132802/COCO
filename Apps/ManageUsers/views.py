@@ -59,7 +59,7 @@ def mail_conf(instance, aim):
         )
     description.append('Para confirmar tu correo pulsa el botón que está a continuación:')
     token = instance.token
-    link = 'http://localhost:8080/verify-email/temp-link'
+    link = 'http://www.cocoplatform.com/verify-email/temp-link'
     context = {
         'name': name,
         'subject': subject,
